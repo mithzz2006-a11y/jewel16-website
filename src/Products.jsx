@@ -1,12 +1,12 @@
 import { useState } from "react";
 
-export default function Products() {
+export default function Products({ cart, setCart }) { 
   const [cart, setCart] = useState([]);
 
   const products = [
-    { id: 1, name: "Gold Necklace", price: 50000 },
-    { id: 2, name: "Diamond Ring", price: 75000 },
-    { id: 3, name: "Earrings", price: 20000 },
+    { id: 1, name: " Necklace", price: 559 },
+    { id: 2, name: " Ring", price: 449 },
+    { id: 3, name: "Earrings", price: 469 },
   ];
 
   const addToCart = (item) => {
@@ -18,6 +18,13 @@ export default function Products() {
     <div style={{ background: "#0a0a0a", color: "white", minHeight: "100vh", padding: "40px" }}>
       
       <h1 style={{ color: "maroon" }}>Products</h1>
+      
+      <button 
+        onClick={() => window.location.href="/cart"}
+        style={{ marginBottom: "20px", padding: "10px", background: "maroon", color: "white", border: "none" }}
+>
+  Go to Cart
+</button>
 
       <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
         {products.map((p) => (
