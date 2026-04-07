@@ -1,8 +1,12 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+
 export default function App() {
   return (
-    <div style={{ background: "black", color: "white", height: "100vh", textAlign: "center", paddingTop: "100px" }}>
-      <h1 style={{ color: "maroon", fontSize: "50px" }}>Jewel16 💎</h1>
-      <p>Luxury Jewellery Website</p>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
