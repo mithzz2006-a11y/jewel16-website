@@ -12,10 +12,7 @@ export default function Cart({ cart, setCart, setPage }) {
       
       <h1 style={{ color: "maroon" }}>Cart</h1>
 
-      <button 
-        onClick={() => setPage("products")}
-        style={{ marginBottom: "20px", padding: "10px", background: "maroon", color: "white", border: "none" }}
-      >
+      <button onClick={() => setPage("products")}>
         Back to Products
       </button>
 
