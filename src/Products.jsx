@@ -4,7 +4,7 @@ export default function Products({ cart, setCart }) {
   const [cart, setCart] = useState([]);
 
   const products = [
-    { id: 1, name: " Necklace", price: 549 },
+    { id: 1, name: " Necklaces", price: 549 },
     { id: 2, name: " Ring", price: 449 },
     { id: 3, name: "Earrings", price: 449 },
   ];
