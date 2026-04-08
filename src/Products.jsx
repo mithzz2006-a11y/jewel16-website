@@ -34,7 +34,6 @@ export default function Products({ cart, setCart, setPage }) {
           </div>
         ))}
       </div>
-
     </div>
   );
 }
