@@ -15,25 +15,18 @@ export default function Products({ cart, setCart, setPage }) {
       
       <h1 style={{ color: "maroon" }}>Products</h1>
 
-      <button 
-        onClick={() => setPage("cart")}
-        style={{ marginBottom: "20px", padding: "10px", background: "maroon", color: "white", border: "none" }}
-      >
+      <button onClick={() => setPage("cart")}>
         Go to Cart
       </button>
 
-      <div style={{ display: "flex", gap: "20px" }}>
-        {products.map((p) => (
-          <div key={p.id} style={{ background: "#111", padding: "20px" }}>
-            <h3>{p.name}</h3>
-            <p>₹ {p.price}</p>
+      {products.map((p) => (
+        <div key={p.id}>
+          <h3>{p.name}</h3>
+          <p>₹ {p.price}</p>
+          <button onClick={() => addToCart(p)}>Add to Cart</button>
+        </div>
+      ))}
 
-            <button onClick={() => addToCart(p)}>
-              Add to Cart
-            </button>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
