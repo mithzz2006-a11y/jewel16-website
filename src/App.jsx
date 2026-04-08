@@ -1,19 +1,17 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
 
 export default function App() {
+  const [page, setPage] = useState("home");
   const [cart, setCart] = useState([]);
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/products" element={<Products cart={cart} setCart={setCart} />} />
-        <Route path="/cart" element={<Cart cart={cart} setCart={setCart} />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      {page === "home" && <Home setPage={setPage} />}
+      {page === "products" && <Products cart={cart} setCart={setCart} setPage={setPage} />}
+      {page === "cart" && <Cart cart={cart} setCart={setCart} setPage={setPage} />}
+    </>
   );
 }
