@@ -1,9 +1,9 @@
 export default function Products({ cart, setCart, setPage }) {
 
   const products = [
-    { id: 1, name: "Gold Necklace", price: 50000 },
-    { id: 2, name: "Diamond Ring", price: 75000 },
-    { id: 3, name: "Earrings", price: 20000 },
+    { name: "Diamond Necklace", price: 50000 },
+    { name: "Gold Ring", price: 15000 },
+    { name: "Silver Bracelet", price: 5000 }
   ];
 
   const addToCart = (item) => {
@@ -12,23 +12,40 @@ export default function Products({ cart, setCart, setPage }) {
 
   return (
     <div style={{ background: "#0a0a0a", color: "white", padding: "40px" }}>
-      
       <h1 style={{ color: "maroon" }}>Products</h1>
 
-      <button onClick={() => setPage("cart")}>
-        Go to Cart
+      <button
+        onClick={() => setPage("cart")}
+        style={{
+          marginBottom: "20px",
+          padding: "10px",
+          background: "maroon",
+          color: "white",
+          border: "none",
+          cursor: "pointer"
+        }}
+      >
+        Go to Cart ({cart.length})
       </button>
 
-      {products.map((p) => (
-        <div key={p.id}>
-          <h3>{p.name}</h3>
-          <p>₹ {p.price}</p>
-          <button onClick={() => addToCart(p)}>
+      {products.map((item, index) => (
+        <div key={index} style={{ marginBottom: "20px" }}>
+          <h3>{item.name}</h3>
+          <p>₹{item.price}</p>
+
+          <button
+            onClick={() => addToCart(item)}
+            style={{
+              padding: "8px",
+              background: "gold",
+              border: "none",
+              cursor: "pointer"
+            }}
+          >
             Add to Cart
           </button>
         </div>
       ))}
-
     </div>
   );
 }
