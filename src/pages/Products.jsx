@@ -29,7 +29,7 @@ export default function Products({ cart, setCart, setPage }) {
         Go to Cart ({cart.length})
       </button>
 
-      {/* 🔥 LUXURY GRID */}
+      {/* 🔥 GRID */}
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
@@ -45,13 +45,23 @@ export default function Products({ cart, setCart, setPage }) {
               borderRadius: "10px",
               background: "#111",
               textAlign: "center",
-              transition: "0.3s"
+              transition: "0.3s",
+              boxShadow: "0 0 10px rgba(255, 215, 0, 0.2)"
             }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
-            onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.05)";
+              e.currentTarget.style.boxShadow = "0 0 20px gold";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "0 0 10px rgba(255, 215, 0, 0.2)";
+            }}
           >
             <h3>{item.name}</h3>
-            <p style={{ color: "gold", fontSize: "18px" }}>₹{item.price}</p>
+
+            <p style={{ color: "gold", fontSize: "18px" }}>
+              ₹{item.price}
+            </p>
 
             <button
               onClick={() => addToCart(item)}
