@@ -1,27 +1,46 @@
 export default function Home({ setPage }) {
   return (
     <div style={{
-      background: "#0a0a0a",
+      height: "90vh",
+      background: "linear-gradient(to right, #000000, #1a1a1a)",
       color: "white",
-      textAlign: "center",
-      padding: "100px"
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      textAlign: "center"
     }}>
-      <h1 style={{ color: "maroon" }}>JEWEL16 💎</h1>
-      <p>Luxury Redefined</p>
+
+      <h1 style={{
+        fontSize: "60px",
+        color: "gold",
+        marginBottom: "10px"
+      }}>
+        JEWEL16 💎
+      </h1>
+
+      <p style={{
+        fontSize: "20px",
+        color: "#ccc",
+        marginBottom: "30px"
+      }}>
+        Experience Luxury Like Never Before
+      </p>
 
       <button
         onClick={() => setPage("products")}
         style={{
-          marginTop: "20px",
-          padding: "10px 20px",
-          background: "maroon",
-          color: "white",
+          padding: "12px 25px",
+          background: "gold",
+          color: "black",
           border: "none",
+          fontSize: "16px",
           cursor: "pointer"
         }}
       >
-        Shop Now
+        Explore Collection
       </button>
+
     </div>
   );
 }
