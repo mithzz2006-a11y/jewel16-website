@@ -11,14 +11,16 @@ export default function App() {
   return (
     <div>
       {/* 🔥 NAVBAR */}
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "15px 40px",
-        background: "#111",
-        borderBottom: "1px solid gold"
-      }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "15px 40px",
+          background: "#111",
+          borderBottom: "1px solid gold",
+        }}
+      >
         <h2 style={{ color: "gold" }}>JEWEL16 💎</h2>
 
         <div style={{ display: "flex", gap: "15px" }}>
@@ -44,50 +46,50 @@ export default function App() {
           cursor: "pointer",
           fontWeight: "bold",
           zIndex: 1000,
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)"
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
         }}
       >
         🛒 {cart.length}
       </div>
 
+      {/* 🔥 PAGE TRANSITIONS */}
       <AnimatePresence mode="wait">
+        {page === "home" && (
+          <motion.div
+            key="home"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Home setPage={setPage} />
+          </motion.div>
+        )}
 
-  {page === "home" && (
-    <motion.div
-      key="home"
-      initial={{ opacity: 0, x: -50 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 50 }}
-      transition={{ duration: 0.5 }}
-    >
-      <Home setPage={setPage} />
-    </motion.div>
-  )}
+        {page === "products" && (
+          <motion.div
+            key="products"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Products cart={cart} setCart={setCart} setPage={setPage} />
+          </motion.div>
+        )}
 
-  {page === "products" && (
-    <motion.div
-      key="products"
-      initial={{ opacity: 0, x: -50 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 50 }}
-      transition={{ duration: 0.5 }}
-    >
-      <Products cart={cart} setCart={setCart} setPage={setPage} />
-    </motion.div>
-  )}
-
-  {page === "cart" && (
-    <motion.div
-      key="cart"
-      initial={{ opacity: 0, x: -50 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 50 }}
-      transition={{ duration: 0.5 }}
-    >
-      <Cart cart={cart} setCart={setCart} setPage={setPage} />
-    </motion.div>
-  )}
-
-</AnimatePresence>
-
-      
+        {page === "cart" && (
+          <motion.div
+            key="cart"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Cart cart={cart} setCart={setCart} setPage={setPage} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
