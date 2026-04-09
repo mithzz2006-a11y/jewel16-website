@@ -12,15 +12,16 @@ export default function Products({ cart, setCart, setPage }) {
 
   return (
     <div style={{ background: "#0a0a0a", color: "white", padding: "40px" }}>
-      <h1 style={{ color: "maroon" }}>Products</h1>
+      
+      <h1 style={{ color: "gold", marginBottom: "10px" }}>Products</h1>
 
       <button
         onClick={() => setPage("cart")}
         style={{
           marginBottom: "20px",
-          padding: "10px",
-          background: "maroon",
-          color: "white",
+          padding: "10px 15px",
+          background: "gold",
+          color: "black",
           border: "none",
           cursor: "pointer"
         }}
@@ -28,24 +29,47 @@ export default function Products({ cart, setCart, setPage }) {
         Go to Cart ({cart.length})
       </button>
 
-      {products.map((item, index) => (
-        <div key={index} style={{ marginBottom: "20px" }}>
-          <h3>{item.name}</h3>
-          <p>₹{item.price}</p>
-
-          <button
-            onClick={() => addToCart(item)}
+      {/* 🔥 LUXURY GRID */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+        gap: "25px",
+        marginTop: "20px"
+      }}>
+        {products.map((item, index) => (
+          <div
+            key={index}
             style={{
-              padding: "8px",
-              background: "gold",
-              border: "none",
-              cursor: "pointer"
+              border: "1px solid gold",
+              padding: "20px",
+              borderRadius: "10px",
+              background: "#111",
+              textAlign: "center",
+              transition: "0.3s"
             }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
+            onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
           >
-            Add to Cart
-          </button>
-        </div>
-      ))}
+            <h3>{item.name}</h3>
+            <p style={{ color: "gold", fontSize: "18px" }}>₹{item.price}</p>
+
+            <button
+              onClick={() => addToCart(item)}
+              style={{
+                marginTop: "10px",
+                padding: "10px",
+                background: "gold",
+                color: "black",
+                border: "none",
+                cursor: "pointer"
+              }}
+            >
+              Add to Cart
+            </button>
+          </div>
+        ))}
+      </div>
+
     </div>
   );
 }
