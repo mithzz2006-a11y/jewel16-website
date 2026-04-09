@@ -17,24 +17,11 @@ export default function Home({ setPage }) {
         textAlign: "center"
       }}
     >
-
-      <h1
-        style={{
-          fontSize: "60px",
-          color: "gold",
-          marginBottom: "10px"
-        }}
-      >
+      <h1 style={{ fontSize: "60px", color: "gold" }}>
         JEWEL16 💎
       </h1>
 
-      <p
-        style={{
-          fontSize: "20px",
-          color: "#ccc",
-          marginBottom: "30px"
-        }}
-      >
+      <p style={{ color: "#ccc", marginBottom: "30px" }}>
         Experience Luxury Like Never Before
       </p>
 
@@ -45,14 +32,11 @@ export default function Home({ setPage }) {
           background: "gold",
           color: "black",
           border: "none",
-          fontSize: "16px",
-          cursor: "pointer",
-          borderRadius: "5px"
+          cursor: "pointer"
         }}
       >
         Explore Collection
       </button>
-
     </motion.div>
   );
 }
