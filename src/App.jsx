@@ -10,20 +10,20 @@ export default function App() {
   return (
     <div>
       {page === "home" && <Home setPage={setPage} />}
-      
+
       {page === "products" && (
-        <Products 
-          cart={cart} 
-          setCart={setCart} 
-          setPage={setPage} 
+        <Products
+          cart={cart}
+          setCart={setCart}
+          setPage={setPage}
         />
       )}
-      
+
       {page === "cart" && (
-        <Cart 
-          cart={cart} 
-          setCart={setCart} 
-          setPage={setPage} 
+        <Cart
+          cart={cart}
+          setCart={setCart}
+          setPage={setPage}
         />
       )}
     </div>
