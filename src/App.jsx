@@ -9,6 +9,28 @@ export default function App() {
 
   return (
     <div>
+
+      {/* 🔥 NAVBAR */}
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "15px 40px",
+        background: "#111",
+        borderBottom: "1px solid gold"
+      }}>
+        <h2 style={{ color: "gold" }}>JEWEL16 💎</h2>
+
+        <div style={{ display: "flex", gap: "15px" }}>
+          <button onClick={() => setPage("home")}>Home</button>
+          <button onClick={() => setPage("products")}>Products</button>
+          <button onClick={() => setPage("cart")}>
+            Cart ({cart.length})
+          </button>
+        </div>
+      </div>
+
+      {/* 🔥 PAGES */}
       {page === "home" && <Home setPage={setPage} />}
 
       {page === "products" && (
@@ -26,6 +48,7 @@ export default function App() {
           setPage={setPage}
         />
       )}
+
     </div>
   );
 }
