@@ -9,7 +9,6 @@ export default function App() {
 
   return (
     <div>
-
       {/* 🔥 NAVBAR */}
       <div style={{
         display: "flex",
@@ -30,6 +29,26 @@ export default function App() {
         </div>
       </div>
 
+      {/* 🔥 FLOATING CART ICON */}
+      <div
+        onClick={() => setPage("cart")}
+        style={{
+          position: "fixed",
+          top: "80px",
+          right: "20px",
+          background: "gold",
+          color: "black",
+          padding: "12px 15px",
+          borderRadius: "50%",
+          cursor: "pointer",
+          fontWeight: "bold",
+          zIndex: 1000,
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)"
+        }}
+      >
+        🛒 {cart.length}
+      </div>
+
       {/* 🔥 PAGES */}
       {page === "home" && <Home setPage={setPage} />}
 
@@ -48,7 +67,6 @@ export default function App() {
           setPage={setPage}
         />
       )}
-
     </div>
   );
 }
