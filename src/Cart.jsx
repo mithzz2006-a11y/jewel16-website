@@ -24,7 +24,9 @@ export default function Cart({ cart, setCart, setPage }) {
             <div key={index}>
               <h3>{item.name}</h3>
               <p>₹ {item.price}</p>
-              <button onClick={() => removeItem(index)}>Remove</button>
+              <button onClick={() => removeItem(index)}>
+                Remove
+              </button>
             </div>
           ))}
 
