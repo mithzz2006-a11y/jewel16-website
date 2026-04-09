@@ -10,8 +10,12 @@ export default function App() {
   return (
     <>
       {page === "home" && <Home setPage={setPage} />}
-      {page === "products" && <Products cart={cart} setCart={setCart} setPage={setPage} />}
-      {page === "cart" && <Cart cart={cart} setCart={setCart} setPage={setPage} />}
+      {page === "products" && (
+        <Products cart={cart} setCart={setCart} setPage={setPage} />
+      )}
+      {page === "cart" && (
+        <Cart cart={cart} setCart={setCart} setPage={setPage} />
+      )}
     </>
   );
 }
