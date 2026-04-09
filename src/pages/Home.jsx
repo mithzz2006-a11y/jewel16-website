@@ -5,6 +5,7 @@ export default function Home({ setPage }) {
     <motion.div
       initial={{ opacity: 0, y: 60 }}
       animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -60 }}   // ✅ Added exit animation
       transition={{ duration: 1 }}
       style={{
         height: "90vh",
