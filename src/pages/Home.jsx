@@ -1,15 +1,22 @@
+import { motion } from "framer-motion";
+
 export default function Home({ setPage }) {
   return (
-    <div style={{
-      height: "90vh",
-      background: "linear-gradient(to right, #000000, #1a1a1a)",
-      color: "white",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      textAlign: "center"
-    }}>
+    <motion.div
+      initial={{ opacity: 0, y: 60 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1 }}
+      style={{
+        height: "90vh",
+        background: "linear-gradient(to right, #000000, #1a1a1a)",
+        color: "white",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center"
+      }}
+    >
 
       <h1 style={{
         fontSize: "60px",
@@ -41,6 +48,6 @@ export default function Home({ setPage }) {
         Explore Collection
       </button>
 
-    </div>
+    </motion.div>
   );
 }
