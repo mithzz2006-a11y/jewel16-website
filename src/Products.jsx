@@ -23,7 +23,9 @@ export default function Products({ cart, setCart, setPage }) {
         <div key={p.id}>
           <h3>{p.name}</h3>
           <p>₹ {p.price}</p>
-          <button onClick={() => addToCart(p)}>Add to Cart</button>
+          <button onClick={() => addToCart(p)}>
+            Add to Cart
+          </button>
         </div>
       ))}
 
