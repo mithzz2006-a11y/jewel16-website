@@ -2,6 +2,7 @@ import { useState } from "react";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function App() {
   const [page, setPage] = useState("home");
@@ -49,24 +50,44 @@ export default function App() {
         🛒 {cart.length}
       </div>
 
-      {/* 🔥 PAGES */}
-      {page === "home" && <Home setPage={setPage} />}
+      <AnimatePresence mode="wait">
 
-      {page === "products" && (
-        <Products
-          cart={cart}
-          setCart={setCart}
-          setPage={setPage}
-        />
-      )}
+  {page === "home" && (
+    <motion.div
+      key="home"
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 50 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Home setPage={setPage} />
+    </motion.div>
+  )}
 
-      {page === "cart" && (
-        <Cart
-          cart={cart}
-          setCart={setCart}
-          setPage={setPage}
-        />
-      )}
-    </div>
-  );
-}
+  {page === "products" && (
+    <motion.div
+      key="products"
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 50 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Products cart={cart} setCart={setCart} setPage={setPage} />
+    </motion.div>
+  )}
+
+  {page === "cart" && (
+    <motion.div
+      key="cart"
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 50 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Cart cart={cart} setCart={setCart} setPage={setPage} />
+    </motion.div>
+  )}
+
+</AnimatePresence>
+
+      
