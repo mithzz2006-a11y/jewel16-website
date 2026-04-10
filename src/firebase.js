@@ -1,12 +1,14 @@
+// src/firebase.js
+
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-// 🔥 PASTE YOUR REAL VALUES HERE (from Firebase console)
+// ✅ Replace these values with your actual Firebase project settings
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
+  authDomain: "jewel16-95f3f.firebaseapp.com",
+  projectId: "jewel16-95f3f",
+  storageBucket: "jewel16-95f3f.appspot.com",
   messagingSenderId: "YOUR_SENDER_ID",
   appId: "YOUR_APP_ID"
 };
@@ -14,5 +16,5 @@ const firebaseConfig = {
 // 🔥 Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// 🔥 Export Firestore database
+// 🔥 Export Firestore database instance
 export const db = getFirestore(app);
