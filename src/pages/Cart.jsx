@@ -39,9 +39,10 @@ export default function Cart({ cart, setCart, setPage }) {
 
       alert("Order placed successfully 🎉");
       setCart([]);
-      setPage("home");
+      setPage("orders"); // 🔥 GO TO ORDERS PAGE
+
     } catch (error) {
-      console.error("Error saving order:", error);
+      console.error(error);
       alert("Error placing order ❌");
     }
   };
@@ -63,41 +64,11 @@ export default function Cart({ cart, setCart, setPage }) {
           <h3 style={{ marginTop: "20px" }}>Total: ₹{total}</h3>
 
           <div style={{ marginTop: "20px", maxWidth: "400px" }}>
-            <input
-              name="name"
-              placeholder="Name"
-              value={form.name}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-            <input
-              name="phone"
-              placeholder="Phone Number"
-              value={form.phone}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-            <input
-              name="address"
-              placeholder="Address"
-              value={form.address}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-            <input
-              name="pincode"
-              placeholder="Pincode"
-              value={form.pincode}
-              onChange={handleChange}
-              style={inputStyle}
-            />
-            <input
-              name="landmark"
-              placeholder="Landmark (optional)"
-              value={form.landmark}
-              onChange={handleChange}
-              style={inputStyle}
-            />
+            <input name="name" placeholder="Name" value={form.name} onChange={handleChange} style={inputStyle} />
+            <input name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} style={inputStyle} />
+            <input name="address" placeholder="Address" value={form.address} onChange={handleChange} style={inputStyle} />
+            <input name="pincode" placeholder="Pincode" value={form.pincode} onChange={handleChange} style={inputStyle} />
+            <input name="landmark" placeholder="Landmark (optional)" value={form.landmark} onChange={handleChange} style={inputStyle} />
 
             <button onClick={placeOrder} style={btnStyle}>
               Place Order
