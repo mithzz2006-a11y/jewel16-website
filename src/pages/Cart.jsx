@@ -23,12 +23,21 @@ export default function Cart({ cart, setCart, setPage }) {
       pincode,
       landmark,
       items: cart,
-      total
+      total,
+      date: new Date().toLocaleString()
     };
 
-    console.log("ORDER:", order);
+    // 🔥 SAVE TO LOCAL STORAGE
+    const existingOrders =
+      JSON.parse(localStorage.getItem("orders")) || [];
 
-    alert("Order placed successfully 🎉");
+    existingOrders.push(order);
+
+    localStorage.setItem("orders", JSON.stringify(existingOrders));
+
+    console.log("ORDER SAVED:", order);
+
+    alert("Order placed & saved successfully 🎉");
 
     setCart([]);
     setPage("home");
@@ -113,7 +122,7 @@ export default function Cart({ cart, setCart, setPage }) {
   );
 }
 
-/* 🔥 INPUT STYLE (clean reusable) */
+/* 🔥 INPUT STYLE */
 const inputStyle = {
   display: "block",
   width: "100%",
