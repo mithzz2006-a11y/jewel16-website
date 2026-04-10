@@ -41,7 +41,7 @@ export default function Products({ cart, setCart, setPage }) {
           <div
             key={index}
             style={{
-              border: "1px solid gold",
+              border: "1px solid white",
               padding: "20px",
               borderRadius: "10px",
               background: "#111",
@@ -51,7 +51,7 @@ export default function Products({ cart, setCart, setPage }) {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "scale(1.05)";
-              e.currentTarget.style.boxShadow = "0 0 20px gold";
+              e.currentTarget.style.boxShadow = "0 0 20px white";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "scale(1)";
@@ -60,14 +60,14 @@ export default function Products({ cart, setCart, setPage }) {
             }}
           >
             <h3>{item.name}</h3>
-            <p style={{ color: "gold", fontSize: "18px" }}>₹{item.price}</p>
+            <p style={{ color: "white", fontSize: "18px" }}>₹{item.price}</p>
 
             <button
               onClick={() => addToCart(item)}
               style={{
                 marginTop: "10px",
                 padding: "10px",
-                background: "gold",
+                background: "white",
                 color: "black",
                 border: "none",
                 cursor: "pointer",
