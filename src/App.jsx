@@ -22,7 +22,20 @@ export default function App() {
           borderBottom: "1px solid maroon",
         }}
       >
-        <h2 style={{ color: "white" }}>JEWEL16 💎</h2>
+        {/* 🔐 SECRET ADMIN ACCESS */}
+        <h2
+          style={{ color: "white", cursor: "pointer" }}
+          onDoubleClick={() => {
+            const pass = prompt("Enter Admin Password");
+            if (pass === "jewel16admin") {
+              setPage("admin");
+            } else {
+              alert("Access denied ❌");
+            }
+          }}
+        >
+          JEWEL16 💎
+        </h2>
 
         <div style={{ display: "flex", gap: "15px" }}>
           <button onClick={() => setPage("home")}>Home</button>
@@ -30,15 +43,10 @@ export default function App() {
           <button onClick={() => setPage("cart")}>
             Cart ({cart.length})
           </button>
-
-          {/* 🔥 ADMIN BUTTON */}
-          <button onClick={() => setPage("admin")}>
-            Admin
-          </button>
         </div>
       </div>
 
-      {/* 🔥 FLOATING CART ICON */}
+      {/* 🔥 FLOATING CART */}
       <div
         onClick={() => setPage("cart")}
         style={{
@@ -51,60 +59,33 @@ export default function App() {
           borderRadius: "50%",
           cursor: "pointer",
           fontWeight: "bold",
-          zIndex: 1000,
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
         }}
       >
         🛒 {cart.length}
       </div>
 
-      {/* 🔥 PAGE TRANSITIONS */}
+      {/* 🔥 PAGES */}
       <AnimatePresence mode="wait">
         {page === "home" && (
-          <motion.div
-            key="home"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 50 }}
-            transition={{ duration: 0.5 }}
-          >
+          <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <Home setPage={setPage} />
           </motion.div>
         )}
 
         {page === "products" && (
-          <motion.div
-            key="products"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 50 }}
-            transition={{ duration: 0.5 }}
-          >
+          <motion.div key="products" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <Products cart={cart} setCart={setCart} setPage={setPage} />
           </motion.div>
         )}
 
         {page === "cart" && (
-          <motion.div
-            key="cart"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 50 }}
-            transition={{ duration: 0.5 }}
-          >
+          <motion.div key="cart" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <Cart cart={cart} setCart={setCart} setPage={setPage} />
           </motion.div>
         )}
 
-        {/* 🔥 ADMIN PAGE */}
         {page === "admin" && (
-          <motion.div
-            key="admin"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 50 }}
-            transition={{ duration: 0.5 }}
-          >
+          <motion.div key="admin" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <Admin setPage={setPage} />
           </motion.div>
         )}
