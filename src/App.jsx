@@ -21,7 +21,7 @@ export default function App() {
           borderBottom: "1px solid maroon",
         }}
       >
-        <h2 style={{ color: "maroon" }}>JEWEL16 💎</h2>
+        <h2 style={{ color: "white" }}>JEWEL16 💎</h2>
 
         <div style={{ display: "flex", gap: "15px" }}>
           <button onClick={() => setPage("home")}>Home</button>
