@@ -18,7 +18,7 @@ export default function Home({ setPage }) {
         textAlign: "center"
       }}
     >
-      <h1 style={{ fontSize: "60px", color: "gold" }}>
+      <h1 style={{ fontSize: "60px", color: "white" }}>
         JEWEL16 💎
       </h1>
 
@@ -30,7 +30,7 @@ export default function Home({ setPage }) {
         onClick={() => setPage("products")}
         style={{
           padding: "12px 25px",
-          background: "gold",
+          background: "white",
           color: "black",
           border: "none",
           cursor: "pointer"
