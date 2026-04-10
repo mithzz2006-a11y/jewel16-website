@@ -2,8 +2,9 @@ import { useState } from "react";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
-import { AnimatePresence, motion } from "framer-motion";
+import MyOrders from "./pages/MyOrders";
 import Admin from "./pages/Admin";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function App() {
   const [page, setPage] = useState("home");
@@ -16,13 +17,12 @@ export default function App() {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
           padding: "15px 40px",
           background: "#111",
           borderBottom: "1px solid maroon",
         }}
       >
-        {/* 🔐 SECRET ADMIN ACCESS */}
+        {/* 🔐 SECRET ADMIN */}
         <h2
           style={{ color: "white", cursor: "pointer" }}
           onDoubleClick={() => {
@@ -43,10 +43,13 @@ export default function App() {
           <button onClick={() => setPage("cart")}>
             Cart ({cart.length})
           </button>
+          <button onClick={() => setPage("orders")}>
+            My Orders
+          </button>
         </div>
       </div>
 
-      {/* 🔥 FLOATING CART */}
+      {/* 🛒 FLOATING CART */}
       <div
         onClick={() => setPage("cart")}
         style={{
@@ -81,6 +84,12 @@ export default function App() {
         {page === "cart" && (
           <motion.div key="cart" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <Cart cart={cart} setCart={setCart} setPage={setPage} />
+          </motion.div>
+        )}
+
+        {page === "orders" && (
+          <motion.div key="orders" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <MyOrders setPage={setPage} />
           </motion.div>
         )}
 
