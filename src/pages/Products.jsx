@@ -10,7 +10,7 @@ export default function Products({ cart, setCart, setPage }) {
   };
 
   return (
-    <div style={{ background: "#0a0a0a", color: "maroon", padding: "40px" }}>
+    <div style={{ background: "#0a0a0a", color: "white", padding: "40px" }}>
       <h1 style={{ marginBottom: "10px" }}>Products</h1>
 
       <button
@@ -67,7 +67,7 @@ export default function Products({ cart, setCart, setPage }) {
               style={{
                 marginTop: "10px",
                 padding: "10px",
-                background: "maroon",
+                background: "white",
                 color: "black",
                 border: "none",
                 cursor: "pointer",
