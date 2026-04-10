@@ -30,6 +30,11 @@ export default function App() {
           <button onClick={() => setPage("cart")}>
             Cart ({cart.length})
           </button>
+
+          {/* 🔥 ADMIN BUTTON */}
+          <button onClick={() => setPage("admin")}>
+            Admin
+          </button>
         </div>
       </div>
 
@@ -88,6 +93,19 @@ export default function App() {
             transition={{ duration: 0.5 }}
           >
             <Cart cart={cart} setCart={setCart} setPage={setPage} />
+          </motion.div>
+        )}
+
+        {/* 🔥 ADMIN PAGE */}
+        {page === "admin" && (
+          <motion.div
+            key="admin"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Admin setPage={setPage} />
           </motion.div>
         )}
       </AnimatePresence>
