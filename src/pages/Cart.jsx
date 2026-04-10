@@ -1,132 +1,95 @@
-import { useState } from "react";
-import { db } from "../firebase";
-import { collection, addDoc } from "firebase/firestore";
+import toast from "react-hot-toast";
 
-export default function Cart({ cart, setCart, setPage }) {
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    address: "",
-    pincode: "",
-    landmark: ""
-  });
+export default function Products({ cart, setCart, setPage }) {
+  const products = [
+    { name: "Necklace", price: 459 },
+    { name: "Ring", price: 359 },
+    { name: "Bracelet", price: 469 }
+  ];
 
-  const [loading, setLoading] = useState(false); // 🔥 prevent double click
+  const addToCart = (item) => {
+    setCart([...cart, item]);
 
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const placeOrder = async () => {
-    console.log("Button clicked"); // ✅ debug
-
-    if (cart.length === 0) {
-      alert("Cart is empty ❌");
-      return;
-    }
-
-    const { name, phone, address, pincode } = form;
-
-    if (!name || !phone || !address || !pincode) {
-      alert("Please fill all required details ❌");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      await addDoc(collection(db, "orders"), {
-        customer: name,
-        phone: form.phone,
-        address: form.address,
-        pincode: form.pincode,
-        landmark: form.landmark,
-        items: cart,
-        total: total,
-        date: new Date().toISOString()
-      });
-
-      alert("Order placed successfully 🎉");
-
-      setCart([]);
-      setForm({
-        name: "",
-        phone: "",
-        address: "",
-        pincode: "",
-        landmark: ""
-      });
-
-      setPage("orders"); // 🔥 go to orders page
-
-    } catch (error) {
-      console.error("ERROR:", error);
-      alert("Error placing order ❌ (check console)");
-    } finally {
-      setLoading(false);
-    }
+    // 🔥 PREMIUM POPUP
+    toast.success(item.name + " added to cart 🛒", {
+      style: {
+        background: "#111",
+        color: "white",
+        border: "1px solid maroon"
+      }
+    });
   };
 
   return (
     <div style={{ background: "#0a0a0a", color: "white", padding: "40px", minHeight: "100vh" }}>
       
-      <h1 style={{ color: "maroon" }}>Your Cart</h1>
+      <h1 style={{ marginBottom: "10px", color: "maroon" }}>Products</h1>
 
-      {cart.length === 0 ? (
-        <p>No items in cart</p>
-      ) : (
-        <>
-          {/* 🛒 ITEMS */}
-          {cart.map((item, index) => (
-            <div key={index} style={{ marginBottom: "10px" }}>
-              {item.name} - ₹{item.price}
-            </div>
-          ))}
+      <button
+        onClick={() => setPage("cart")}
+        style={{
+          marginBottom: "20px",
+          padding: "10px 15px",
+          background: "maroon",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+          borderRadius: "5px"
+        }}
+      >
+        Go to Cart ({cart.length})
+      </button>
 
-          <h3 style={{ marginTop: "20px" }}>Total: ₹{total}</h3>
+      {/* 🔥 PRODUCT GRID */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+          gap: "25px",
+          marginTop: "20px"
+        }}
+      >
+        {products.map((item, index) => (
+          <div
+            key={index}
+            style={{
+              border: "1px solid maroon",
+              padding: "20px",
+              borderRadius: "10px",
+              background: "#111",
+              textAlign: "center",
+              transition: "0.3s",
+              boxShadow: "0 0 10px rgba(128,0,0,0.5)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.05)";
+              e.currentTarget.style.boxShadow = "0 0 20px maroon";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = "0 0 10px rgba(128,0,0,0.5)";
+            }}
+          >
+            <h3>{item.name}</h3>
+            <p style={{ fontSize: "18px" }}>₹{item.price}</p>
 
-          {/* 📋 FORM */}
-          <div style={{ marginTop: "20px", maxWidth: "400px" }}>
-            
-            <input name="name" placeholder="Name" value={form.name} onChange={handleChange} style={inputStyle} />
-            <input name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} style={inputStyle} />
-            <input name="address" placeholder="Address" value={form.address} onChange={handleChange} style={inputStyle} />
-            <input name="pincode" placeholder="Pincode" value={form.pincode} onChange={handleChange} style={inputStyle} />
-            <input name="landmark" placeholder="Landmark (optional)" value={form.landmark} onChange={handleChange} style={inputStyle} />
-
-            <button 
-              onClick={placeOrder}
-              disabled={loading}
+            <button
+              onClick={() => addToCart(item)}
               style={{
-                marginTop: "15px",
-                padding: "12px",
-                width: "100%",
-                background: loading ? "gray" : "maroon",
+                marginTop: "10px",
+                padding: "10px",
+                background: "maroon",
                 color: "white",
                 border: "none",
                 cursor: "pointer",
                 borderRadius: "5px"
               }}
             >
-              {loading ? "Placing Order..." : "Place Order"}
+              Add to Cart
             </button>
-
           </div>
-        </>
-      )}
+        ))}
+      </div>
     </div>
   );
 }
-
-const inputStyle = {
-  display: "block",
-  width: "100%",
-  padding: "10px",
-  marginBottom: "10px",
-  background: "#111",
-  color: "white",
-  border: "1px solid maroon",
-  borderRadius: "5px"
-};
