@@ -27,15 +27,13 @@ export default function Cart({ cart, setCart, setPage }) {
       date: new Date().toLocaleString()
     };
 
-    // 🔥 SAVE TO LOCAL STORAGE
+    // 🔐 SECURE SAVE (encoded)
     const existingOrders =
-      JSON.parse(localStorage.getItem("orders")) || [];
+      JSON.parse(atob(localStorage.getItem("orders") || "W10="));
 
     existingOrders.push(order);
 
-    localStorage.setItem("orders", JSON.stringify(existingOrders));
-
-    console.log("ORDER SAVED:", order);
+    localStorage.setItem("orders", btoa(JSON.stringify(existingOrders)));
 
     alert("Order placed & saved successfully 🎉");
 
@@ -52,7 +50,6 @@ export default function Cart({ cart, setCart, setPage }) {
         <p>No items in cart</p>
       ) : (
         <>
-          {/* 🛒 ITEMS */}
           {cart.map((item, index) => (
             <div key={index} style={{ marginBottom: "10px" }}>
               {item.name} - ₹{item.price}
@@ -61,57 +58,15 @@ export default function Cart({ cart, setCart, setPage }) {
 
           <h3 style={{ marginTop: "20px" }}>Total: ₹{total}</h3>
 
-          {/* 📋 FORM */}
           <div style={{ marginTop: "20px", maxWidth: "400px" }}>
             
-            <input
-              placeholder="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              style={inputStyle}
-            />
+            <input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} style={inputStyle} />
+            <input placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} style={inputStyle} />
+            <input placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} style={inputStyle} />
+            <input placeholder="Pincode" value={pincode} onChange={(e) => setPincode(e.target.value)} style={inputStyle} />
+            <input placeholder="Landmark (optional)" value={landmark} onChange={(e) => setLandmark(e.target.value)} style={inputStyle} />
 
-            <input
-              placeholder="Phone Number"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              style={inputStyle}
-            />
-
-            <input
-              placeholder="Address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              style={inputStyle}
-            />
-
-            <input
-              placeholder="Pincode"
-              value={pincode}
-              onChange={(e) => setPincode(e.target.value)}
-              style={inputStyle}
-            />
-
-            <input
-              placeholder="Landmark (optional)"
-              value={landmark}
-              onChange={(e) => setLandmark(e.target.value)}
-              style={inputStyle}
-            />
-
-            <button
-              onClick={placeOrder}
-              style={{
-                marginTop: "15px",
-                padding: "12px",
-                width: "100%",
-                background: "maroon",
-                color: "white",
-                border: "none",
-                cursor: "pointer",
-                borderRadius: "5px"
-              }}
-            >
+            <button onClick={placeOrder} style={btnStyle}>
               Place Order
             </button>
 
@@ -122,7 +77,6 @@ export default function Cart({ cart, setCart, setPage }) {
   );
 }
 
-/* 🔥 INPUT STYLE */
 const inputStyle = {
   display: "block",
   width: "100%",
@@ -131,5 +85,16 @@ const inputStyle = {
   background: "#111",
   color: "white",
   border: "1px solid maroon",
+  borderRadius: "5px"
+};
+
+const btnStyle = {
+  marginTop: "15px",
+  padding: "12px",
+  width: "100%",
+  background: "maroon",
+  color: "white",
+  border: "none",
+  cursor: "pointer",
   borderRadius: "5px"
 };
