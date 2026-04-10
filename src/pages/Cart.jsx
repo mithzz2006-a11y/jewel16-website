@@ -3,6 +3,8 @@ import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 
 export default function Cart({ cart, setCart, setPage }) {
+  const [loading, setLoading] = useState(false);
+
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -11,8 +13,6 @@ export default function Cart({ cart, setCart, setPage }) {
     landmark: ""
   });
 
-  const [loading, setLoading] = useState(false);
-
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
   const handleChange = (e) => {
@@ -20,15 +20,10 @@ export default function Cart({ cart, setCart, setPage }) {
   };
 
   const placeOrder = async () => {
-    if (cart.length === 0) {
-      alert("Cart is empty ❌");
-      return;
-    }
-
-    const { name, phone, address, pincode } = form;
+    const { name, phone, address, pincode, landmark } = form;
 
     if (!name || !phone || !address || !pincode) {
-      alert("Please fill all required details ❌");
+      alert("Please fill all required details");
       return;
     }
 
@@ -40,7 +35,7 @@ export default function Cart({ cart, setCart, setPage }) {
         phone,
         address,
         pincode,
-        landmark: form.landmark,
+        landmark,
         items: cart,
         total,
         date: new Date().toISOString()
@@ -49,18 +44,10 @@ export default function Cart({ cart, setCart, setPage }) {
       alert("Order placed successfully 🎉");
 
       setCart([]);
-      setForm({
-        name: "",
-        phone: "",
-        address: "",
-        pincode: "",
-        landmark: ""
-      });
-
-      setPage("orders"); // 🔥 redirect
+      setPage("home");
 
     } catch (error) {
-      console.error(error);
+      console.error("ERROR:", error);
       alert("Error placing order ❌");
     } finally {
       setLoading(false);
@@ -68,8 +55,7 @@ export default function Cart({ cart, setCart, setPage }) {
   };
 
   return (
-    <div style={{ background: "#0a0a0a", color: "white", padding: "40px", minHeight: "100vh" }}>
-      
+    <div style={{ background: "#0a0a0a", color: "white", padding: "40px" }}>
       <h1 style={{ color: "maroon" }}>Your Cart</h1>
 
       {cart.length === 0 ? (
@@ -85,26 +71,13 @@ export default function Cart({ cart, setCart, setPage }) {
           <h3 style={{ marginTop: "20px" }}>Total: ₹{total}</h3>
 
           <div style={{ marginTop: "20px", maxWidth: "400px" }}>
-            <input name="name" placeholder="Name" value={form.name} onChange={handleChange} style={inputStyle} />
-            <input name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} style={inputStyle} />
-            <input name="address" placeholder="Address" value={form.address} onChange={handleChange} style={inputStyle} />
-            <input name="pincode" placeholder="Pincode" value={form.pincode} onChange={handleChange} style={inputStyle} />
-            <input name="landmark" placeholder="Landmark (optional)" value={form.landmark} onChange={handleChange} style={inputStyle} />
+            <input name="name" placeholder="Name" onChange={handleChange} style={inputStyle} />
+            <input name="phone" placeholder="Phone" onChange={handleChange} style={inputStyle} />
+            <input name="address" placeholder="Address" onChange={handleChange} style={inputStyle} />
+            <input name="pincode" placeholder="Pincode" onChange={handleChange} style={inputStyle} />
+            <input name="landmark" placeholder="Landmark" onChange={handleChange} style={inputStyle} />
 
-            <button 
-              onClick={placeOrder}
-              disabled={loading}
-              style={{
-                marginTop: "15px",
-                padding: "12px",
-                width: "100%",
-                background: loading ? "gray" : "maroon",
-                color: "white",
-                border: "none",
-                cursor: "pointer",
-                borderRadius: "5px"
-              }}
-            >
+            <button onClick={placeOrder} style={btnStyle} disabled={loading}>
               {loading ? "Placing Order..." : "Place Order"}
             </button>
           </div>
@@ -122,5 +95,16 @@ const inputStyle = {
   background: "#111",
   color: "white",
   border: "1px solid maroon",
+  borderRadius: "5px"
+};
+
+const btnStyle = {
+  marginTop: "15px",
+  padding: "12px",
+  width: "100%",
+  background: "maroon",
+  color: "white",
+  border: "none",
+  cursor: "pointer",
   borderRadius: "5px"
 };
