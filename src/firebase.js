@@ -2,12 +2,12 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "PASTE_FROM_FIREBASE",
+  apiKey: "PASTE_YOUR_API_KEY_HERE",
   authDomain: "jewel16-95f3f.firebaseapp.com",
   projectId: "jewel16-95f3f",
   storageBucket: "jewel16-95f3f.appspot.com",
-  messagingSenderId: "PASTE",
-  appId: "PASTE"
+  messagingSenderId: "613112343850",
+  appId: "1:613112343850:web:35b0ec24389b0c32b7c253"
 };
 
 const app = initializeApp(firebaseConfig);
