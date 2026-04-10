@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { db } from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 export default function Cart({ cart, setCart, setPage }) {
 
@@ -10,35 +12,33 @@ export default function Cart({ cart, setCart, setPage }) {
 
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
-  const placeOrder = () => {
+  const placeOrder = async () => {
     if (!name || !phone || !address || !pincode) {
       alert("Please fill all required details");
       return;
     }
 
-    const order = {
-      customer: name,
-      phone,
-      address,
-      pincode,
-      landmark,
-      items: cart,
-      total,
-      date: new Date().toLocaleString()
-    };
+    try {
+      await addDoc(collection(db, "orders"), {
+        customer: name,
+        phone,
+        address,
+        pincode,
+        landmark,
+        items: cart,
+        total,
+        date: new Date().toLocaleString()
+      });
 
-    // 🔐 SECURE SAVE (encoded)
-    const existingOrders =
-      JSON.parse(atob(localStorage.getItem("orders") || "W10="));
+      alert("Order placed successfully 🎉");
 
-    existingOrders.push(order);
+      setCart([]);
+      setPage("home");
 
-    localStorage.setItem("orders", btoa(JSON.stringify(existingOrders)));
-
-    alert("Order placed & saved successfully 🎉");
-
-    setCart([]);
-    setPage("home");
+    } catch (error) {
+      console.error("Error saving order:", error);
+      alert("Error placing order ❌");
+    }
   };
 
   return (
