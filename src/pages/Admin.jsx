@@ -1,79 +1,66 @@
 import { useEffect, useState } from "react";
+import { db } from "../firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 export default function Admin({ setPage }) {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("orders")) || [];
-    setOrders(data);
+    fetchOrders();
   }, []);
+
+  // 🔥 FETCH FROM FIREBASE
+  const fetchOrders = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "orders"));
+      const data = querySnapshot.docs.map(doc => doc.data());
+      setOrders(data);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
 
   // 🔥 CALCULATIONS
   const totalOrders = orders.length;
   const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
 
-  // 🔥 CLEAR ORDERS
-  const clearOrders = () => {
-    const confirmDelete = window.confirm("Delete all orders?");
-    if (confirmDelete) {
-      localStorage.removeItem("orders");
-      setOrders([]);
-    }
-  };
-
   return (
-    <div style={{ padding: "40px", background: "#0a0a0a", color: "white", minHeight: "100vh" }}>
+    <div style={{ padding: "40px", background: "#0a0a0a", color: "white" }}>
 
-      <h1 style={{ color: "maroon", marginBottom: "20px" }}>
-        Admin Dashboard
-      </h1>
+      <h1 style={{ color: "maroon" }}>Admin Dashboard</h1>
 
-      {/* 🔥 TOP BUTTONS */}
-      <div style={{ marginBottom: "20px" }}>
-        <button onClick={() => setPage("home")} style={btnStyle}>
-          Back
-        </button>
-
-        <button onClick={clearOrders} style={{ ...btnStyle, marginLeft: "10px", background: "#333" }}>
-          Clear Orders
-        </button>
-      </div>
+      <button onClick={() => setPage("home")} style={btnStyle}>
+        Back
+      </button>
 
       {/* 🔥 STATS */}
-      <div style={{
-        display: "flex",
-        gap: "20px",
-        marginBottom: "30px",
-        flexWrap: "wrap"
-      }}>
+      <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
         <div style={cardStyle}>
           <h3>Total Orders</h3>
-          <p style={{ fontSize: "22px" }}>{totalOrders}</p>
+          <p>{totalOrders}</p>
         </div>
 
         <div style={cardStyle}>
           <h3>Total Revenue</h3>
-          <p style={{ fontSize: "22px" }}>₹{totalRevenue}</p>
+          <p>₹{totalRevenue}</p>
         </div>
       </div>
 
-      {/* 📦 ORDERS LIST */}
+      {/* 📦 ORDERS */}
       {orders.length === 0 ? (
-        <p>No orders yet</p>
+        <p style={{ marginTop: "20px" }}>No orders yet</p>
       ) : (
         orders.map((order, index) => (
           <div key={index} style={orderCard}>
-            <h3 style={{ color: "maroon" }}>Order #{index + 1}</h3>
+            <h3>Order #{index + 1}</h3>
 
             <p><b>Name:</b> {order.customer}</p>
             <p><b>Phone:</b> {order.phone}</p>
             <p><b>Address:</b> {order.address}</p>
-            <p><b>Pincode:</b> {order.pincode}</p>
-            <p><b>Landmark:</b> {order.landmark}</p>
             <p><b>Total:</b> ₹{order.total}</p>
             <p><b>Date:</b> {order.date}</p>
 
-            <h4 style={{ marginTop: "10px" }}>Items:</h4>
+            <h4>Items:</h4>
             {order.items.map((item, i) => (
               <div key={i}>
                 {item.name} - ₹{item.price}
@@ -86,17 +73,16 @@ export default function Admin({ setPage }) {
   );
 }
 
-// 💎 BUTTON STYLE
+// 💎 STYLES
 const btnStyle = {
-  padding: "10px 15px",
+  marginTop: "10px",
+  padding: "10px",
   background: "maroon",
   color: "white",
   border: "none",
-  cursor: "pointer",
-  borderRadius: "5px"
+  cursor: "pointer"
 };
 
-// 💎 STATS CARD
 const cardStyle = {
   border: "1px solid maroon",
   padding: "20px",
@@ -106,11 +92,10 @@ const cardStyle = {
   textAlign: "center"
 };
 
-// 💎 ORDER CARD
 const orderCard = {
   border: "1px solid maroon",
   padding: "20px",
-  marginBottom: "20px",
+  marginTop: "20px",
   borderRadius: "10px",
   background: "#111"
 };
