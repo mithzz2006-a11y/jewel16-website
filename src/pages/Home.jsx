@@ -10,7 +10,7 @@ export default function Home({ setPage }) {
       style={{
         height: "90vh",
         background: "linear-gradient(to right, #000000, #1a1a1a)",
-        color: "white",
+        color: "maroon",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
@@ -18,7 +18,7 @@ export default function Home({ setPage }) {
         textAlign: "center"
       }}
     >
-      <h1 style={{ fontSize: "60px", color: "white" }}>
+      <h1 style={{ fontSize: "60px", color: "maroon" }}>
         JEWEL16 💎
       </h1>
 
@@ -30,7 +30,7 @@ export default function Home({ setPage }) {
         onClick={() => setPage("products")}
         style={{
           padding: "12px 25px",
-          background: "white",
+          background: "maroon",
           color: "black",
           border: "none",
           cursor: "pointer"
