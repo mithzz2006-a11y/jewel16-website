@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
 import { AnimatePresence, motion } from "framer-motion";
+import Admin from "./pages/Admin";
 
 export default function App() {
   const [page, setPage] = useState("home");
