@@ -1,31 +1,29 @@
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 
 export default function Admin({ setPage }) {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    fetchOrders();
+    // 🔥 REAL-TIME LISTENER
+    const unsubscribe = onSnapshot(
+      collection(db, "orders"),
+      (snapshot) => {
+        const data = snapshot.docs.map(doc => doc.data());
+        setOrders(data);
+      }
+    );
+
+    return () => unsubscribe(); // cleanup
   }, []);
 
-  // 🔥 FETCH FROM FIREBASE
-  const fetchOrders = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "orders"));
-      const data = querySnapshot.docs.map(doc => doc.data());
-      setOrders(data);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-    }
-  };
-
-  // 🔥 CALCULATIONS
+  // 💰 CALCULATIONS
   const totalOrders = orders.length;
   const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
 
   return (
-    <div style={{ padding: "40px", background: "#0a0a0a", color: "white" }}>
+    <div style={{ padding: "40px", background: "#0a0a0a", color: "white", minHeight: "100vh" }}>
 
       <h1 style={{ color: "maroon" }}>Admin Dashboard</h1>
 
@@ -34,15 +32,15 @@ export default function Admin({ setPage }) {
       </button>
 
       {/* 🔥 STATS */}
-      <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
+      <div style={{ display: "flex", gap: "20px", marginTop: "20px", flexWrap: "wrap" }}>
         <div style={cardStyle}>
           <h3>Total Orders</h3>
-          <p>{totalOrders}</p>
+          <p style={{ fontSize: "22px" }}>{totalOrders}</p>
         </div>
 
         <div style={cardStyle}>
           <h3>Total Revenue</h3>
-          <p>₹{totalRevenue}</p>
+          <p style={{ fontSize: "22px" }}>₹{totalRevenue}</p>
         </div>
       </div>
 
@@ -52,15 +50,16 @@ export default function Admin({ setPage }) {
       ) : (
         orders.map((order, index) => (
           <div key={index} style={orderCard}>
-            <h3>Order #{index + 1}</h3>
+            <h3 style={{ color: "maroon" }}>Order #{index + 1}</h3>
 
             <p><b>Name:</b> {order.customer}</p>
             <p><b>Phone:</b> {order.phone}</p>
             <p><b>Address:</b> {order.address}</p>
+            <p><b>Pincode:</b> {order.pincode}</p>
             <p><b>Total:</b> ₹{order.total}</p>
             <p><b>Date:</b> {order.date}</p>
 
-            <h4>Items:</h4>
+            <h4 style={{ marginTop: "10px" }}>Items:</h4>
             {order.items.map((item, i) => (
               <div key={i}>
                 {item.name} - ₹{item.price}
@@ -80,7 +79,8 @@ const btnStyle = {
   background: "maroon",
   color: "white",
   border: "none",
-  cursor: "pointer"
+  cursor: "pointer",
+  borderRadius: "5px"
 };
 
 const cardStyle = {
