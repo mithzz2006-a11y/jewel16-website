@@ -18,7 +18,7 @@ export default function Products({ cart, setCart, setPage }) {
         style={{
           marginBottom: "20px",
           padding: "10px 15px",
-          background: "white",
+          background: "maroon",
           color: "black",
           border: "none",
           cursor: "pointer",
