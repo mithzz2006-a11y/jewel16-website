@@ -1,9 +1,8 @@
 export default function Products({ cart, setCart, setPage }) {
-
   const products = [
-    { name: "Diamond Necklace", price: 50000 },
-    { name: "Gold Ring", price: 15000 },
-    { name: "Silver Bracelet", price: 5000 }
+    { name: "Necklace", price: 459 },
+    { name: "Ring", price: 359 },
+    { name: "Bracelet", price: 469 }
   ];
 
   const addToCart = (item) => {
@@ -12,30 +11,32 @@ export default function Products({ cart, setCart, setPage }) {
 
   return (
     <div style={{ background: "#0a0a0a", color: "white", padding: "40px" }}>
-      
-      <h1 style={{ color: "gold", marginBottom: "10px" }}>Products</h1>
+      <h1 style={{ marginBottom: "10px" }}>Products</h1>
 
       <button
         onClick={() => setPage("cart")}
         style={{
           marginBottom: "20px",
           padding: "10px 15px",
-          background: "gold",
+          background: "white",
           color: "black",
           border: "none",
-          cursor: "pointer"
+          cursor: "pointer",
+          borderRadius: "5px"
         }}
       >
         Go to Cart ({cart.length})
       </button>
 
-      {/* 🔥 GRID */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-        gap: "25px",
-        marginTop: "20px"
-      }}>
+      {/* Product Grid */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+          gap: "25px",
+          marginTop: "20px"
+        }}
+      >
         {products.map((item, index) => (
           <div
             key={index}
@@ -45,7 +46,7 @@ export default function Products({ cart, setCart, setPage }) {
               borderRadius: "10px",
               background: "#111",
               textAlign: "center",
-              transition: "0.3s",
+              transition: "transform 0.3s, box-shadow 0.3s",
               boxShadow: "0 0 10px rgba(255, 215, 0, 0.2)"
             }}
             onMouseEnter={(e) => {
@@ -54,14 +55,12 @@ export default function Products({ cart, setCart, setPage }) {
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "0 0 10px rgba(255, 215, 0, 0.2)";
+              e.currentTarget.style.boxShadow =
+                "0 0 10px rgba(255, 215, 0, 0.2)";
             }}
           >
             <h3>{item.name}</h3>
-
-            <p style={{ color: "gold", fontSize: "18px" }}>
-              ₹{item.price}
-            </p>
+            <p style={{ color: "gold", fontSize: "18px" }}>₹{item.price}</p>
 
             <button
               onClick={() => addToCart(item)}
@@ -71,7 +70,8 @@ export default function Products({ cart, setCart, setPage }) {
                 background: "gold",
                 color: "black",
                 border: "none",
-                cursor: "pointer"
+                cursor: "pointer",
+                borderRadius: "5px"
               }}
             >
               Add to Cart
@@ -79,7 +79,6 @@ export default function Products({ cart, setCart, setPage }) {
           </div>
         ))}
       </div>
-
     </div>
   );
 }
