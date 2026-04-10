@@ -3,16 +3,23 @@ import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 
 export default function Cart({ cart, setCart, setPage }) {
-
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [pincode, setPincode] = useState("");
-  const [landmark, setLandmark] = useState("");
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    address: "",
+    pincode: "",
+    landmark: ""
+  });
 
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   const placeOrder = async () => {
+    const { name, phone, address, pincode, landmark } = form;
+
     if (!name || !phone || !address || !pincode) {
       alert("Please fill all required details");
       return;
@@ -27,14 +34,12 @@ export default function Cart({ cart, setCart, setPage }) {
         landmark,
         items: cart,
         total,
-        date: new Date().toLocaleString()
+        date: new Date().toISOString()
       });
 
       alert("Order placed successfully 🎉");
-
       setCart([]);
       setPage("home");
-
     } catch (error) {
       console.error("Error saving order:", error);
       alert("Error placing order ❌");
@@ -43,7 +48,6 @@ export default function Cart({ cart, setCart, setPage }) {
 
   return (
     <div style={{ background: "#0a0a0a", color: "white", padding: "40px" }}>
-      
       <h1 style={{ color: "maroon" }}>Your Cart</h1>
 
       {cart.length === 0 ? (
@@ -59,17 +63,45 @@ export default function Cart({ cart, setCart, setPage }) {
           <h3 style={{ marginTop: "20px" }}>Total: ₹{total}</h3>
 
           <div style={{ marginTop: "20px", maxWidth: "400px" }}>
-            
-            <input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} style={inputStyle} />
-            <input placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} style={inputStyle} />
-            <input placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} style={inputStyle} />
-            <input placeholder="Pincode" value={pincode} onChange={(e) => setPincode(e.target.value)} style={inputStyle} />
-            <input placeholder="Landmark (optional)" value={landmark} onChange={(e) => setLandmark(e.target.value)} style={inputStyle} />
+            <input
+              name="name"
+              placeholder="Name"
+              value={form.name}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+            <input
+              name="phone"
+              placeholder="Phone Number"
+              value={form.phone}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+            <input
+              name="address"
+              placeholder="Address"
+              value={form.address}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+            <input
+              name="pincode"
+              placeholder="Pincode"
+              value={form.pincode}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+            <input
+              name="landmark"
+              placeholder="Landmark (optional)"
+              value={form.landmark}
+              onChange={handleChange}
+              style={inputStyle}
+            />
 
             <button onClick={placeOrder} style={btnStyle}>
               Place Order
             </button>
-
           </div>
         </>
       )}
