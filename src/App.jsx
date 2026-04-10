@@ -18,10 +18,10 @@ export default function App() {
           alignItems: "center",
           padding: "15px 40px",
           background: "#111",
-          borderBottom: "1px solid white",
+          borderBottom: "1px solid maroon",
         }}
       >
-        <h2 style={{ color: "white" }}>JEWEL16 💎</h2>
+        <h2 style={{ color: "maroon" }}>JEWEL16 💎</h2>
 
         <div style={{ display: "flex", gap: "15px" }}>
           <button onClick={() => setPage("home")}>Home</button>
@@ -39,7 +39,7 @@ export default function App() {
           position: "fixed",
           top: "80px",
           right: "20px",
-          background: "white",
+          background: "maroon",
           color: "black",
           padding: "12px 15px",
           borderRadius: "50%",
