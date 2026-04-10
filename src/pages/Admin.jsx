@@ -12,24 +12,32 @@ export default function Admin({ setPage }) {
   const totalOrders = orders.length;
   const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
 
+  // 🔥 CLEAR ORDERS
+  const clearOrders = () => {
+    const confirmDelete = window.confirm("Delete all orders?");
+    if (confirmDelete) {
+      localStorage.removeItem("orders");
+      setOrders([]);
+    }
+  };
+
   return (
-    <div style={{ padding: "40px", background: "#0a0a0a", color: "white" }}>
+    <div style={{ padding: "40px", background: "#0a0a0a", color: "white", minHeight: "100vh" }}>
 
-      <h1 style={{ color: "maroon" }}>Admin Dashboard</h1>
+      <h1 style={{ color: "maroon", marginBottom: "20px" }}>
+        Admin Dashboard
+      </h1>
 
-      <button
-        onClick={() => setPage("home")}
-        style={{
-          marginBottom: "20px",
-          padding: "10px",
-          background: "maroon",
-          color: "white",
-          border: "none",
-          cursor: "pointer"
-        }}
-      >
-        Back
-      </button>
+      {/* 🔥 TOP BUTTONS */}
+      <div style={{ marginBottom: "20px" }}>
+        <button onClick={() => setPage("home")} style={btnStyle}>
+          Back
+        </button>
+
+        <button onClick={clearOrders} style={{ ...btnStyle, marginLeft: "10px", background: "#333" }}>
+          Clear Orders
+        </button>
+      </div>
 
       {/* 🔥 STATS */}
       <div style={{
@@ -40,12 +48,12 @@ export default function Admin({ setPage }) {
       }}>
         <div style={cardStyle}>
           <h3>Total Orders</h3>
-          <p>{totalOrders}</p>
+          <p style={{ fontSize: "22px" }}>{totalOrders}</p>
         </div>
 
         <div style={cardStyle}>
           <h3>Total Revenue</h3>
-          <p>₹{totalRevenue}</p>
+          <p style={{ fontSize: "22px" }}>₹{totalRevenue}</p>
         </div>
       </div>
 
@@ -55,7 +63,7 @@ export default function Admin({ setPage }) {
       ) : (
         orders.map((order, index) => (
           <div key={index} style={orderCard}>
-            <h3>Order #{index + 1}</h3>
+            <h3 style={{ color: "maroon" }}>Order #{index + 1}</h3>
 
             <p><b>Name:</b> {order.customer}</p>
             <p><b>Phone:</b> {order.phone}</p>
@@ -65,7 +73,7 @@ export default function Admin({ setPage }) {
             <p><b>Total:</b> ₹{order.total}</p>
             <p><b>Date:</b> {order.date}</p>
 
-            <h4>Items:</h4>
+            <h4 style={{ marginTop: "10px" }}>Items:</h4>
             {order.items.map((item, i) => (
               <div key={i}>
                 {item.name} - ₹{item.price}
@@ -78,7 +86,17 @@ export default function Admin({ setPage }) {
   );
 }
 
-// 💎 STYLES
+// 💎 BUTTON STYLE
+const btnStyle = {
+  padding: "10px 15px",
+  background: "maroon",
+  color: "white",
+  border: "none",
+  cursor: "pointer",
+  borderRadius: "5px"
+};
+
+// 💎 STATS CARD
 const cardStyle = {
   border: "1px solid maroon",
   padding: "20px",
@@ -88,6 +106,7 @@ const cardStyle = {
   textAlign: "center"
 };
 
+// 💎 ORDER CARD
 const orderCard = {
   border: "1px solid maroon",
   padding: "20px",
