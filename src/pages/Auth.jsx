@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword
 } from "firebase/auth";
+import { motion } from "framer-motion";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -31,14 +32,24 @@ export default function Auth() {
     <div style={outer}>
 
       {/* 💎 BRAND */}
-      <div style={brand}>
-        <h1 style={logo}>JEWEL16 💎</h1>
-        <p style={slogan}>Elegance that defines you</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: -40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+        style={brand}
+      >
+        <h1 style={logo}>JEWEL16</h1>
+        <p style={slogan}>Crafted for Timeless Elegance</p>
+      </motion.div>
 
       {/* 🔐 LOGIN BOX */}
-      <div style={box}>
-        <h2 style={{ marginBottom: "20px" }}>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8 }}
+        style={box}
+      >
+        <h2 style={{ marginBottom: "20px", color: "white" }}>
           {isLogin ? "Welcome Back" : "Create Account"}
         </h2>
 
@@ -62,7 +73,7 @@ export default function Auth() {
         <p onClick={() => setIsLogin(!isLogin)} style={switchText}>
           {isLogin ? "New user? Create account" : "Already have account? Login"}
         </p>
-      </div>
+      </motion.div>
 
     </div>
   );
@@ -76,36 +87,40 @@ const outer = {
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-  background: "#0a0a0a"
+  background: "radial-gradient(circle at top, #1a1a1a, #000000)"
 };
 
 const brand = {
   textAlign: "center",
-  marginBottom: "30px"
+  marginBottom: "40px"
 };
 
 const logo = {
-  fontSize: "36px",
+  fontSize: "48px",
   fontWeight: "bold",
-  letterSpacing: "2px",
-  color: "white"
+  letterSpacing: "3px",
+  background: "linear-gradient(90deg, #FFD700, #FFA500, #FFD700)",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  textShadow: "0 0 20px rgba(255,215,0,0.4)"
 };
 
 const slogan = {
-  color: "#aaa",
+  color: "#ccc",
   fontSize: "14px",
-  marginTop: "5px",
-  fontStyle: "italic"
+  marginTop: "8px",
+  letterSpacing: "1px"
 };
 
 const box = {
-  background: "#111",
+  background: "rgba(20,20,20,0.9)",
   padding: "40px",
-  borderRadius: "12px",
-  border: "1px solid maroon",
-  width: "320px",
+  borderRadius: "15px",
+  border: "1px solid rgba(255,215,0,0.3)",
+  width: "340px",
   textAlign: "center",
-  boxShadow: "0 0 20px rgba(128,0,0,0.3)"
+  backdropFilter: "blur(10px)",
+  boxShadow: "0 0 40px rgba(255,215,0,0.15)"
 };
 
 const input = {
@@ -113,27 +128,28 @@ const input = {
   width: "100%",
   padding: "12px",
   marginBottom: "12px",
-  background: "#1a1a1a",
+  background: "#111",
   color: "white",
-  border: "1px solid maroon",
+  border: "1px solid rgba(255,215,0,0.3)",
   borderRadius: "6px"
 };
 
 const btn = {
   width: "100%",
   padding: "12px",
-  background: "maroon",
-  color: "white",
+  background: "linear-gradient(90deg, #FFD700, #FFA500)",
+  color: "black",
   border: "none",
   borderRadius: "6px",
   cursor: "pointer",
   fontWeight: "bold",
-  fontSize: "14px"
+  fontSize: "15px",
+  boxShadow: "0 0 15px rgba(255,215,0,0.4)"
 };
 
 const switchText = {
-  marginTop: "12px",
+  marginTop: "14px",
   fontSize: "13px",
-  color: "#ccc",
+  color: "#aaa",
   cursor: "pointer"
 };
