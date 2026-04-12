@@ -4,11 +4,14 @@ import { collection, query, where, onSnapshot } from "firebase/firestore";
 
 export default function MyOrders({ setPage }) {
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const user = auth.currentUser;
-
-    if (!user) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
     const q = query(
       collection(db, "orders"),
@@ -18,11 +21,16 @@ export default function MyOrders({ setPage }) {
     const unsub = onSnapshot(
       q,
       (snapshot) => {
-        const data = snapshot.docs.map(doc => doc.data());
+        const data = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
         setOrders(data);
+        setLoading(false);
       },
       (error) => {
         console.error("FETCH ERROR:", error);
+        setLoading(false);
       }
     );
 
@@ -37,14 +45,21 @@ export default function MyOrders({ setPage }) {
         Back
       </button>
 
-      {orders.length === 0 ? (
-        <p>No orders yet</p>
+      {loading ? (
+        <p>Loading orders...</p>
+      ) : orders.length === 0 ? (
+        <div>
+          <p>No orders yet</p>
+          <button onClick={() => setPage("products")} style={btn}>
+            Shop Now
+          </button>
+        </div>
       ) : (
-        orders.map((o, i) => (
-          <div key={i} style={card}>
+        orders.map((o) => (
+          <div key={o.id} style={card}>
             <p><b>Total:</b> ₹{o.total}</p>
             <p><b>Status:</b> {o.status}</p>
-            <p><b>Date:</b> {o.date}</p>
+            <p><b>Date:</b> {new Date(o.date).toLocaleString()}</p>
 
             <h4>Items:</h4>
             {(o.items || []).map((item, j) => (
@@ -64,11 +79,13 @@ const btn = {
   padding: "10px",
   background: "maroon",
   color: "white",
-  border: "none"
+  border: "none",
+  cursor: "pointer"
 };
 
 const card = {
   border: "1px solid maroon",
   padding: "15px",
-  marginBottom: "15px"
+  marginBottom: "15px",
+  background: "#111"
 };
