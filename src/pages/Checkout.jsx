@@ -1,136 +1,41 @@
-import { db } from "../firebase";
-import { collection, addDoc } from "firebase/firestore";
+const handlePayment = async () => {
 
-export default function Checkout({ item, setPage, user }) {
-  if (!item) return <p>No item</p>;
+  const res = await fetch("http://localhost:5000/create-order", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ amount: total })
+  });
 
-  const total = item.price * (item.qty || 1);
+  const order = await res.json();
 
-  const loadRazorpay = () => {
-    return new Promise((resolve) => {
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
-  };
+  const options = {
+    key: "rzp_test_YOUR_KEY",
+    amount: order.amount,
+    currency: "INR",
+    order_id: order.id,
 
-  const handlePayment = async () => {
-    const loaded = await loadRazorpay();
+    handler: async function (response) {
 
-    if (!loaded) {
-      alert("Razorpay failed to load");
-      return;
-    }
+      const verify = await fetch("http://localhost:5000/verify-payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(response)
+      });
 
-    const options = {
-      key: "rzp_test_ScWJUAyuWw1k0z", // 🔥 PUT YOUR REAL KEY HERE
-      amount: total * 100,
-      currency: "INR",
-      name: "JEWEL16",
-      description: item.name,
+      const data = await verify.json();
 
-      handler: async function (response) {
-        // ✅ SAVE ORDER AFTER SUCCESS
-        await addDoc(collection(db, "orders"), {
-          userEmail: user.email,
-          items: [item],
-          total,
-          paymentId: response.razorpay_payment_id,
-          status: "Paid",
-          date: new Date().toISOString()
-        });
-
-        alert("Payment Successful 🎉");
-        setPage("orders");
-      },
-
-      prefill: {
-        email: user.email
-      },
-
-      theme: {
-        color: "#800000"
+      if (data.status === "success") {
+        alert("Payment Verified ✅");
+      } else {
+        alert("Payment Failed ❌");
       }
-    };
-
-    const rzp = new window.Razorpay(options);
-    rzp.open();
+    }
   };
 
-  return (
-    <div style={container}>
-
-      <h1 style={title}>Checkout</h1>
-
-      <div style={card}>
-        <img src={item.image} style={image} />
-
-        <div>
-          <h2>{item.name}</h2>
-          <p>₹{item.price}</p>
-          <p>Qty: {item.qty || 1}</p>
-          <h2>Total: ₹{total}</h2>
-        </div>
-      </div>
-
-      {/* 🔥 PAY BUTTON */}
-      <div style={footer}>
-        <button onClick={handlePayment} style={btn}>
-          Pay Now 💳
-        </button>
-      </div>
-
-    </div>
-  );
-}
-
-/* 💎 STYLES */
-
-const container = {
-  background: "#000",
-  color: "white",
-  minHeight: "100vh",
-  padding: "20px",
-  paddingBottom: "100px"
-};
-
-const title = {
-  color: "maroon"
-};
-
-const card = {
-  background: "#111",
-  padding: "20px",
-  marginTop: "20px",
-  border: "1px solid maroon",
-  borderRadius: "8px"
-};
-
-const image = {
-  width: "100%",
-  height: "250px",
-  objectFit: "cover",
-  borderRadius: "6px"
-};
-
-const footer = {
-  position: "fixed",
-  bottom: 0,
-  width: "100%",
-  background: "#000",
-  padding: "15px"
-};
-
-const btn = {
-  width: "100%",
-  padding: "15px",
-  background: "maroon",
-  color: "white",
-  border: "none",
-  fontSize: "16px",
-  fontWeight: "bold",
-  cursor: "pointer",
-  borderRadius: "6px"
+  const rzp = new window.Razorpay(options);
+  rzp.open();
 };
