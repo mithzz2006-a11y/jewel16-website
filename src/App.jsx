@@ -14,17 +14,23 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [user, setUser] = useState(null);
 
-  // 🔐 TRACK USER LOGIN
+  // 🔐 TRACK USER LOGIN (FIXED CLEANUP)
   useEffect(() => {
-    onAuthStateChanged(auth, (u) => {
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
       setUser(u);
     });
+
+    return () => unsubscribe(); // ✅ FIX
   }, []);
 
   const logout = async () => {
-    await signOut(auth);
-    alert("Logged out");
-    setPage("home");
+    try {
+      await signOut(auth);
+      alert("Logged out");
+      setPage("home");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -49,7 +55,7 @@ export default function App() {
             Cart ({cart.length})
           </button>
 
-          {/* 🔥 SHOW ONLY WHEN LOGGED IN */}
+          {/* ✅ ONLY SHOW IF LOGGED IN */}
           {user && (
             <button onClick={() => setPage("orders")}>
               My Orders
@@ -86,7 +92,8 @@ export default function App() {
           color: "white",
           padding: "12px",
           borderRadius: "50%",
-          cursor: "pointer"
+          cursor: "pointer",
+          zIndex: 1000
         }}
       >
         🛒 {cart.length}
@@ -96,13 +103,13 @@ export default function App() {
       <AnimatePresence mode="wait">
 
         {page === "home" && (
-          <motion.div>
+          <motion.div key="home">
             <Home setPage={setPage} />
           </motion.div>
         )}
 
         {page === "products" && (
-          <motion.div>
+          <motion.div key="products">
             <Products
               cart={cart}
               setCart={setCart}
@@ -112,30 +119,30 @@ export default function App() {
         )}
 
         {page === "cart" && (
-          <motion.div>
+          <motion.div key="cart">
             <Cart
               cart={cart}
               setCart={setCart}
               setPage={setPage}
-              user={user}
+              user={user} // ✅ IMPORTANT
             />
           </motion.div>
         )}
 
         {page === "auth" && (
-          <motion.div>
+          <motion.div key="auth">
             <Auth setPage={setPage} />
           </motion.div>
         )}
 
         {page === "orders" && (
-          <motion.div>
+          <motion.div key="orders">
             <MyOrders setPage={setPage} />
           </motion.div>
         )}
 
         {page === "admin" && (
-          <motion.div>
+          <motion.div key="admin">
             <Admin setPage={setPage} />
           </motion.div>
         )}
