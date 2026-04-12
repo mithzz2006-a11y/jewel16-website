@@ -1,126 +1,49 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
-import Auth from "./pages/Auth";
-import MyOrders from "./pages/MyOrders";
-import ProductDetails from "./pages/ProductDetails";
 import Checkout from "./pages/Checkout";
-
-import { auth } from "./firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function App() {
   const [page, setPage] = useState("home");
   const [cart, setCart] = useState([]);
-  const [user, setUser] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [checkoutItem, setCheckoutItem] = useState(null);
 
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => setUser(u));
-    return () => unsub();
-  }, []);
-
-  // 🔐 LOGIN FIRST
-  if (!user) return <Auth />;
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
 
   return (
-    <div style={{ background: "#fff", minHeight: "100vh", color: "maroon" }}>
+    <div>
 
-      {/* 🔥 NAVBAR */}
-      <div style={nav}>
-        <h2 style={logo}>JEWEL16</h2>
+      {/* NAVBAR */}
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        padding: "15px",
+        background: "#111",
+        color: "white"
+      }}>
+        <h2>JEWEL16 💎</h2>
 
-        <div style={navRight}>
-          <button style={btn} onClick={() => setPage("home")}>Home</button>
-          <button style={btn} onClick={() => setPage("products")}>Products</button>
-          <button style={btn} onClick={() => setPage("cart")}>
+        <div>
+          <button onClick={() => setPage("home")}>Home</button>
+          <button onClick={() => setPage("products")}>Products</button>
+          <button onClick={() => setPage("cart")}>
             Cart ({cart.length})
           </button>
-          <button style={btn} onClick={() => setPage("orders")}>Orders</button>
-          <button style={btn} onClick={() => signOut(auth)}>Logout</button>
         </div>
       </div>
 
-      {/* 🔥 PAGES */}
-      <div style={{ padding: "20px" }}>
+      {/* PAGES */}
+      {page === "home" && <Home setPage={setPage} />}
+      {page === "products" && (
+        <Products cart={cart} setCart={setCart} />
+      )}
+      {page === "cart" && (
+        <Cart cart={cart} setPage={setPage} />
+      )}
+      {page === "checkout" && (
+        <Checkout cart={cart} total={total} />
+      )}
 
-        {page === "home" && <Home setPage={setPage} />}
-
-        {page === "products" && (
-          <Products
-            cart={cart}
-            setCart={setCart}
-            setPage={setPage}
-            setSelectedProduct={setSelectedProduct}
-          />
-        )}
-
-        {page === "details" && (
-          <ProductDetails
-            product={selectedProduct}
-            setPage={setPage}
-            cart={cart}
-            setCart={setCart}
-            setCheckoutItem={setCheckoutItem}
-          />
-        )}
-
-        {/* ✅ CHECKOUT PAGE (FIXED) */}
-        {page === "checkout" && (
-          <Checkout
-            item={checkoutItem}
-            setPage={setPage}
-            user={user}
-          />
-        )}
-
-        {page === "cart" && (
-          <Cart
-            cart={cart}
-            setCart={setCart}
-            setPage={setPage}
-            setCheckoutItem={setCheckoutItem}   // 🔥 IMPORTANT
-          />
-        )}
-
-        {page === "orders" && (
-          <MyOrders setPage={setPage} />
-        )}
-
-      </div>
     </div>
   );
 }
-
-/* 💎 STYLES */
-
-const nav = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: "15px 20px",
-  borderBottom: "2px solid black",
-  flexWrap: "wrap"
-};
-
-const logo = {
-  fontSize: "clamp(18px,4vw,26px)",
-  fontWeight: "bold"
-};
-
-const navRight = {
-  display: "flex",
-  gap: "10px",
-  flexWrap: "wrap"
-};
-
-const btn = {
-  background: "#fff",
-  border: "1px solid black",
-  padding: "8px 14px",
-  fontWeight: "bold",
-  color: "maroon",
-  cursor: "pointer"
-};
