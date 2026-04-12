@@ -22,75 +22,105 @@ export default function App() {
     return () => unsub();
   }, []);
 
+  // 🔐 LOGIN FIRST
   if (!user) return <Auth />;
 
   return (
-    <div>
+    <div style={{ background: "#fff", minHeight: "100vh", color: "maroon" }}>
 
-      {/* NAVBAR */}
+      {/* 🔥 NAVBAR */}
       <div style={nav}>
-        <h2>JEWEL16</h2>
+        <h2 style={logo}>JEWEL16</h2>
 
-        <div>
-          <button onClick={() => setPage("home")}>Home</button>
-          <button onClick={() => setPage("products")}>Products</button>
-          <button onClick={() => setPage("cart")}>
+        <div style={navRight}>
+          <button style={btn} onClick={() => setPage("home")}>Home</button>
+          <button style={btn} onClick={() => setPage("products")}>Products</button>
+          <button style={btn} onClick={() => setPage("cart")}>
             Cart ({cart.length})
           </button>
-          <button onClick={() => setPage("orders")}>Orders</button>
-          <button onClick={() => signOut(auth)}>Logout</button>
+          <button style={btn} onClick={() => setPage("orders")}>Orders</button>
+          <button style={btn} onClick={() => signOut(auth)}>Logout</button>
         </div>
       </div>
 
-      {/* PAGES */}
-      {page === "home" && <Home setPage={setPage} />}
+      {/* 🔥 PAGES */}
+      <div style={{ padding: "20px" }}>
 
-      {page === "products" && (
-        <Products
-          cart={cart}
-          setCart={setCart}
-          setPage={setPage}
-          setSelectedProduct={setSelectedProduct}
-        />
-      )}
+        {page === "home" && <Home setPage={setPage} />}
 
-      {page === "details" && (
-        <ProductDetails
-          product={selectedProduct}
-          setPage={setPage}
-          cart={cart}
-          setCart={setCart}
-          setCheckoutItem={setCheckoutItem}
-        />
-      )}
+        {page === "products" && (
+          <Products
+            cart={cart}
+            setCart={setCart}
+            setPage={setPage}
+            setSelectedProduct={setSelectedProduct}
+          />
+        )}
 
-      {/* 🔥 THIS WAS MISSING OR WRONG */}
-      {page === "checkout" && (
-        <Checkout
-          item={checkoutItem}
-          setPage={setPage}
-          user={user}
-        />
-      )}
+        {page === "details" && (
+          <ProductDetails
+            product={selectedProduct}
+            setPage={setPage}
+            cart={cart}
+            setCart={setCart}
+            setCheckoutItem={setCheckoutItem}
+          />
+        )}
 
-      {page === "cart" && (
-        <Cart
-          cart={cart}
-          setCart={setCart}
-          setPage={setPage}
-          user={user}
-        />
-      )}
+        {/* ✅ CHECKOUT PAGE (FIXED) */}
+        {page === "checkout" && (
+          <Checkout
+            item={checkoutItem}
+            setPage={setPage}
+            user={user}
+          />
+        )}
 
-      {page === "orders" && <MyOrders setPage={setPage} />}
+        {page === "cart" && (
+          <Cart
+            cart={cart}
+            setCart={setCart}
+            setPage={setPage}
+            setCheckoutItem={setCheckoutItem}   // 🔥 IMPORTANT
+          />
+        )}
 
+        {page === "orders" && (
+          <MyOrders setPage={setPage} />
+        )}
+
+      </div>
     </div>
   );
 }
 
+/* 💎 STYLES */
+
 const nav = {
   display: "flex",
   justifyContent: "space-between",
-  padding: "10px",
-  borderBottom: "1px solid black"
+  alignItems: "center",
+  padding: "15px 20px",
+  borderBottom: "2px solid black",
+  flexWrap: "wrap"
+};
+
+const logo = {
+  fontSize: "clamp(18px,4vw,26px)",
+  fontWeight: "bold"
+};
+
+const navRight = {
+  display: "flex",
+  gap: "10px",
+  flexWrap: "wrap"
+};
+
+const btn = {
+  background: "#fff",
+  border: "1px solid black",
+  padding: "8px 14px",
+  fontWeight: "bold",
+  color: "maroon",
+  cursor: "pointer"
 };
