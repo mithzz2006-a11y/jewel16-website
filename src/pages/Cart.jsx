@@ -2,7 +2,6 @@ import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 
 export default function Cart({ cart, setCart, setPage, user }) {
-
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
   const placeOrder = async () => {
@@ -12,84 +11,35 @@ export default function Cart({ cart, setCart, setPage, user }) {
       return;
     }
 
-    try {
-      await addDoc(collection(db, "orders"), {
-        userEmail: user.email,
-        items: cart,
-        total,
-        status: "Pending",
-        date: new Date().toISOString()
-      });
+    await addDoc(collection(db, "orders"), {
+      userEmail: user.email,
+      items: cart,
+      total,
+      status: "Pending",
+      date: new Date().toISOString()
+    });
 
-      alert("Order placed successfully 🎉");
-      setCart([]);
-      setPage("orders");
-
-    } catch (err) {
-      console.error(err);
-      alert("Error placing order ❌");
-    }
+    alert("Order placed");
+    setCart([]);
+    setPage("orders");
   };
 
   return (
-    <div style={container}>
-      <h1 style={title}>Your Cart</h1>
+    <div style={{ background: "#000", minHeight: "100vh", padding: "20px", color: "white" }}>
+      
+      <h1 style={{ color: "maroon" }}>Your Cart</h1>
 
-      {cart.length === 0 ? (
-        <p style={{ color: "#aaa" }}>Cart is empty</p>
-      ) : (
-        <>
-          {cart.map((item, i) => (
-            <div key={i} style={itemCard}>
-              {item.name} - ₹{item.price}
-            </div>
-          ))}
+      <div className="grid">
+        {cart.map((item, i) => (
+          <div key={i} className="card" style={{ background: "#111", color: "white", border: "1px solid maroon" }}>
+            {item.name} - ₹{item.price}
+          </div>
+        ))}
+      </div>
 
-          <h3 style={totalStyle}>Total: ₹{total}</h3>
+      <h2>Total: ₹{total}</h2>
 
-          <button onClick={placeOrder} style={btn}>
-            Place Order
-          </button>
-        </>
-      )}
+      <button onClick={placeOrder}>Place Order</button>
     </div>
   );
 }
-
-/* 💎 STYLES */
-
-const container = {
-  background: "#000",          // 🔥 BLACK BACKGROUND
-  minHeight: "80vh",
-  padding: "40px",
-  color: "white"
-};
-
-const title = {
-  color: "maroon",
-  marginBottom: "20px"
-};
-
-const itemCard = {
-  padding: "15px",
-  marginBottom: "10px",
-  border: "1px solid maroon",
-  background: "#111",
-  borderRadius: "6px"
-};
-
-const totalStyle = {
-  marginTop: "20px",
-  color: "white"
-};
-
-const btn = {
-  marginTop: "20px",
-  padding: "12px 20px",
-  background: "maroon",
-  color: "white",
-  border: "none",
-  cursor: "pointer",
-  fontWeight: "bold",
-  borderRadius: "6px"
-};
