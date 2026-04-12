@@ -11,7 +11,7 @@ const handlePayment = async () => {
   const order = await res.json();
 
   const options = {
-    key: "rzp_test_YOUR_KEY",
+    key: "rzp_test_ScXrC64P0jBKFK",
     amount: order.amount,
     currency: "INR",
     order_id: order.id,
