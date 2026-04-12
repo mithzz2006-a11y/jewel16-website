@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import MyOrders from "./pages/MyOrders";
 
 export default function App() {
   const [page, setPage] = useState("home");
@@ -18,16 +19,19 @@ export default function App() {
         display: "flex",
         justifyContent: "space-between",
         padding: "15px",
-        background: "#111",
+        background: "black",
         color: "white"
       }}>
         <h2>JEWEL16 💎</h2>
 
-        <div>
+        <div style={{ display: "flex", gap: "10px" }}>
           <button onClick={() => setPage("home")}>Home</button>
           <button onClick={() => setPage("products")}>Products</button>
           <button onClick={() => setPage("cart")}>
             Cart ({cart.length})
+          </button>
+          <button onClick={() => setPage("orders")}>
+            My Orders
           </button>
         </div>
       </div>
@@ -42,6 +46,9 @@ export default function App() {
       )}
       {page === "checkout" && (
         <Checkout cart={cart} total={total} />
+      )}
+      {page === "orders" && (
+        <MyOrders />
       )}
 
     </div>
