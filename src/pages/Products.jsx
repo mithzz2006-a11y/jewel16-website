@@ -6,19 +6,16 @@ export default function Products({ cart, setCart }) {
   ];
 
   return (
-    <div>
+    <div className="container">
       <h1>Collection</h1>
 
-      <div style={grid}>
+      <div className="grid">
         {products.map((item, i) => (
-          <div key={i} style={card}>
+          <div key={i} className="card">
             <h3>{item.name}</h3>
             <p>₹{item.price}</p>
 
-            <button
-              onClick={() => setCart([...cart, item])}
-              style={btn}
-            >
+            <button onClick={() => setCart([...cart, item])}>
               Add to Cart
             </button>
           </div>
@@ -27,26 +24,3 @@ export default function Products({ cart, setCart }) {
     </div>
   );
 }
-
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-  gap: "30px",
-  marginTop: "30px"
-};
-
-const card = {
-  padding: "20px",
-  border: "2px solid black",
-  textAlign: "center",
-  background: "#fff"
-};
-
-const btn = {
-  marginTop: "10px",
-  padding: "10px",
-  border: "1px solid black",
-  background: "#fff",
-  color: "maroon",
-  cursor: "pointer"
-};
