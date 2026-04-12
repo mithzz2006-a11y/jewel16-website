@@ -11,82 +11,60 @@ export default function App() {
   const [page, setPage] = useState("home");
   const [cart, setCart] = useState([]);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => setUser(u));
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setUser(u);
+      setLoading(false);
+    });
     return () => unsub();
   }, []);
 
   const logout = async () => {
     await signOut(auth);
-    alert("Logged out");
     setPage("home");
   };
+
+  // 🔥 WAIT FOR AUTH
+  if (loading) return <div style={{ color: "white" }}>Loading...</div>;
+
+  // 🔐 FORCE LOGIN FIRST
+  if (!user) {
+    return <Auth setPage={setPage} />;
+  }
 
   return (
     <div style={{ background: "#0a0a0a", minHeight: "100vh", color: "white" }}>
 
-      {/* 🔥 NAVBAR */}
+      {/* NAVBAR */}
       <div style={navbar}>
-
-        {/* LOGO */}
         <h2 style={logo}>JEWEL16 💎</h2>
 
-        {/* NAV BUTTONS */}
         <div style={navRight}>
           <button style={navBtn} onClick={() => setPage("home")}>Home</button>
           <button style={navBtn} onClick={() => setPage("products")}>Products</button>
           <button style={navBtn} onClick={() => setPage("cart")}>
             Cart ({cart.length})
           </button>
-
-          {!user ? (
-            <button style={navBtn} onClick={() => setPage("auth")}>
-              Login
-            </button>
-          ) : (
-            <>
-              <button style={navBtn} onClick={() => setPage("orders")}>
-                Orders
-              </button>
-              <button style={navBtn} onClick={logout}>
-                Logout
-              </button>
-            </>
-          )}
+          <button style={navBtn} onClick={() => setPage("orders")}>Orders</button>
+          <button style={navBtn} onClick={logout}>Logout</button>
         </div>
       </div>
 
-      {/* 🔥 USER INFO */}
-      {user && (
-        <p style={{ paddingLeft: "20px", marginTop: "10px", color: "#ccc" }}>
-          Logged in as: {user.email}
-        </p>
-      )}
-
-      {/* 🔥 PAGES */}
+      {/* PAGES */}
       <div style={{ padding: "20px" }}>
         {page === "home" && <Home setPage={setPage} />}
-        {page === "products" && (
-          <Products cart={cart} setCart={setCart} setPage={setPage} />
-        )}
-        {page === "cart" && (
-          <Cart cart={cart} setCart={setCart} setPage={setPage} user={user} />
-        )}
-        {page === "auth" && <Auth setPage={setPage} />}
+        {page === "products" && <Products cart={cart} setCart={setCart} />}
+        {page === "cart" && <Cart cart={cart} setCart={setCart} setPage={setPage} user={user} />}
         {page === "orders" && <MyOrders setPage={setPage} />}
-      </div>
-
-      {/* 🔥 FLOATING CART */}
-      <div style={floatingCart} onClick={() => setPage("cart")}>
-        🛒 {cart.length}
       </div>
 
     </div>
   );
 }
 
-/* 💎 STYLES */
+/* STYLES */
 
 const navbar = {
   display: "flex",
@@ -99,8 +77,7 @@ const navbar = {
 
 const logo = {
   fontWeight: "bold",
-  fontSize: "22px",
-  letterSpacing: "1px"
+  fontSize: "22px"
 };
 
 const navRight = {
@@ -116,20 +93,5 @@ const navBtn = {
   border: "1px solid maroon",
   borderRadius: "6px",
   cursor: "pointer",
-  fontWeight: "bold",
-  fontSize: "14px",
-  transition: "0.3s"
-};
-
-const floatingCart = {
-  position: "fixed",
-  top: "80px",
-  right: "20px",
-  background: "maroon",
-  color: "white",
-  padding: "12px 16px",
-  borderRadius: "50%",
-  cursor: "pointer",
-  fontWeight: "bold",
-  boxShadow: "0 0 10px rgba(128,0,0,0.6)"
+  fontWeight: "bold"
 };
