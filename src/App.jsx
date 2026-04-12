@@ -13,22 +13,32 @@ export default function App() {
 
   return (
     <div>
+
       {/* NAVBAR */}
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        padding: "15px 40px",
-        background: "#111",
-        borderBottom: "1px solid maroon"
-      }}>
-        <h2 style={{ color: "white" }}>JEWEL16 💎</h2>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "15px 40px",
+          background: "#111",
+          borderBottom: "1px solid maroon"
+        }}
+      >
+        {/* 🔐 SECRET ADMIN ACCESS */}
+        <h2
+          style={{ color: "white", cursor: "pointer" }}
+          onDoubleClick={() => setPage("login")}
+        >
+          JEWEL16 💎
+        </h2>
 
         <div style={{ display: "flex", gap: "15px" }}>
           <button onClick={() => setPage("home")}>Home</button>
           <button onClick={() => setPage("products")}>Products</button>
-          <button onClick={() => setPage("cart")}>Cart ({cart.length})</button>
+          <button onClick={() => setPage("cart")}>
+            Cart ({cart.length})
+          </button>
           <button onClick={() => setPage("orders")}>Orders</button>
-          <button onClick={() => setPage("login")}>Admin</button>
         </div>
       </div>
 
@@ -51,12 +61,39 @@ export default function App() {
 
       {/* PAGES */}
       <AnimatePresence mode="wait">
+
         {page === "home" && <motion.div><Home setPage={setPage} /></motion.div>}
-        {page === "products" && <motion.div><Products cart={cart} setCart={setCart} setPage={setPage} /></motion.div>}
-        {page === "cart" && <motion.div><Cart cart={cart} setCart={setCart} setPage={setPage} /></motion.div>}
-        {page === "orders" && <motion.div><MyOrders setPage={setPage} /></motion.div>}
-        {page === "login" && <motion.div><Login setPage={setPage} /></motion.div>}
-        {page === "admin" && <motion.div><Admin setPage={setPage} /></motion.div>}
+
+        {page === "products" && (
+          <motion.div>
+            <Products cart={cart} setCart={setCart} setPage={setPage} />
+          </motion.div>
+        )}
+
+        {page === "cart" && (
+          <motion.div>
+            <Cart cart={cart} setCart={setCart} setPage={setPage} />
+          </motion.div>
+        )}
+
+        {page === "orders" && (
+          <motion.div>
+            <MyOrders setPage={setPage} />
+          </motion.div>
+        )}
+
+        {page === "login" && (
+          <motion.div>
+            <Login setPage={setPage} />
+          </motion.div>
+        )}
+
+        {page === "admin" && (
+          <motion.div>
+            <Admin setPage={setPage} />
+          </motion.div>
+        )}
+
       </AnimatePresence>
     </div>
   );
