@@ -13,14 +13,14 @@ export default function MyOrders({ setPage }) {
 
         const snapshot = await getDocs(collection(db, "orders"));
 
-        const data = snapshot.docs
+        const filtered = snapshot.docs
           .map(doc => doc.data())
-          .filter(o => o.userEmail === user.email);
+          .filter(order => order.userEmail === user.email);
 
-        setOrders(data);
+        setOrders(filtered);
 
       } catch (err) {
-        console.error(err);
+        console.error("FETCH ERROR:", err);
       }
     };
 
@@ -34,12 +34,13 @@ export default function MyOrders({ setPage }) {
       <button onClick={() => setPage("home")}>Back</button>
 
       {orders.length === 0 ? (
-        <p>No orders</p>
+        <p>No orders yet</p>
       ) : (
         orders.map((o, i) => (
           <div key={i}>
             <p>Total: ₹{o.total}</p>
             <p>Status: {o.status}</p>
+            <p>Date: {o.date}</p>
           </div>
         ))
       )}
