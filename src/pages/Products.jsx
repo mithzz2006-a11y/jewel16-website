@@ -1,8 +1,4 @@
-import { useState } from "react";
-
-export default function Products({ cart, setCart }) {
-  const [addedIndex, setAddedIndex] = useState(null);
-
+export default function Products({ cart, setCart, setPage, setSelectedProduct }) {
   const products = [
     {
       name: "Diamond Necklace",
@@ -21,65 +17,27 @@ export default function Products({ cart, setCart }) {
     }
   ];
 
-  const addToCart = (item, index) => {
-    setCart([...cart, item]);
-    setAddedIndex(index);
-
-    setTimeout(() => setAddedIndex(null), 1500);
-  };
-
   return (
     <div className="container">
-
-      <h1 style={{ marginBottom: "20px" }}>Collection</h1>
+      <h1>Collection</h1>
 
       <div className="grid">
-
         {products.map((item, index) => (
-          <div key={index} style={card}>
-
-            {/* IMAGE */}
-            <div style={imgWrapper}>
-              <img src={item.image} alt={item.name} style={img} />
-            </div>
-
-            {/* DETAILS */}
+          <div
+            key={index}
+            className="card"
+            onClick={() => {
+              setSelectedProduct(item);
+              setPage("details");
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            <img src={item.image} />
             <h3>{item.name}</h3>
             <p>₹{item.price}</p>
-
-            {/* BUTTON */}
-            <button onClick={() => addToCart(item, index)}>
-              {addedIndex === index ? "Added ✓" : "Add to Cart"}
-            </button>
-
           </div>
         ))}
-
       </div>
     </div>
   );
 }
-
-/* 💎 STYLES */
-
-const card = {
-  border: "2px solid black",
-  padding: "15px",
-  textAlign: "center",
-  background: "#fff",
-  transition: "0.3s"
-};
-
-const imgWrapper = {
-  width: "100%",
-  height: "200px",
-  overflow: "hidden",
-  marginBottom: "10px"
-};
-
-const img = {
-  width: "100%",
-  height: "100%",
-  objectFit: "cover",
-  transition: "0.4s"
-};
