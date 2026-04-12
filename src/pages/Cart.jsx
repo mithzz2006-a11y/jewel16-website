@@ -1,45 +1,71 @@
-import { db } from "../firebase";
-import { collection, addDoc } from "firebase/firestore";
+export default function Cart({
+  cart,
+  setCart,
+  setPage,
+  setCheckoutItem
+}) {
 
-export default function Cart({ cart, setCart, setPage, user }) {
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
-  const placeOrder = async () => {
-    if (!user) {
-      alert("Login first");
-      setPage("auth");
-      return;
-    }
-
-    await addDoc(collection(db, "orders"), {
-      userEmail: user.email,
-      items: cart,
-      total,
-      status: "Pending",
-      date: new Date().toISOString()
-    });
-
-    alert("Order placed");
-    setCart([]);
-    setPage("orders");
-  };
+  if (cart.length === 0) {
+    return (
+      <div style={container}>
+        <h1>Your Cart</h1>
+        <p>Cart is empty</p>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ background: "#000", minHeight: "100vh", padding: "20px", color: "white" }}>
-      
+    <div style={container}>
       <h1 style={{ color: "maroon" }}>Your Cart</h1>
 
-      <div className="grid">
-        {cart.map((item, i) => (
-          <div key={i} className="card" style={{ background: "#111", color: "white", border: "1px solid maroon" }}>
-            {item.name} - ₹{item.price}
-          </div>
-        ))}
-      </div>
+      {cart.map((item, i) => (
+        <div key={i} style={itemCard}>
+          {item.name} - ₹{item.price}
+        </div>
+      ))}
 
       <h2>Total: ₹{total}</h2>
 
-      <button onClick={placeOrder}>Place Order</button>
+      {/* 🔥 GO TO CHECKOUT (IMPORTANT CHANGE) */}
+      <button
+        onClick={() => {
+          setCheckoutItem({
+            name: "Cart Order",
+            price: total,
+            qty: 1
+          });
+
+          setPage("checkout");   // 👉 THIS OPENS CHECKOUT
+        }}
+        style={btn}
+      >
+        Proceed to Checkout
+      </button>
     </div>
   );
 }
+
+/* STYLES */
+
+const container = {
+  background: "#000",
+  color: "white",
+  padding: "40px",
+  minHeight: "100vh"
+};
+
+const itemCard = {
+  padding: "10px",
+  borderBottom: "1px solid maroon"
+};
+
+const btn = {
+  marginTop: "20px",
+  padding: "12px",
+  background: "maroon",
+  color: "white",
+  border: "none",
+  cursor: "pointer"
+};
