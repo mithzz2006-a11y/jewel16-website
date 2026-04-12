@@ -11,87 +11,69 @@ export default function App() {
   const [page, setPage] = useState("home");
   const [cart, setCart] = useState([]);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-      setLoading(false);
-    });
+    const unsub = onAuthStateChanged(auth, (u) => setUser(u));
     return () => unsub();
   }, []);
 
-  const logout = async () => {
-    await signOut(auth);
-    setPage("home");
-  };
-
-  // 🔥 WAIT FOR AUTH
-  if (loading) return <div style={{ color: "white" }}>Loading...</div>;
-
-  // 🔐 FORCE LOGIN FIRST
-  if (!user) {
-    return <Auth setPage={setPage} />;
-  }
+  if (!user) return <Auth />;
 
   return (
-    <div style={{ background: "#0a0a0a", minHeight: "100vh", color: "white" }}>
+    <div style={{ background: "#fff", minHeight: "100vh", color: "maroon" }}>
 
       {/* NAVBAR */}
-      <div style={navbar}>
-        <h2 style={logo}>JEWEL16 💎</h2>
+      <div style={nav}>
+        <h2 style={logo}>JEWEL16</h2>
 
         <div style={navRight}>
-          <button style={navBtn} onClick={() => setPage("home")}>Home</button>
-          <button style={navBtn} onClick={() => setPage("products")}>Products</button>
-          <button style={navBtn} onClick={() => setPage("cart")}>
+          <button style={btn} onClick={() => setPage("home")}>Home</button>
+          <button style={btn} onClick={() => setPage("products")}>Products</button>
+          <button style={btn} onClick={() => setPage("cart")}>
             Cart ({cart.length})
           </button>
-          <button style={navBtn} onClick={() => setPage("orders")}>Orders</button>
-          <button style={navBtn} onClick={logout}>Logout</button>
+          <button style={btn} onClick={() => setPage("orders")}>Orders</button>
+          <button style={btn} onClick={() => signOut(auth)}>Logout</button>
         </div>
       </div>
 
       {/* PAGES */}
-      <div style={{ padding: "20px" }}>
+      <div style={{ padding: "40px" }}>
         {page === "home" && <Home setPage={setPage} />}
         {page === "products" && <Products cart={cart} setCart={setCart} />}
         {page === "cart" && <Cart cart={cart} setCart={setCart} setPage={setPage} user={user} />}
         {page === "orders" && <MyOrders setPage={setPage} />}
       </div>
-
     </div>
   );
 }
 
 /* STYLES */
-
-const navbar = {
+const nav = {
   display: "flex",
   justifyContent: "space-between",
-  alignItems: "center",
-  padding: "15px 40px",
-  background: "#111",
-  borderBottom: "2px solid maroon"
+  padding: "20px 60px",
+  borderBottom: "2px solid black",
+  background: "#fff"
 };
 
 const logo = {
   fontWeight: "bold",
-  fontSize: "22px"
+  fontSize: "26px",
+  color: "maroon",
+  letterSpacing: "2px"
 };
 
 const navRight = {
   display: "flex",
-  gap: "15px",
-  alignItems: "center"
+  gap: "20px"
 };
 
-const navBtn = {
-  padding: "10px 18px",
-  background: "#1a1a1a",
-  color: "white",
-  border: "1px solid maroon",
-  borderRadius: "6px",
+const btn = {
+  background: "#fff",
+  border: "1px solid black",
+  padding: "8px 16px",
   cursor: "pointer",
-  fontWeight: "bold"
+  fontWeight: "bold",
+  color: "maroon"
 };
