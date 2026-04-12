@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { db } from "../firebase";
+import { db, auth } from "../firebase";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
-import { auth } from "../firebase";
 
 export default function MyOrders({ setPage }) {
   const [orders, setOrders] = useState([]);
@@ -16,10 +15,16 @@ export default function MyOrders({ setPage }) {
       where("userEmail", "==", user.email)
     );
 
-    const unsub = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => doc.data());
-      setOrders(data);
-    });
+    const unsub = onSnapshot(
+      q,
+      (snapshot) => {
+        const data = snapshot.docs.map(doc => doc.data());
+        setOrders(data);
+      },
+      (error) => {
+        console.error("FETCH ERROR:", error);
+      }
+    );
 
     return () => unsub();
   }, []);
@@ -42,7 +47,7 @@ export default function MyOrders({ setPage }) {
             <p><b>Date:</b> {o.date}</p>
 
             <h4>Items:</h4>
-            {o.items.map((item, j) => (
+            {(o.items || []).map((item, j) => (
               <div key={j}>
                 {item.name} - ₹{item.price}
               </div>
