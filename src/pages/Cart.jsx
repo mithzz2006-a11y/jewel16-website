@@ -12,17 +12,23 @@ export default function Cart({ cart, setCart, setPage, user }) {
       return;
     }
 
-    await addDoc(collection(db, "orders"), {
-      userEmail: user.email,
-      items: cart,
-      total,
-      status: "Pending",
-      date: new Date().toISOString()
-    });
+    try {
+      await addDoc(collection(db, "orders"), {
+        userEmail: user.email,
+        items: cart,
+        total,
+        status: "Pending",
+        date: new Date().toISOString()
+      });
 
-    alert("Order placed");
-    setCart([]);
-    setPage("orders");
+      alert("Order placed 🎉");
+      setCart([]);
+      setPage("orders");
+
+    } catch (err) {
+      console.error(err);
+      alert("Error placing order ❌");
+    }
   };
 
   return (
