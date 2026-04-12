@@ -12,21 +12,23 @@ export default function Auth({ setPage }) {
 
   const handleAuth = async () => {
     if (!email || !password) {
-      alert("Fill all fields");
+      alert("Enter email & password");
       return;
     }
 
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
-        alert("Login success ✅");
+        alert("Login successful ✅");
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
         alert("Account created ✅");
       }
 
       setPage("home");
+
     } catch (err) {
+      console.error("AUTH ERROR:", err);
       alert(err.message);
     }
   };
@@ -58,7 +60,9 @@ export default function Auth({ setPage }) {
         style={{ marginTop: "10px", cursor: "pointer" }}
         onClick={() => setIsLogin(!isLogin)}
       >
-        {isLogin ? "Create new account" : "Already have account? Login"}
+        {isLogin
+          ? "New user? Create account"
+          : "Already have account? Login"}
       </p>
     </div>
   );
