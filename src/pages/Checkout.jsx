@@ -1,27 +1,31 @@
-const handlePayment = async () => {
-  try {
-    // 🔥 CREATE ORDER FROM BACKEND
-    const res = await fetch("http://localhost:5000/create-order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ amount: total })
-    });
+import { useState } from "react";
 
-    const order = await res.json();
+export default function Checkout({ cart, total }) {
+  const [loading, setLoading] = useState(false);
 
-    // 🔥 RAZORPAY OPTIONS
-    const options = {
-      key: "rzp_test_ScXrC64P0jBKFK",
-      amount: order.amount,
-      currency: "INR",
-      name: "JEWEL16 💎",
-      description: "Luxury Jewellery Purchase",
-      order_id: order.id,
+  const handlePayment = async () => {
+    try {
+      setLoading(true);
 
-      handler: async function (response) {
-        try {
+      const res = await fetch("http://localhost:5000/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ amount: total })
+      });
+
+      const order = await res.json();
+
+      const options = {
+        key: "rzp_test_ScXrC64P0jBKFK",
+        amount: order.amount,
+        currency: "INR",
+        name: "JEWEL16 💎",
+        description: "Luxury Purchase",
+        order_id: order.id,
+
+        handler: async function (response) {
           const verify = await fetch("http://localhost:5000/verify-payment", {
             method: "POST",
             headers: {
@@ -34,35 +38,63 @@ const handlePayment = async () => {
 
           if (data.status === "success") {
             alert("Payment Successful ✅");
-
-            // 👉 OPTIONAL: clear cart or redirect
-            window.location.reload();
           } else {
-            alert("Payment Verification Failed ❌");
+            alert("Payment Failed ❌");
           }
-        } catch (err) {
-          console.error(err);
-          alert("Verification Error ❌");
+        },
+
+        theme: {
+          color: "#800000"
         }
-      },
+      };
 
-      prefill: {
-        name: "Customer",
-        email: "customer@email.com",
-        contact: "9000000000"
-      },
+      const rzp = new window.Razorpay(options);
+      rzp.open();
 
-      theme: {
-        color: "#800000" // maroon luxury 🔥
-      }
-    };
+    } catch (err) {
+      console.error(err);
+      alert("Error in payment ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    // 🔥 OPEN RAZORPAY
-    const rzp = new window.Razorpay(options);
-    rzp.open();
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "black",
+        color: "white",
+        padding: "30px"
+      }}
+    >
+      <h2 style={{ marginBottom: "20px" }}>Checkout</h2>
 
-  } catch (error) {
-    console.error(error);
-    alert("Payment Failed ❌ Backend not working");
-  }
-};
+      {cart.map((item, i) => (
+        <div key={i} style={{ marginBottom: "15px" }}>
+          <p>{item.name}</p>
+          <p>₹{item.price}</p>
+        </div>
+      ))}
+
+      <h3>Total: ₹{total}</h3>
+
+      <button
+        onClick={handlePayment}
+        disabled={loading}
+        style={{
+          marginTop: "20px",
+          padding: "15px",
+          width: "100%",
+          background: "maroon",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer"
+        }}
+      >
+        {loading ? "Processing..." : "Pay Now"}
+      </button>
+    </div>
+  );
+}
