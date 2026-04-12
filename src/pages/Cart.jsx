@@ -33,6 +33,16 @@ export default function Cart({ cart = [], setCart, setPage, user }) {
       return;
     }
 
+    if (phone.length < 10) {
+      alert("Enter a valid phone number");
+      return;
+    }
+
+    if (pincode.length < 6) {
+      alert("Enter a valid pincode");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -52,6 +62,7 @@ export default function Cart({ cart = [], setCart, setPage, user }) {
       alert("Order placed successfully 🎉");
 
       setCart([]);
+      setForm({ name: "", phone: "", address: "", pincode: "", landmark: "" });
       setPage("home");
 
     } catch (err) {
@@ -79,12 +90,47 @@ export default function Cart({ cart = [], setCart, setPage, user }) {
           <h3>Total: ₹{total}</h3>
 
           <div style={{ marginTop: "20px" }}>
-            <input name="name" placeholder="Name" onChange={handleChange} style={input} />
-            <input name="phone" placeholder="Phone" onChange={handleChange} style={input} />
-            <input name="address" placeholder="Address" onChange={handleChange} style={input} />
-            <input name="pincode" placeholder="Pincode" onChange={handleChange} style={input} />
+            <input
+              name="name"
+              placeholder="Name"
+              value={form.name}
+              onChange={handleChange}
+              style={input}
+            />
+            <input
+              name="phone"
+              placeholder="Phone"
+              value={form.phone}
+              onChange={handleChange}
+              style={input}
+            />
+            <input
+              name="address"
+              placeholder="Address"
+              value={form.address}
+              onChange={handleChange}
+              style={input}
+            />
+            <input
+              name="pincode"
+              placeholder="Pincode"
+              value={form.pincode}
+              onChange={handleChange}
+              style={input}
+            />
+            <input
+              name="landmark"
+              placeholder="Landmark (optional)"
+              value={form.landmark}
+              onChange={handleChange}
+              style={input}
+            />
 
-            <button onClick={placeOrder} style={btn}>
+            <button
+              onClick={placeOrder}
+              style={{ ...btn, opacity: loading ? 0.6 : 1 }}
+              disabled={loading}
+            >
               {loading ? "Placing..." : "Place Order"}
             </button>
           </div>
