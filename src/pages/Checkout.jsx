@@ -4,67 +4,54 @@ import { collection, addDoc } from "firebase/firestore";
 export default function Checkout({ item, setPage, user }) {
   if (!item) return <p>No item</p>;
 
-  const total = item.price * item.qty;
+  const total = item.price * (item.qty || 1);
 
-  const loadRazorpay = () => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
-    script.async = true;
-    document.body.appendChild(script);
-  };
+  const placeOrder = async () => {
+    await addDoc(collection(db, "orders"), {
+      userEmail: user.email,
+      items: [item],
+      total,
+      date: new Date().toISOString()
+    });
 
-  const handlePayment = async () => {
-    loadRazorpay();
-
-    const options = {
-      key: "rzp_test_123456789", // 🔥 replace later with real key
-      amount: total * 100, // paise
-      currency: "INR",
-      name: "JEWEL16",
-      description: item.name,
-
-      handler: async function (response) {
-        // ✅ SAVE ORDER AFTER PAYMENT SUCCESS
-        await addDoc(collection(db, "orders"), {
-          userEmail: user.email,
-          items: [item],
-          total,
-          paymentId: response.razorpay_payment_id,
-          status: "Paid",
-          date: new Date().toISOString()
-        });
-
-        alert("Payment Successful 🎉");
-        setPage("orders");
-      },
-
-      prefill: {
-        email: user.email
-      },
-
-      theme: {
-        color: "#800000" // maroon
-      }
-    };
-
-    const rzp = new window.Razorpay(options);
-    rzp.open();
+    alert("Order placed 🎉");
+    setPage("orders");
   };
 
   return (
     <div style={container}>
-      <h1 style={{ color: "maroon" }}>Checkout</h1>
 
+      <h1 style={title}>Checkout</h1>
+
+      {/* 🔥 PRODUCT CARD */}
       <div style={card}>
-        <h3>{item.name}</h3>
-        <p>₹{item.price}</p>
-        <p>Qty: {item.qty}</p>
-        <h2>Total: ₹{total}</h2>
+
+        {/* IMAGE */}
+        <img
+          src={item.image || "https://picsum.photos/300"}
+          alt="product"
+          style={image}
+        />
+
+        {/* DETAILS */}
+        <div style={details}>
+          <h2>{item.name}</h2>
+
+          <p>Price: ₹{item.price}</p>
+          <p>Quantity: {item.qty || 1}</p>
+
+          <h2 style={{ marginTop: "10px" }}>
+            Total: ₹{total}
+          </h2>
+        </div>
+
       </div>
 
-      <button onClick={handlePayment} style={btn}>
-        Pay Now 💳
+      {/* 🔥 BUTTON */}
+      <button onClick={placeOrder} style={btn}>
+        Confirm Order
       </button>
+
     </div>
   );
 }
@@ -74,15 +61,36 @@ export default function Checkout({ item, setPage, user }) {
 const container = {
   background: "#000",
   color: "white",
-  padding: "40px",
-  minHeight: "100vh"
+  minHeight: "100vh",
+  padding: "20px"
+};
+
+const title = {
+  color: "maroon",
+  marginBottom: "20px"
 };
 
 const card = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "15px",
   background: "#111",
   padding: "20px",
-  marginTop: "20px",
-  border: "1px solid maroon"
+  border: "1px solid maroon",
+  borderRadius: "8px"
+};
+
+const image = {
+  width: "100%",
+  maxHeight: "250px",
+  objectFit: "cover",
+  borderRadius: "6px"
+};
+
+const details = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "5px"
 };
 
 const btn = {
@@ -91,5 +99,7 @@ const btn = {
   background: "maroon",
   color: "white",
   border: "none",
-  cursor: "pointer"
+  cursor: "pointer",
+  fontWeight: "bold",
+  borderRadius: "6px"
 };
