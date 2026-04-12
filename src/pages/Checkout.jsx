@@ -1,59 +1,33 @@
 import { useState } from "react";
+import { db, auth } from "../firebase";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 export default function Checkout({ cart = [], total = 0 }) {
   const [loading, setLoading] = useState(false);
 
-  const handlePayment = async () => {
+  const placeOrder = async () => {
     try {
       setLoading(true);
 
-      const res = await fetch("http://localhost:5000/create-order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ amount: total })
+      if (!auth.currentUser) {
+        alert("Login required");
+        return;
+      }
+
+      await addDoc(collection(db, "orders"), {
+        userId: auth.currentUser.uid,
+        email: auth.currentUser.email,
+        items: cart,
+        total,
+        status: "placed",
+        createdAt: serverTimestamp()
       });
 
-      const order = await res.json();
-
-      const options = {
-        key: "rzp_test_ScXrC64P0jBKFK",
-        amount: order.amount,
-        currency: "INR",
-        name: "JEWEL16 💎",
-        description: "Luxury Jewellery",
-        order_id: order.id,
-
-        handler: async function (response) {
-          const verify = await fetch("http://localhost:5000/verify-payment", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(response)
-          });
-
-          const data = await verify.json();
-
-          if (data.status === "success") {
-            alert("Payment Successful ✅");
-          } else {
-            alert("Payment Failed ❌");
-          }
-        },
-
-        theme: {
-          color: "#800000"
-        }
-      };
-
-      const rzp = new window.Razorpay(options);
-      rzp.open();
+      alert("Order placed successfully ✅");
 
     } catch (err) {
       console.error(err);
-      alert("Payment Error ❌");
+      alert("Error placing order ❌");
     } finally {
       setLoading(false);
     }
@@ -78,7 +52,7 @@ export default function Checkout({ cart = [], total = 0 }) {
       <h2>Total: ₹{total}</h2>
 
       <button
-        onClick={handlePayment}
+        onClick={placeOrder}
         disabled={loading}
         style={{
           marginTop: "20px",
@@ -89,7 +63,7 @@ export default function Checkout({ cart = [], total = 0 }) {
           border: "none"
         }}
       >
-        {loading ? "Processing..." : "Pay Now"}
+        {loading ? "Placing..." : "Place Order"}
       </button>
     </div>
   );
