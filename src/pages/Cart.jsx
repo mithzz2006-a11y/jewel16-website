@@ -1,71 +1,40 @@
-export default function Cart({
-  cart,
-  setCart,
-  setPage,
-  setCheckoutItem
-}) {
+export default function Cart({ cart, setPage }) {
 
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
-  if (cart.length === 0) {
-    return (
-      <div style={container}>
-        <h1>Your Cart</h1>
-        <p>Cart is empty</p>
-      </div>
-    );
-  }
-
   return (
-    <div style={container}>
-      <h1 style={{ color: "maroon" }}>Your Cart</h1>
+    <div style={{
+      minHeight: "100vh",
+      background: "black",
+      color: "white",
+      padding: "20px"
+    }}>
+      <h1>Your Cart</h1>
+
+      {cart.length === 0 && <p>No items in cart</p>}
 
       {cart.map((item, i) => (
-        <div key={i} style={itemCard}>
-          {item.name} - ₹{item.price}
+        <div key={i}>
+          <p>{item.name}</p>
+          <p>₹{item.price}</p>
         </div>
       ))}
 
       <h2>Total: ₹{total}</h2>
 
-      {/* 🔥 GO TO CHECKOUT (IMPORTANT CHANGE) */}
       <button
-        onClick={() => {
-          setCheckoutItem({
-            name: "Cart Order",
-            price: total,
-            qty: 1
-          });
-
-          setPage("checkout");   // 👉 THIS OPENS CHECKOUT
+        onClick={() => setPage("checkout")}
+        style={{
+          marginTop: "20px",
+          padding: "12px",
+          width: "100%",
+          background: "maroon",
+          color: "white",
+          border: "none"
         }}
-        style={btn}
       >
-        Proceed to Checkout
+        Checkout
       </button>
     </div>
   );
 }
-
-/* STYLES */
-
-const container = {
-  background: "#000",
-  color: "white",
-  padding: "40px",
-  minHeight: "100vh"
-};
-
-const itemCard = {
-  padding: "10px",
-  borderBottom: "1px solid maroon"
-};
-
-const btn = {
-  marginTop: "20px",
-  padding: "12px",
-  background: "maroon",
-  color: "white",
-  border: "none",
-  cursor: "pointer"
-};
