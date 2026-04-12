@@ -11,6 +11,7 @@ export default function App() {
   const [page, setPage] = useState("home");
   const [cart, setCart] = useState([]);
   const [user, setUser] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => setUser(u));
@@ -22,58 +23,121 @@ export default function App() {
   return (
     <div style={{ background: "#fff", minHeight: "100vh", color: "maroon" }}>
 
-      {/* NAVBAR */}
+      {/* 🔥 NAVBAR */}
       <div style={nav}>
+
         <h2 style={logo}>JEWEL16</h2>
 
-        <div style={navRight}>
-          <button style={btn} onClick={() => setPage("home")}>Home</button>
-          <button style={btn} onClick={() => setPage("products")}>Products</button>
-          <button style={btn} onClick={() => setPage("cart")}>
-            Cart ({cart.length})
-          </button>
-          <button style={btn} onClick={() => setPage("orders")}>Orders</button>
-          <button style={btn} onClick={() => signOut(auth)}>Logout</button>
+        {/* DESKTOP MENU */}
+        <div style={navLinks} className="desktop">
+          <NavButton text="Home" onClick={() => setPage("home")} />
+          <NavButton text="Products" onClick={() => setPage("products")} />
+          <NavButton text={`Cart (${cart.length})`} onClick={() => setPage("cart")} />
+          <NavButton text="Orders" onClick={() => setPage("orders")} />
+          <NavButton text="Logout" onClick={() => signOut(auth)} />
+        </div>
+
+        {/* MOBILE ICON */}
+        <div style={menuIcon} onClick={() => setMenuOpen(!menuOpen)}>
+          ☰
         </div>
       </div>
 
+      {/* MOBILE DROPDOWN */}
+      {menuOpen && (
+        <div style={mobileMenu}>
+          <NavButton text="Home" onClick={() => { setPage("home"); setMenuOpen(false); }} />
+          <NavButton text="Products" onClick={() => { setPage("products"); setMenuOpen(false); }} />
+          <NavButton text={`Cart (${cart.length})`} onClick={() => { setPage("cart"); setMenuOpen(false); }} />
+          <NavButton text="Orders" onClick={() => { setPage("orders"); setMenuOpen(false); }} />
+          <NavButton text="Logout" onClick={() => signOut(auth)} />
+        </div>
+      )}
+
       {/* PAGES */}
-      <div style={{ padding: "40px" }}>
+      <div style={{ padding: "20px" }}>
         {page === "home" && <Home setPage={setPage} />}
         {page === "products" && <Products cart={cart} setCart={setCart} />}
         {page === "cart" && <Cart cart={cart} setCart={setCart} setPage={setPage} user={user} />}
         {page === "orders" && <MyOrders setPage={setPage} />}
       </div>
+
     </div>
   );
 }
 
-/* STYLES */
+/* 🔥 NAV BUTTON COMPONENT */
+function NavButton({ text, onClick }) {
+  return (
+    <button style={btn} onClick={onClick}>
+      {text}
+    </button>
+  );
+}
+
+/* 💎 STYLES */
+
 const nav = {
   display: "flex",
   justifyContent: "space-between",
-  padding: "20px 60px",
+  alignItems: "center",
+  padding: "15px 20px",
   borderBottom: "2px solid black",
-  background: "#fff"
+  position: "relative"
 };
 
 const logo = {
-  fontWeight: "bold",
-  fontSize: "26px",
-  color: "maroon",
-  letterSpacing: "2px"
+  fontSize: "clamp(18px, 4vw, 26px)",
+  fontWeight: "bold"
 };
 
-const navRight = {
+const navLinks = {
   display: "flex",
-  gap: "20px"
+  gap: "15px"
+};
+
+const menuIcon = {
+  fontSize: "24px",
+  cursor: "pointer",
+  display: "none"
+};
+
+const mobileMenu = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "10px",
+  padding: "15px",
+  borderBottom: "1px solid black"
 };
 
 const btn = {
   background: "#fff",
   border: "1px solid black",
-  padding: "8px 16px",
-  cursor: "pointer",
+  padding: "8px 14px",
   fontWeight: "bold",
-  color: "maroon"
+  color: "maroon",
+  cursor: "pointer"
 };
+
+/* 🔥 RESPONSIVE CSS */
+const style = document.createElement("style");
+style.innerHTML = `
+  @media (max-width: 768px) {
+    .desktop {
+      display: none !important;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .desktop {
+      display: flex !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    div[style*="menuIcon"] {
+      display: block !important;
+    }
+  }
+`;
+document.head.appendChild(style);
