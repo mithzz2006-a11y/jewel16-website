@@ -2,7 +2,7 @@ import { useState } from "react";
 import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 
-export default function Cart({ cart, setCart, setPage }) {
+export default function Cart({ cart, setCart, setPage, user }) {
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
@@ -20,10 +20,16 @@ export default function Cart({ cart, setCart, setPage }) {
   };
 
   const placeOrder = async () => {
-    const { name, phone, address, pincode, landmark } = form;
+    if (!user) {
+      alert("Please login first ❌");
+      setPage("auth");
+      return;
+    }
+
+    const { name, phone, address, pincode } = form;
 
     if (!name || !phone || !address || !pincode) {
-      alert("Please fill all required details");
+      alert("Fill all details");
       return;
     }
 
@@ -31,13 +37,15 @@ export default function Cart({ cart, setCart, setPage }) {
       setLoading(true);
 
       await addDoc(collection(db, "orders"), {
+        userEmail: user.email, // 🔥 IMPORTANT
         customer: name,
         phone,
         address,
         pincode,
-        landmark,
+        landmark: form.landmark,
         items: cart,
         total,
+        status: "Pending",
         date: new Date().toISOString()
       });
 
@@ -46,8 +54,8 @@ export default function Cart({ cart, setCart, setPage }) {
       setCart([]);
       setPage("home");
 
-    } catch (error) {
-      console.error("ERROR:", error);
+    } catch (err) {
+      console.error(err);
       alert("Error placing order ❌");
     } finally {
       setLoading(false);
@@ -62,23 +70,22 @@ export default function Cart({ cart, setCart, setPage }) {
         <p>No items in cart</p>
       ) : (
         <>
-          {cart.map((item, index) => (
-            <div key={index} style={{ marginBottom: "10px" }}>
+          {cart.map((item, i) => (
+            <div key={i}>
               {item.name} - ₹{item.price}
             </div>
           ))}
 
-          <h3 style={{ marginTop: "20px" }}>Total: ₹{total}</h3>
+          <h3>Total: ₹{total}</h3>
 
-          <div style={{ marginTop: "20px", maxWidth: "400px" }}>
-            <input name="name" placeholder="Name" onChange={handleChange} style={inputStyle} />
-            <input name="phone" placeholder="Phone" onChange={handleChange} style={inputStyle} />
-            <input name="address" placeholder="Address" onChange={handleChange} style={inputStyle} />
-            <input name="pincode" placeholder="Pincode" onChange={handleChange} style={inputStyle} />
-            <input name="landmark" placeholder="Landmark" onChange={handleChange} style={inputStyle} />
+          <div style={{ marginTop: "20px" }}>
+            <input name="name" placeholder="Name" onChange={handleChange} style={input} />
+            <input name="phone" placeholder="Phone" onChange={handleChange} style={input} />
+            <input name="address" placeholder="Address" onChange={handleChange} style={input} />
+            <input name="pincode" placeholder="Pincode" onChange={handleChange} style={input} />
 
-            <button onClick={placeOrder} style={btnStyle} disabled={loading}>
-              {loading ? "Placing Order..." : "Place Order"}
+            <button onClick={placeOrder} style={btn}>
+              {loading ? "Placing..." : "Place Order"}
             </button>
           </div>
         </>
@@ -87,24 +94,19 @@ export default function Cart({ cart, setCart, setPage }) {
   );
 }
 
-const inputStyle = {
+const input = {
   display: "block",
-  width: "100%",
-  padding: "10px",
   marginBottom: "10px",
+  padding: "10px",
+  width: "300px",
   background: "#111",
   color: "white",
-  border: "1px solid maroon",
-  borderRadius: "5px"
+  border: "1px solid maroon"
 };
 
-const btnStyle = {
-  marginTop: "15px",
-  padding: "12px",
-  width: "100%",
+const btn = {
+  padding: "10px",
   background: "maroon",
   color: "white",
-  border: "none",
-  cursor: "pointer",
-  borderRadius: "5px"
+  border: "none"
 };
