@@ -6,7 +6,7 @@ export default function MyOrders({ setPage }) {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchOrders = async () => {
       const user = auth.currentUser;
       if (!user) return;
 
@@ -19,18 +19,22 @@ export default function MyOrders({ setPage }) {
       setOrders(data);
     };
 
-    fetch();
+    fetchOrders();
   }, []);
 
   return (
     <div style={{ padding: "40px", color: "white" }}>
       <h1>My Orders</h1>
 
-      {orders.map((o, i) => (
-        <div key={i}>
-          ₹{o.total} - {o.status}
-        </div>
-      ))}
+      {orders.length === 0 ? (
+        <p>No orders yet</p>
+      ) : (
+        orders.map((o, i) => (
+          <div key={i}>
+            ₹{o.total} - {o.status}
+          </div>
+        ))
+      )}
     </div>
   );
 }
