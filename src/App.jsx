@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
-import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import MyOrders from "./pages/MyOrders";
 import { auth } from "./firebase";
@@ -13,25 +12,31 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [user, setUser] = useState(null);
 
+  // 🔐 TRACK LOGIN
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
       setUser(u);
     });
-    return () => unsub();
+
+    return () => unsubscribe();
   }, []);
 
   const logout = async () => {
-    await signOut(auth);
-    alert("Logged out");
-    setPage("home");
+    try {
+      await signOut(auth);
+      alert("Logged out");
+      setPage("home");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
-    <div style={{ background: "#0a0a0a", minHeight: "100vh" }}>
+    <div style={{ background: "#0a0a0a", minHeight: "100vh", color: "white" }}>
       
       {/* NAVBAR */}
       <div style={nav}>
-        <h2 style={{ color: "white" }}>JEWEL16 💎</h2>
+        <h2>JEWEL16 💎</h2>
 
         <div style={{ display: "flex", gap: "15px" }}>
           <button onClick={() => setPage("home")}>Home</button>
@@ -42,26 +47,30 @@ export default function App() {
 
           {user && (
             <button onClick={() => setPage("orders")}>
-              My Orders
+              Orders
             </button>
           )}
 
           {!user ? (
-            <button onClick={() => setPage("auth")}>Login</button>
+            <button onClick={() => setPage("auth")}>
+              Login
+            </button>
           ) : (
-            <button onClick={logout}>Logout</button>
+            <button onClick={logout}>
+              Logout
+            </button>
           )}
         </div>
       </div>
 
-      {/* USER INFO */}
+      {/* USER EMAIL */}
       {user && (
-        <p style={{ color: "white", padding: "10px 20px" }}>
+        <p style={{ padding: "10px 20px" }}>
           {user.email}
         </p>
       )}
 
-      {/* ROUTES */}
+      {/* PAGES */}
       {page === "home" && <Home setPage={setPage} />}
       {page === "products" && (
         <Products cart={cart} setCart={setCart} setPage={setPage} />
@@ -71,7 +80,6 @@ export default function App() {
       )}
       {page === "auth" && <Auth setPage={setPage} />}
       {page === "orders" && <MyOrders setPage={setPage} />}
-      {page === "admin" && <Admin setPage={setPage} />}
 
     </div>
   );
