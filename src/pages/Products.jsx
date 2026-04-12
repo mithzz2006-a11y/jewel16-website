@@ -1,69 +1,63 @@
-import { useState } from "react";
-
-export default function ProductDetails({
-  product,
-  setPage,
+export default function Products({
   cart,
   setCart,
-  setCheckoutItem
+  setPage,
+  setSelectedProduct
 }) {
-  const [qty, setQty] = useState(1);
-
-  if (!product) return <p>Loading...</p>;
-
-  const addToCart = () => {
-    setCart([...cart, { ...product, qty }]);
-    alert("Added to cart ✅");
-  };
-
-  const buyNow = () => {
-    setCheckoutItem({ ...product, qty });
-    setPage("checkout");
-  };
+  const products = [
+    {
+      name: "Diamond Necklace",
+      price: 459,
+      image: "https://picsum.photos/300/300?1"
+    },
+    {
+      name: "Gold Ring",
+      price: 359,
+      image: "https://picsum.photos/300/300?2"
+    },
+    {
+      name: "Silver Bracelet",
+      price: 469,
+      image: "https://picsum.photos/300/300?3"
+    }
+  ];
 
   return (
     <div className="container">
+      <h1>Collection</h1>
 
-      <button onClick={() => setPage("products")}>← Back</button>
+      <div className="grid">
 
-      <div style={wrapper}>
+        {products.map((item, index) => (
+          <div
+            key={index}
+            className="card"
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              setSelectedProduct(item);
+              setPage("details");
+            }}
+          >
+            <img src={item.image} alt={item.name} />
 
-        <img src={product.image} style={image} />
+            <h3>{item.name}</h3>
+            <p>₹{item.price}</p>
 
-        <div>
-          <h1>{product.name}</h1>
-          <h2>₹{product.price}</h2>
+            {/* ADD BUTTON (STOP PROPAGATION) */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setCart([...cart, item]);
+                alert("Added to cart ✅");
+              }}
+            >
+              Add to Cart
+            </button>
 
-          {/* 🔢 QUANTITY */}
-          <div style={{ marginTop: "10px" }}>
-            <button onClick={() => setQty(qty > 1 ? qty - 1 : 1)}>-</button>
-            <span style={{ margin: "0 10px" }}>{qty}</span>
-            <button onClick={() => setQty(qty + 1)}>+</button>
           </div>
-
-          <button onClick={addToCart} style={{ marginTop: "15px" }}>
-            Add to Cart
-          </button>
-
-          <button onClick={buyNow} style={{ marginTop: "10px" }}>
-            Buy Now
-          </button>
-        </div>
+        ))}
 
       </div>
     </div>
   );
 }
-
-const wrapper = {
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr",
-  gap: "30px",
-  marginTop: "20px"
-};
-
-const image = {
-  width: "100%",
-  maxHeight: "400px",
-  objectFit: "cover"
-};
