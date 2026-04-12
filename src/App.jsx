@@ -19,9 +19,10 @@ export default function App() {
 
   return (
     <div style={{ color: "white" }}>
+
       <button onClick={() => setPage("home")}>Home</button>
       <button onClick={() => setPage("products")}>Products</button>
-      <button onClick={() => setPage("cart")}>Cart</button>
+      <button onClick={() => setPage("cart")}>Cart ({cart.length})</button>
 
       {!user ? (
         <button onClick={() => setPage("auth")}>Login</button>
