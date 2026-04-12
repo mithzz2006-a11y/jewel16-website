@@ -1,78 +1,23 @@
-export default function Products({ cart, setCart, setPage }) {
+export default function Products({ cart, setCart }) {
   const products = [
     { name: "Necklace", price: 459 },
     { name: "Ring", price: 359 },
     { name: "Bracelet", price: 469 }
   ];
 
-  const addToCart = (item) => {
-    setCart([...cart, item]);
-  };
-
   return (
-    <div style={{ background: "#0a0a0a", color: "white", padding: "40px" }}>
-      <h1 style={{ marginBottom: "10px" }}>Products</h1>
+    <div>
+      <h1>Collection</h1>
 
-      <button
-        onClick={() => setPage("cart")}
-        style={{
-          marginBottom: "20px",
-          padding: "10px 15px",
-          background: "maroon",
-          color: "black",
-          border: "none",
-          cursor: "pointer",
-          borderRadius: "5px"
-        }}
-      >
-        Go to Cart ({cart.length})
-      </button>
-
-      {/* Product Grid */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-          gap: "25px",
-          marginTop: "20px"
-        }}
-      >
-        {products.map((item, index) => (
-          <div
-            key={index}
-            style={{
-              border: "1px solid white",
-              padding: "20px",
-              borderRadius: "10px",
-              background: "#111",
-              textAlign: "center",
-              transition: "transform 0.3s, box-shadow 0.3s",
-              boxShadow: "0 0 10px rgba(255, 215, 0, 0.2)"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.05)";
-              e.currentTarget.style.boxShadow = "0 0 20px white";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow =
-                "0 0 10px rgba(255, 215, 0, 0.2)";
-            }}
-          >
+      <div style={grid}>
+        {products.map((item, i) => (
+          <div key={i} style={card}>
             <h3>{item.name}</h3>
-            <p style={{ color: "white", fontSize: "18px" }}>₹{item.price}</p>
+            <p>₹{item.price}</p>
 
             <button
-              onClick={() => addToCart(item)}
-              style={{
-                marginTop: "10px",
-                padding: "10px",
-                background: "white",
-                color: "black",
-                border: "none",
-                cursor: "pointer",
-                borderRadius: "5px"
-              }}
+              onClick={() => setCart([...cart, item])}
+              style={btn}
             >
               Add to Cart
             </button>
@@ -82,3 +27,26 @@ export default function Products({ cart, setCart, setPage }) {
     </div>
   );
 }
+
+const grid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+  gap: "30px",
+  marginTop: "30px"
+};
+
+const card = {
+  padding: "20px",
+  border: "2px solid black",
+  textAlign: "center",
+  background: "#fff"
+};
+
+const btn = {
+  marginTop: "10px",
+  padding: "10px",
+  border: "1px solid black",
+  background: "#fff",
+  color: "maroon",
+  cursor: "pointer"
+};
