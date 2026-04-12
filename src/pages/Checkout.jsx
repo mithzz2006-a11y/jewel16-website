@@ -25,7 +25,7 @@ export default function Checkout({ item, setPage, user }) {
     }
 
     const options = {
-      key: "rzp_test_123456789", // 🔥 PUT YOUR REAL KEY HERE
+      key: "rzp_test_ScWJUAyuWw1k0z", // 🔥 PUT YOUR REAL KEY HERE
       amount: total * 100,
       currency: "INR",
       name: "JEWEL16",
