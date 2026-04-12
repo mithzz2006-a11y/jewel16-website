@@ -11,20 +11,14 @@ export default function Auth({ setPage }) {
   const [password, setPassword] = useState("");
 
   const handleAuth = async () => {
-    if (!email || !password) {
-      alert("Enter email & password");
-      return;
-    }
-
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
-        alert("Login successful");
+        alert("Login successful ✅");
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
-        alert("Account created");
+        alert("Account created ✅");
       }
-
       setPage("home");
     } catch (err) {
       alert(err.message);
