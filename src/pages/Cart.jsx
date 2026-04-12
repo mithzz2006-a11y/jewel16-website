@@ -2,7 +2,7 @@ import { useState } from "react";
 import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
 
-export default function Cart({ cart, setCart, setPage, user }) {
+export default function Cart({ cart = [], setCart, setPage, user }) {
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
@@ -13,7 +13,7 @@ export default function Cart({ cart, setCart, setPage, user }) {
     landmark: ""
   });
 
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -37,12 +37,12 @@ export default function Cart({ cart, setCart, setPage, user }) {
       setLoading(true);
 
       await addDoc(collection(db, "orders"), {
-        userEmail: user.email, // 🔥 IMPORTANT
+        userEmail: user.email,
         customer: name,
         phone,
         address,
         pincode,
-        landmark: form.landmark,
+        landmark: form.landmark || "",
         items: cart,
         total,
         status: "Pending",
@@ -55,7 +55,7 @@ export default function Cart({ cart, setCart, setPage, user }) {
       setPage("home");
 
     } catch (err) {
-      console.error(err);
+      console.error("ORDER ERROR:", err);
       alert("Error placing order ❌");
     } finally {
       setLoading(false);
@@ -63,7 +63,7 @@ export default function Cart({ cart, setCart, setPage, user }) {
   };
 
   return (
-    <div style={{ background: "#0a0a0a", color: "white", padding: "40px" }}>
+    <div style={{ padding: "40px", background: "#0a0a0a", color: "white" }}>
       <h1 style={{ color: "maroon" }}>Your Cart</h1>
 
       {cart.length === 0 ? (
@@ -108,5 +108,6 @@ const btn = {
   padding: "10px",
   background: "maroon",
   color: "white",
-  border: "none"
+  border: "none",
+  cursor: "pointer"
 };
