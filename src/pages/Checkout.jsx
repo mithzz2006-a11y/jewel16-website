@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function Checkout({ cart, total }) {
+export default function Checkout({ cart = [], total = 0 }) {
   const [loading, setLoading] = useState(false);
 
   const handlePayment = async () => {
@@ -22,7 +22,7 @@ export default function Checkout({ cart, total }) {
         amount: order.amount,
         currency: "INR",
         name: "JEWEL16 💎",
-        description: "Luxury Purchase",
+        description: "Luxury Jewellery",
         order_id: order.id,
 
         handler: async function (response) {
@@ -53,31 +53,29 @@ export default function Checkout({ cart, total }) {
 
     } catch (err) {
       console.error(err);
-      alert("Error in payment ❌");
+      alert("Payment Error ❌");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "black",
-        color: "white",
-        padding: "30px"
-      }}
-    >
-      <h2 style={{ marginBottom: "20px" }}>Checkout</h2>
+    <div style={{
+      minHeight: "100vh",
+      background: "black",
+      color: "white",
+      padding: "20px"
+    }}>
+      <h1>Checkout</h1>
 
       {cart.map((item, i) => (
-        <div key={i} style={{ marginBottom: "15px" }}>
+        <div key={i}>
           <p>{item.name}</p>
           <p>₹{item.price}</p>
         </div>
       ))}
 
-      <h3>Total: ₹{total}</h3>
+      <h2>Total: ₹{total}</h2>
 
       <button
         onClick={handlePayment}
@@ -88,9 +86,7 @@ export default function Checkout({ cart, total }) {
           width: "100%",
           background: "maroon",
           color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer"
+          border: "none"
         }}
       >
         {loading ? "Processing..." : "Pay Now"}
