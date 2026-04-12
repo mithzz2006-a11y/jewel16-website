@@ -5,6 +5,7 @@ import Cart from "./pages/Cart";
 import Auth from "./pages/Auth";
 import MyOrders from "./pages/MyOrders";
 import ProductDetails from "./pages/ProductDetails";
+import Checkout from "./pages/Checkout";
 
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -14,36 +15,33 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [user, setUser] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [checkoutItem, setCheckoutItem] = useState(null);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => setUser(u));
     return () => unsub();
   }, []);
 
-  // 🔐 LOGIN FIRST
   if (!user) return <Auth />;
 
   return (
     <div style={{ background: "#fff", minHeight: "100vh", color: "maroon" }}>
 
-      {/* 🔥 NAVBAR */}
+      {/* NAVBAR */}
       <div style={nav}>
-
         <h2 style={logo}>JEWEL16</h2>
 
         <div style={navRight}>
-          <button onClick={() => setPage("home")} style={btn}>Home</button>
-          <button onClick={() => setPage("products")} style={btn}>Products</button>
-          <button onClick={() => setPage("cart")} style={btn}>
+          <button style={btn} onClick={() => setPage("home")}>Home</button>
+          <button style={btn} onClick={() => setPage("products")}>Products</button>
+          <button style={btn} onClick={() => setPage("cart")}>
             Cart ({cart.length})
           </button>
-          <button onClick={() => setPage("orders")} style={btn}>Orders</button>
-          <button onClick={() => signOut(auth)} style={btn}>Logout</button>
+          <button style={btn} onClick={() => setPage("orders")}>Orders</button>
+          <button style={btn} onClick={() => signOut(auth)}>Logout</button>
         </div>
-
       </div>
 
-      {/* 🔥 PAGES */}
       <div style={{ padding: "20px" }}>
 
         {page === "home" && <Home setPage={setPage} />}
@@ -63,6 +61,15 @@ export default function App() {
             setPage={setPage}
             cart={cart}
             setCart={setCart}
+            setCheckoutItem={setCheckoutItem}
+          />
+        )}
+
+        {page === "checkout" && (
+          <Checkout
+            item={checkoutItem}
+            setPage={setPage}
+            user={user}
           />
         )}
 
@@ -75,28 +82,24 @@ export default function App() {
           />
         )}
 
-        {page === "orders" && (
-          <MyOrders setPage={setPage} />
-        )}
+        {page === "orders" && <MyOrders setPage={setPage} />}
 
       </div>
-
     </div>
   );
 }
 
-/* 💎 STYLES */
-
+/* STYLES */
 const nav = {
   display: "flex",
   justifyContent: "space-between",
-  alignItems: "center",
   padding: "15px 20px",
-  borderBottom: "2px solid black"
+  borderBottom: "2px solid black",
+  flexWrap: "wrap"
 };
 
 const logo = {
-  fontSize: "clamp(18px, 4vw, 26px)",
+  fontSize: "clamp(18px,4vw,26px)",
   fontWeight: "bold"
 };
 
@@ -107,10 +110,9 @@ const navRight = {
 };
 
 const btn = {
-  background: "#fff",
   border: "1px solid black",
   padding: "8px 14px",
-  fontWeight: "bold",
+  background: "#fff",
   color: "maroon",
   cursor: "pointer"
 };
