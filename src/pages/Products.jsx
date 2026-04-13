@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 
-export default function Products({ setPage, setSelectedProduct, cart, setCart }) {
+export default function Products({
+  setPage,
+  setSelectedProduct,
+  cart,
+  setCart,
+}) {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -15,19 +20,19 @@ export default function Products({ setPage, setSelectedProduct, cart, setCart })
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Products</h2>
+      <h2>Our Collection</h2>
 
       <div style={grid}>
         {products.map(p => (
           <div key={p.id} style={card}>
-            <img src={p.image} style={{ width: "100%" }} />
 
-            <h3 onClick={() => {
+            <div onClick={() => {
               setSelectedProduct(p);
               setPage("productDetails");
             }}>
-              {p.name}
-            </h3>
+              <img src={p.image} style={img} />
+              <h3>{p.name}</h3>
+            </div>
 
             <p>₹{p.price}</p>
 
@@ -43,11 +48,17 @@ export default function Products({ setPage, setSelectedProduct, cart, setCart })
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-  gap: "20px"
+  gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+  gap: "20px",
 };
 
 const card = {
-  border: "1px solid #ddd",
-  padding: "10px"
+  border: "1px solid #eee",
+  padding: "15px",
+};
+
+const img = {
+  width: "100%",
+  height: "200px",
+  objectFit: "cover",
 };
