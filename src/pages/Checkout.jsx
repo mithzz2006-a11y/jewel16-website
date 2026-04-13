@@ -1,19 +1,32 @@
-export default function Checkout({ cart }) {
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
+import { db, auth } from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
+
+export default function Checkout({ cart, setPage }) {
+  const total = cart.reduce((s, i) => s + i.price, 0);
+
+  const placeOrder = async () => {
+    const user = auth.currentUser;
+
+    await addDoc(collection(db, "orders"), {
+      email: user.email,
+      items: cart,
+      total,
+      status: "Placed",
+      createdAt: new Date()
+    });
+
+    alert("Order placed");
+    setPage("orders");
+  };
 
   return (
     <div style={{ padding: "20px" }}>
       <h1>Checkout</h1>
-
-      {cart.map((item, i) => (
-        <div key={i}>
-          <p>{item.name} - ₹{item.price}</p>
-        </div>
-      ))}
-
       <h2>Total: ₹{total}</h2>
 
-      <button>Pay Now</button>
+      <button onClick={placeOrder}>
+        Place Order
+      </button>
     </div>
   );
 }
