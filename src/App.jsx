@@ -1,83 +1,66 @@
-import { useState, useEffect } from "react";
-import { auth } from "./firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-
-import Auth from "./pages/Auth";
+import { useState } from "react";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import MyOrders from "./pages/MyOrders";
-import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
+import Login from "./pages/Login";
+import Profile from "./pages/Profile";
+
+import { auth } from "./firebase";
+import { signOut } from "firebase/auth";
 
 export default function App() {
-  const [user, setUser] = useState(null);
   const [page, setPage] = useState("home");
   const [cart, setCart] = useState([]);
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (u) => {
-      setUser(u);
-      if (!u) setPage("auth");
-    });
-  }, []);
+  const user = auth.currentUser;
 
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  // 🔁 PAGE ROUTING
+  if (!user) return <Login setPage={setPage} />;
 
-  const logout = async () => {
-    await signOut(auth);
-    setPage("auth");
-  };
+  if (page === "home") return <Layout><Home setPage={setPage} /></Layout>;
+  if (page === "products") return <Layout><Products setPage={setPage} setCart={setCart} cart={cart} /></Layout>;
+  if (page === "cart") return <Layout><Cart cart={cart} setPage={setPage} /></Layout>;
+  if (page === "checkout") return <Layout><Checkout cart={cart} setPage={setPage} /></Layout>;
+  if (page === "orders") return <Layout><MyOrders /></Layout>;
+  if (page === "admin") return <Layout><Admin setPage={setPage} /></Layout>;
+  if (page === "profile") return <Layout><Profile /></Layout>;
 
-  if (!user) return <Auth setPage={setPage} />;
+  return <Layout><Home setPage={setPage} /></Layout>;
+}
 
+/* 🔥 LAYOUT + NAVBAR */
+
+function Layout({ children }) {
   return (
-    <div style={{ background: "white", minHeight: "100vh" }}>
+    <div>
+      <nav style={nav}>
+        <h2 style={{ color: "maroon" }}>JEWEL16 💎</h2>
 
-      {/* 🔥 NAVBAR */}
-      <div style={navbar}>
+        <div>
+          <button onClick={() => location.reload()}>Home</button>
+          <button onClick={() => window.dispatchEvent(new CustomEvent("nav", { detail: "products" }))}>Products</button>
+          <button onClick={() => window.dispatchEvent(new CustomEvent("nav", { detail: "cart" }))}>Cart</button>
+          <button onClick={() => window.dispatchEvent(new CustomEvent("nav", { detail: "orders" }))}>Orders</button>
+          <button onClick={() => window.dispatchEvent(new CustomEvent("nav", { detail: "profile" }))}>Profile</button>
+          <button onClick={() => window.dispatchEvent(new CustomEvent("nav", { detail: "admin" }))}>Admin</button>
 
-        {/* 🔐 SECRET ADMIN ENTRY */}
-        <h2
-          style={{ color: "maroon", cursor: "pointer" }}
-          onDoubleClick={() => setPage("admin")}
-        >
-          JEWEL16 💎
-        </h2>
-
-        <div style={nav}>
-          <button onClick={() => setPage("home")}>Home</button>
-          <button onClick={() => setPage("products")}>Products</button>
-          <button onClick={() => setPage("cart")}>
-            Cart ({cart.length})
-          </button>
-          <button onClick={() => setPage("orders")}>Orders</button>
-          <button onClick={() => setPage("profile")}>Profile</button>
-          <button onClick={logout}>Logout</button>
+          <button onClick={() => signOut(auth)}>Logout</button>
         </div>
-      </div>
+      </nav>
 
-      {/* 🔥 PAGES */}
-      {page === "home" && <Home setPage={setPage} user={user} />}
-      {page === "products" && <Products cart={cart} setCart={setCart} setPage={setPage} />}
-      {page === "cart" && <Cart cart={cart} setPage={setPage} />}
-      {page === "checkout" && <Checkout cart={cart} total={total} />}
-      {page === "orders" && <MyOrders />}
-      {page === "profile" && <Profile />}
-      {page === "admin" && <Admin setPage={setPage} />}
+      <div style={{ padding: "20px" }}>{children}</div>
     </div>
   );
 }
 
-const navbar = {
-  display: "flex",
-  justifyContent: "space-between",
-  padding: "15px",
-  borderBottom: "1px solid black"
-};
-
 const nav = {
   display: "flex",
-  gap: "10px"
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "15px",
+  borderBottom: "2px solid black",
+  background: "white"
 };
