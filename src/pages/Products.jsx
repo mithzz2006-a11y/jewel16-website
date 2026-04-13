@@ -1,63 +1,35 @@
-export default function Products({
-  cart,
-  setCart,
-  setPage,
-  setSelectedProduct
-}) {
-  const products = [
-    {
-      name: "Diamond Necklace",
-      price: 459,
-      image: "https://picsum.photos/300/300?1"
-    },
-    {
-      name: "Gold Ring",
-      price: 359,
-      image: "https://picsum.photos/300/300?2"
-    },
-    {
-      name: "Silver Bracelet",
-      price: 469,
-      image: "https://picsum.photos/300/300?3"
-    }
-  ];
+import { useEffect, useState } from "react";
+import { db } from "../firebase";
+import { collection, getDocs } from "firebase/firestore";
+
+export default function Products({ cart, setCart, setPage }) {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const load = async () => {
+      const snap = await getDocs(collection(db, "products"));
+      setProducts(snap.docs.map(doc => doc.data()));
+    };
+    load();
+  }, []);
 
   return (
-    <div className="container">
-      <h1>Collection</h1>
+    <div style={{ padding: "20px" }}>
+      <h1>Products</h1>
 
-      <div className="grid">
+      {products.map((p, i) => (
+        <div key={i}>
+          <img src={p.image} width="120" />
+          <p>{p.name}</p>
+          <p>₹{p.price}</p>
 
-        {products.map((item, index) => (
-          <div
-            key={index}
-            className="card"
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              setSelectedProduct(item);
-              setPage("details");
-            }}
-          >
-            <img src={item.image} alt={item.name} />
+          <button onClick={() => setCart([...cart, p])}>
+            Add to Cart
+          </button>
+        </div>
+      ))}
 
-            <h3>{item.name}</h3>
-            <p>₹{item.price}</p>
-
-            {/* ADD BUTTON (STOP PROPAGATION) */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setCart([...cart, item]);
-                alert("Added to cart ✅");
-              }}
-            >
-              Add to Cart
-            </button>
-
-          </div>
-        ))}
-
-      </div>
+      <button onClick={() => setPage("cart")}>Go to Cart</button>
     </div>
   );
 }
