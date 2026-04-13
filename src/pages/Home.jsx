@@ -1,51 +1,73 @@
 export default function Home({ setPage }) {
   return (
     <div style={container}>
+
       <h1 style={title}>JEWEL16</h1>
 
-      <p style={tagline}>
-        Luxury Jewellery Collection for Modern Style
+      <p style={tag}>
+        Timeless Jewellery. Trusted Craftsmanship.
       </p>
 
-      <button style={button} onClick={() => setPage("products")}>
-        Shop Now
+      <button style={btn} onClick={() => setPage("products")}>
+        Explore Collection
       </button>
+
+      {/* TRUST SECTION */}
+      <div style={trustBox}>
+        <div style={trustItem}>
+          💳 Secure Payments
+          <p>100% safe & encrypted checkout</p>
+        </div>
+
+        <div style={trustItem}>
+          🚚 Fast Delivery
+          <p>Quick shipping across India</p>
+        </div>
+
+        <div style={trustItem}>
+          🔄 Easy Returns
+          <p>Hassle-free return policy</p>
+        </div>
+      </div>
+
     </div>
   );
 }
 
 const container = {
-  height: "90vh",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
   textAlign: "center",
+  padding: "40px"
 };
 
 const title = {
-  fontSize: "50px",
+  fontSize: "60px",
   color: "maroon",
-  fontWeight: "bold",
+  letterSpacing: "4px"
 };
 
-const tagline = {
-  margin: "10px 0 20px",
-  fontSize: "18px",
-  color: "#333",
+const tag = {
+  margin: "15px 0",
+  color: "#555"
 };
 
-const button = {
-  padding: "10px 20px",
-  border: "1px solid maroon",
+const btn = {
+  padding: "12px 25px",
+  border: "1px solid black",
   background: "white",
   color: "maroon",
-  cursor: "pointer",
-  borderRadius: "4px",
-  transition: "0.3s",
+  cursor: "pointer"
 };
 
-button[":hover"] = {
-  background: "maroon",
-  color: "white",
+const trustBox = {
+  marginTop: "50px",
+  display: "flex",
+  justifyContent: "center",
+  gap: "40px",
+  flexWrap: "wrap"
+};
+
+const trustItem = {
+  border: "1px solid #eee",
+  padding: "20px",
+  width: "200px"
 };
