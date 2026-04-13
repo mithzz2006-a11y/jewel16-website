@@ -1,5 +1,5 @@
 import { db, auth } from "../firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, doc, getDoc } from "firebase/firestore";
 
 export default function Checkout({ cart, setPage }) {
 
@@ -13,15 +13,31 @@ export default function Checkout({ cart, setPage }) {
       return;
     }
 
+    // 🔥 GET USER PROFILE
+    const userSnap = await getDoc(doc(db, "users", user.uid));
+
+    if (!userSnap.exists()) {
+      alert("Please complete profile first");
+      setPage("profile");
+      return;
+    }
+
+    const userData = userSnap.data();
+
+    // 🔥 SAVE ORDER
     await addDoc(collection(db, "orders"), {
       email: user.email,
+      name: userData.name,
+      phone: userData.phone,
+      address: userData.address,
       items: cart,
-      total: total,
+      total,
       status: "Placed",
       createdAt: new Date()
     });
 
     alert("Order placed successfully ✅");
+
     setPage("orders");
   };
 
@@ -30,7 +46,7 @@ export default function Checkout({ cart, setPage }) {
       <h1>Checkout</h1>
 
       {cart.map((item, i) => (
-        <div key={i}>
+        <div key={i} style={{ marginBottom: "10px" }}>
           <img src={item.image} width="80" />
           <p>{item.name}</p>
           <p>₹{item.price}</p>
@@ -47,7 +63,8 @@ export default function Checkout({ cart, setPage }) {
           background: "maroon",
           color: "white",
           border: "none",
-          marginTop: "20px"
+          marginTop: "20px",
+          fontWeight: "bold"
         }}
       >
         Place Order
