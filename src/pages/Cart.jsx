@@ -3,12 +3,19 @@ export default function Cart({ cart, setPage }) {
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
   return (
-    <div style={{ background: "black", color: "white", minHeight: "100vh", padding: "20px" }}>
+    <div style={{
+      background: "black",
+      color: "white",
+      minHeight: "100vh",
+      padding: "20px"
+    }}>
       <h1>Your Cart</h1>
+
+      {cart.length === 0 && <p>No items</p>}
 
       {cart.map((item, i) => (
         <div key={i}>
-          {item.name} - ₹{item.price}
+          <p>{item.name} - ₹{item.price}</p>
         </div>
       ))}
 
