@@ -3,8 +3,8 @@ export default function Cart({ cart, setPage }) {
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Cart</h1>
+    <div style={{ background: "black", color: "white", minHeight: "100vh", padding: "20px" }}>
+      <h1>Your Cart</h1>
 
       {cart.map((item, i) => (
         <div key={i}>
@@ -15,7 +15,7 @@ export default function Cart({ cart, setPage }) {
       <h2>Total: ₹{total}</h2>
 
       <button onClick={() => setPage("checkout")}>
-        Checkout
+        Go to Checkout
       </button>
     </div>
   );
