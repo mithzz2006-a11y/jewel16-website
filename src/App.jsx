@@ -1,29 +1,46 @@
 import { useState } from "react";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
+import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
-import Profile from "./pages/Profile";
 
 export default function App() {
   const [page, setPage] = useState("home");
   const [cart, setCart] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   return (
     <div>
       <Navbar setPage={setPage} cart={cart} />
 
       {page === "home" && <Home setPage={setPage} />}
+
       {page === "products" && (
-        <Products cart={cart} setCart={setCart} />
+        <Products
+          cart={cart}
+          setCart={setCart}
+          setPage={setPage}
+          setSelectedProduct={setSelectedProduct}
+        />
       )}
+
+      {page === "productDetails" && (
+        <ProductDetails
+          product={selectedProduct}
+          cart={cart}
+          setCart={setCart}
+          setPage={setPage}
+        />
+      )}
+
       {page === "cart" && (
         <Cart cart={cart} setPage={setPage} />
       )}
+
       {page === "checkout" && (
         <Checkout cart={cart} />
       )}
-      {page === "profile" && <Profile />}
     </div>
   );
 }
@@ -40,7 +57,6 @@ function Navbar({ setPage, cart }) {
         <button onClick={() => setPage("cart")}>
           Cart ({cart.length})
         </button>
-        <button onClick={() => setPage("profile")}>Profile</button>
       </div>
     </div>
   );
