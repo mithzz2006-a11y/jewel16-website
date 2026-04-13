@@ -2,8 +2,8 @@ export default function Cart({ cart, setPage }) {
   const total = cart.reduce((s, i) => s + i.price, 0);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Cart</h1>
+    <div style={box}>
+      <h1>Your Cart</h1>
 
       {cart.map((i, idx) => (
         <p key={idx}>{i.name} - ₹{i.price}</p>
@@ -17,3 +17,10 @@ export default function Cart({ cart, setPage }) {
     </div>
   );
 }
+
+const box = {
+  background: "black",
+  color: "white",
+  minHeight: "100vh",
+  padding: "20px",
+};
