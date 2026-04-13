@@ -1,35 +1,55 @@
-import { useEffect, useState } from "react";
-import { db } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
+export default function Products({ cart, setCart }) {
 
-export default function Products({ cart, setCart, setPage }) {
-  const [products, setProducts] = useState([]);
+  const products = [
+    { name: "Necklace", price: 459, image: "https://via.placeholder.com/300" },
+    { name: "Ring", price: 359, image: "https://via.placeholder.com/300" },
+    { name: "Bracelet", price: 469, image: "https://via.placeholder.com/300" }
+  ];
 
-  useEffect(() => {
-    const load = async () => {
-      const snap = await getDocs(collection(db, "products"));
-      setProducts(snap.docs.map(doc => doc.data()));
-    };
-    load();
-  }, []);
+  const addToCart = (item) => {
+    setCart([...cart, item]);
+    alert("Added to cart ✅");
+  };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Products</h1>
+    <div>
+      <h1 style={{ marginBottom: "20px" }}>Products</h1>
 
-      {products.map((p, i) => (
-        <div key={i}>
-          <img src={p.image} width="120" />
-          <p>{p.name}</p>
-          <p>₹{p.price}</p>
+      <div style={grid}>
+        {products.map((item, index) => (
+          <div key={index} style={card}>
+            <img src={item.image} style={img} />
 
-          <button onClick={() => setCart([...cart, p])}>
-            Add to Cart
-          </button>
-        </div>
-      ))}
+            <h3>{item.name}</h3>
+            <p>₹{item.price}</p>
 
-      <button onClick={() => setPage("cart")}>Go to Cart</button>
+            <button onClick={() => addToCart(item)}>
+              Add to Cart
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
+
+const grid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+  gap: "25px"
+};
+
+const card = {
+  padding: "20px",
+  border: "1px solid #ddd",
+  textAlign: "center",
+  background: "white",
+  transition: "0.3s"
+};
+
+const img = {
+  width: "100%",
+  height: "200px",
+  objectFit: "cover",
+  marginBottom: "10px"
+};
