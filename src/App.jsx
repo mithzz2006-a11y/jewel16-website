@@ -15,7 +15,7 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [user, setUser] = useState(null);
 
-  const ADMIN_EMAIL = "yourmail@gmail.com"; // 🔥 CHANGE THIS
+  const ADMIN_EMAIL = "mithzz2006@gmail.com"; // ✅ YOUR EMAIL ADDED
 
   useEffect(() => {
     onAuthStateChanged(auth, (u) => {
@@ -48,6 +48,7 @@ export default function App() {
           </button>
           <button onClick={() => setPage("orders")}>Orders</button>
 
+          {/* 🔐 ADMIN ONLY */}
           {user.role === "admin" && (
             <button onClick={() => setPage("admin")}>
               Admin
