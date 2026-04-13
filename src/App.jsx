@@ -17,50 +17,66 @@ export default function App() {
 
   const user = auth.currentUser;
 
-  // 🔁 PAGE ROUTING
+  // 🔐 LOGIN CHECK
   if (!user) return <Login setPage={setPage} />;
 
-  if (page === "home") return <Layout><Home setPage={setPage} /></Layout>;
-  if (page === "products") return <Layout><Products setPage={setPage} setCart={setCart} cart={cart} /></Layout>;
-  if (page === "cart") return <Layout><Cart cart={cart} setPage={setPage} /></Layout>;
-  if (page === "checkout") return <Layout><Checkout cart={cart} setPage={setPage} /></Layout>;
-  if (page === "orders") return <Layout><MyOrders /></Layout>;
-  if (page === "admin") return <Layout><Admin setPage={setPage} /></Layout>;
-  if (page === "profile") return <Layout><Profile /></Layout>;
-
-  return <Layout><Home setPage={setPage} /></Layout>;
-}
-
-/* 🔥 LAYOUT + NAVBAR */
-
-function Layout({ children }) {
   return (
     <div>
-      <nav style={nav}>
-        <h2 style={{ color: "maroon" }}>JEWEL16 💎</h2>
+      <Navbar setPage={setPage} />
 
-        <div>
-          <button onClick={() => location.reload()}>Home</button>
-          <button onClick={() => window.dispatchEvent(new CustomEvent("nav", { detail: "products" }))}>Products</button>
-          <button onClick={() => window.dispatchEvent(new CustomEvent("nav", { detail: "cart" }))}>Cart</button>
-          <button onClick={() => window.dispatchEvent(new CustomEvent("nav", { detail: "orders" }))}>Orders</button>
-          <button onClick={() => window.dispatchEvent(new CustomEvent("nav", { detail: "profile" }))}>Profile</button>
-          <button onClick={() => window.dispatchEvent(new CustomEvent("nav", { detail: "admin" }))}>Admin</button>
-
-          <button onClick={() => signOut(auth)}>Logout</button>
-        </div>
-      </nav>
-
-      <div style={{ padding: "20px" }}>{children}</div>
+      <div style={{ padding: "20px" }}>
+        {page === "home" && <Home setPage={setPage} />}
+        {page === "products" && (
+          <Products setPage={setPage} cart={cart} setCart={setCart} />
+        )}
+        {page === "cart" && (
+          <Cart cart={cart} setPage={setPage} />
+        )}
+        {page === "checkout" && (
+          <Checkout cart={cart} setPage={setPage} />
+        )}
+        {page === "orders" && <MyOrders />}
+        {page === "admin" && <Admin setPage={setPage} />}
+        {page === "profile" && <Profile />}
+      </div>
     </div>
   );
 }
+
+/* 🔥 CLEAN NAVBAR */
+
+function Navbar({ setPage }) {
+  return (
+    <nav style={nav}>
+      <h2 style={{ color: "maroon" }}>JEWEL16 💎</h2>
+
+      <div style={navLinks}>
+        <button onClick={() => setPage("home")}>Home</button>
+        <button onClick={() => setPage("products")}>Products</button>
+        <button onClick={() => setPage("cart")}>Cart</button>
+        <button onClick={() => setPage("orders")}>Orders</button>
+        <button onClick={() => setPage("profile")}>Profile</button>
+        <button onClick={() => setPage("admin")}>Admin</button>
+        <button onClick={() => signOut(auth)}>Logout</button>
+      </div>
+    </nav>
+  );
+}
+
+/* 🎨 STYLES */
 
 const nav = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  padding: "15px",
+  padding: "15px 20px",
   borderBottom: "2px solid black",
-  background: "white"
+  background: "white",
+  flexWrap: "wrap"
+};
+
+const navLinks = {
+  display: "flex",
+  gap: "10px",
+  flexWrap: "wrap"
 };
