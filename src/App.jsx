@@ -35,9 +35,16 @@ export default function App() {
   return (
     <div style={{ background: "white", minHeight: "100vh" }}>
 
-      {/* NAVBAR */}
+      {/* 🔥 NAVBAR */}
       <div style={navbar}>
-        <h2 style={{ color: "maroon" }}>JEWEL16 💎</h2>
+
+        {/* 🔐 SECRET ADMIN ENTRY */}
+        <h2
+          style={{ color: "maroon", cursor: "pointer" }}
+          onDoubleClick={() => setPage("admin")}
+        >
+          JEWEL16 💎
+        </h2>
 
         <div style={nav}>
           <button onClick={() => setPage("home")}>Home</button>
@@ -47,12 +54,11 @@ export default function App() {
           </button>
           <button onClick={() => setPage("orders")}>Orders</button>
           <button onClick={() => setPage("profile")}>Profile</button>
-          <button onClick={() => setPage("admin")}>Admin</button>
           <button onClick={logout}>Logout</button>
         </div>
       </div>
 
-      {/* PAGES */}
+      {/* 🔥 PAGES */}
       {page === "home" && <Home setPage={setPage} user={user} />}
       {page === "products" && <Products cart={cart} setCart={setCart} setPage={setPage} />}
       {page === "cart" && <Cart cart={cart} setPage={setPage} />}
