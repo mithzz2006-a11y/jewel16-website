@@ -1,27 +1,23 @@
+const products = [
+  {
+    name: "Gold Ring",
+    price: 359,
+    image: "https://via.placeholder.com/150"
+  }
+];
+
 export default function Products({ cart, setCart }) {
-
-  const products = [
-    { name: "Necklace", price: 459, image: "https://via.placeholder.com/300" },
-    { name: "Ring", price: 359, image: "https://via.placeholder.com/300" },
-    { name: "Bracelet", price: 469, image: "https://via.placeholder.com/300" }
-  ];
-
-  const addToCart = (item) => {
-    setCart([...cart, item]);
-    alert("Added to cart ✅");
-  };
-
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h1>Products</h1>
 
-      {products.map((item, i) => (
+      {products.map((p, i) => (
         <div key={i}>
-          <img src={item.image} width="100" />
-          <p>{item.name}</p>
-          <p>₹{item.price}</p>
+          <img src={p.image} width="100" />
+          <h3>{p.name}</h3>
+          <p>₹{p.price}</p>
 
-          <button onClick={() => addToCart(item)}>
+          <button onClick={() => setCart([...cart, p])}>
             Add to Cart
           </button>
         </div>
