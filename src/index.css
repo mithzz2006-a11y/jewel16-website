@@ -18,10 +18,6 @@ nav h1 {
   margin: 0;
 }
 
-nav button {
-  margin-left: 10px;
-}
-
 /* BUTTON */
 button {
   padding: 10px 15px;
@@ -35,12 +31,4 @@ button {
 button:hover {
   background: maroon;
   color: white;
-}
-
-/* INPUT */
-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid black;
-  margin-bottom: 10px;
 }
