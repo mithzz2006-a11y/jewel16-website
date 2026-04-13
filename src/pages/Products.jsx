@@ -1,64 +1,47 @@
-import { useEffect, useState } from "react";
-import { db } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
+const products = [
+  {
+    id: 1,
+    name: "Gold Ring",
+    price: 500,
+    image: "https://via.placeholder.com/150"
+  },
+  {
+    id: 2,
+    name: "Necklace",
+    price: 1200,
+    image: "https://via.placeholder.com/150"
+  },
+];
 
-export default function Products({
-  setPage,
-  setSelectedProduct,
-  cart,
-  setCart,
-}) {
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    async function load() {
-      const snap = await getDocs(collection(db, "products"));
-      setProducts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-    }
-    load();
-  }, []);
-
+export default function Products({ setCart }) {
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Our Collection</h2>
+    <div style={grid}>
+      {products.map((p) => (
+        <div key={p.id} style={card}>
+          <img src={p.image} width="100%" />
+          <h3>{p.name}</h3>
+          <p>₹{p.price}</p>
 
-      <div style={grid}>
-        {products.map(p => (
-          <div key={p.id} style={card}>
-
-            <div onClick={() => {
-              setSelectedProduct(p);
-              setPage("productDetails");
-            }}>
-              <img src={p.image} style={img} />
-              <h3>{p.name}</h3>
-            </div>
-
-            <p>₹{p.price}</p>
-
-            <button onClick={() => setCart([...cart, p])}>
-              Add to Cart
-            </button>
-          </div>
-        ))}
-      </div>
+          <button
+            onClick={() => setCart((prev) => [...prev, p])}
+          >
+            Add to Cart
+          </button>
+        </div>
+      ))}
     </div>
   );
 }
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(200px,1fr))",
   gap: "20px",
+  padding: "20px",
 };
 
 const card = {
-  border: "1px solid #eee",
+  border: "1px solid #ddd",
   padding: "15px",
-};
-
-const img = {
-  width: "100%",
-  height: "200px",
-  objectFit: "cover",
+  textAlign: "center",
 };
