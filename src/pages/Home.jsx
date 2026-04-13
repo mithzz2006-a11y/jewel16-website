@@ -1,71 +1,36 @@
-import { useState } from "react";
-
-import Home from "./pages/Home";
-import Products from "./pages/Products";
-import ProductDetails from "./pages/ProductDetails";
-import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
-
-export default function App() {
-  const [page, setPage] = useState("home");
-  const [cart, setCart] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-
+export default function Home({ setPage }) {
   return (
-    <div>
-      <Navbar setPage={setPage} cart={cart} />
+    <div style={home}>
+      <h1 style={title}>Luxury Jewellery Collection 💎</h1>
+      <p style={sub}>
+        Trusted Delivery | Secure Payments | Premium Quality
+      </p>
 
-      {page === "home" && <Home setPage={setPage} />}
-
-      {page === "products" && (
-        <Products
-          setPage={setPage}
-          setSelectedProduct={setSelectedProduct}
-          cart={cart}
-          setCart={setCart}
-        />
-      )}
-
-      {page === "productDetails" && (
-        <ProductDetails
-          product={selectedProduct}
-          cart={cart}
-          setCart={setCart}
-          setPage={setPage}
-        />
-      )}
-
-      {page === "cart" && (
-        <Cart cart={cart} setPage={setPage} />
-      )}
-
-      {page === "checkout" && (
-        <Checkout cart={cart} setPage={setPage} />
-      )}
+      <button style={btn} onClick={() => setPage("products")}>
+        Shop Now
+      </button>
     </div>
   );
 }
 
-/* 💎 NAVBAR */
-function Navbar({ setPage, cart }) {
-  return (
-    <div style={nav}>
-      <h2 style={{ color: "maroon" }}>JEWEL16 💎</h2>
+const home = {
+  textAlign: "center",
+  padding: "100px 20px",
+};
 
-      <div style={{ display: "flex", gap: "10px" }}>
-        <button onClick={() => setPage("home")}>Home</button>
-        <button onClick={() => setPage("products")}>Shop</button>
-        <button onClick={() => setPage("cart")}>
-          Cart ({cart.length})
-        </button>
-      </div>
-    </div>
-  );
-}
+const title = {
+  fontSize: "40px",
+  color: "maroon",
+};
 
-const nav = {
-  display: "flex",
-  justifyContent: "space-between",
-  padding: "20px 30px",
-  borderBottom: "1px solid #eee",
+const sub = {
+  margin: "20px 0",
+  fontSize: "18px",
+};
+
+const btn = {
+  padding: "12px 30px",
+  background: "black",
+  color: "white",
+  border: "none",
 };
