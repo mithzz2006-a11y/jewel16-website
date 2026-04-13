@@ -9,6 +9,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import MyOrders from "./pages/MyOrders";
 import Profile from "./pages/Profile";
+import Admin from "./pages/Admin";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -29,17 +30,16 @@ export default function App() {
     setPage("auth");
   };
 
-  // 🔐 NOT LOGGED IN
   if (!user) return <Auth setPage={setPage} />;
 
   return (
-    <div style={{ minHeight: "100vh", background: "white" }}>
+    <div style={{ background: "white", minHeight: "100vh" }}>
 
-      {/* 🔥 NAVBAR */}
+      {/* NAVBAR */}
       <div style={navbar}>
         <h2 style={{ color: "maroon" }}>JEWEL16 💎</h2>
 
-        <div style={navButtons}>
+        <div style={nav}>
           <button onClick={() => setPage("home")}>Home</button>
           <button onClick={() => setPage("products")}>Products</button>
           <button onClick={() => setPage("cart")}>
@@ -47,68 +47,31 @@ export default function App() {
           </button>
           <button onClick={() => setPage("orders")}>Orders</button>
           <button onClick={() => setPage("profile")}>Profile</button>
+          <button onClick={() => setPage("admin")}>Admin</button>
           <button onClick={logout}>Logout</button>
         </div>
       </div>
 
-      {/* 🔥 FLOATING CART */}
-      <div
-        onClick={() => setPage("cart")}
-        style={floatingCart}
-      >
-        🛒 {cart.length}
-      </div>
-
-      {/* 🔥 PAGES */}
+      {/* PAGES */}
       {page === "home" && <Home setPage={setPage} user={user} />}
-
-      {page === "products" && (
-        <Products cart={cart} setCart={setCart} setPage={setPage} />
-      )}
-
-      {page === "cart" && (
-        <Cart cart={cart} setPage={setPage} />
-      )}
-
-      {page === "checkout" && (
-        <Checkout cart={cart} total={total} />
-      )}
-
+      {page === "products" && <Products cart={cart} setCart={setCart} setPage={setPage} />}
+      {page === "cart" && <Cart cart={cart} setPage={setPage} />}
+      {page === "checkout" && <Checkout cart={cart} total={total} />}
       {page === "orders" && <MyOrders />}
-
       {page === "profile" && <Profile />}
+      {page === "admin" && <Admin setPage={setPage} />}
     </div>
   );
 }
 
-/* 🔥 STYLES */
-
 const navbar = {
   display: "flex",
   justifyContent: "space-between",
-  alignItems: "center",
-  padding: "15px 20px",
-  borderBottom: "1px solid black",
-  background: "white",
-  flexWrap: "wrap"
+  padding: "15px",
+  borderBottom: "1px solid black"
 };
 
-const navButtons = {
+const nav = {
   display: "flex",
-  gap: "10px",
-  flexWrap: "wrap"
-};
-
-const floatingCart = {
-  position: "fixed",
-  top: "80px",
-  right: "20px",
-  background: "maroon",
-  color: "white",
-  padding: "12px 15px",
-  borderRadius: "50%",
-  cursor: "pointer",
-  fontWeight: "bold",
-  zIndex: 1000,
-  boxShadow: "0 4px 10px rgba(0,0,0,0.2)"
+  gap: "10px"
 };
