@@ -10,6 +10,7 @@ body {
   font-family: 'Poppins', sans-serif;
   background: white;
   color: #111;
+  line-height: 1.6;
 }
 
 /* NAVBAR */
@@ -20,6 +21,25 @@ nav {
   padding: 15px 30px;
   border-bottom: 1px solid #ddd;
   background: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #111;
+  transition: color 0.3s;
+}
+
+nav ul li a:hover {
+  color: maroon;
 }
 
 /* BUTTON */
@@ -29,17 +49,85 @@ button {
   background: white;
   color: maroon;
   cursor: pointer;
-  transition: 0.3s;
+  border-radius: 4px;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
 }
 
 button:hover {
   background: maroon;
   color: white;
+  transform: scale(1.05);
+}
+
+button:focus {
+  outline: 2px solid maroon;
+  outline-offset: 2px;
 }
 
 /* INPUT */
-input {
+input, textarea, select {
   padding: 10px;
   border: 1px solid black;
   width: 100%;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+  font-family: inherit;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: maroon;
+  outline: none;
+}
+
+/* FORM */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+/* CONTAINER */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* HEADINGS */
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid #ddd;
+  background: #f9f9f9;
+  margin-top: 40px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  nav ul {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .container {
+    padding: 10px;
+  }
 }
