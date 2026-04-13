@@ -1,73 +1,71 @@
-export default function Home({ setPage }) {
+import { useState } from "react";
+
+import Home from "./pages/Home";
+import Products from "./pages/Products";
+import ProductDetails from "./pages/ProductDetails";
+import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+
+export default function App() {
+  const [page, setPage] = useState("home");
+  const [cart, setCart] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
   return (
-    <div style={container}>
+    <div>
+      <Navbar setPage={setPage} cart={cart} />
 
-      <h1 style={title}>JEWEL16</h1>
+      {page === "home" && <Home setPage={setPage} />}
 
-      <p style={tag}>
-        Timeless Jewellery. Trusted Craftsmanship.
-      </p>
+      {page === "products" && (
+        <Products
+          setPage={setPage}
+          setSelectedProduct={setSelectedProduct}
+          cart={cart}
+          setCart={setCart}
+        />
+      )}
 
-      <button style={btn} onClick={() => setPage("products")}>
-        Explore Collection
-      </button>
+      {page === "productDetails" && (
+        <ProductDetails
+          product={selectedProduct}
+          cart={cart}
+          setCart={setCart}
+          setPage={setPage}
+        />
+      )}
 
-      {/* TRUST SECTION */}
-      <div style={trustBox}>
-        <div style={trustItem}>
-          💳 Secure Payments
-          <p>100% safe & encrypted checkout</p>
-        </div>
+      {page === "cart" && (
+        <Cart cart={cart} setPage={setPage} />
+      )}
 
-        <div style={trustItem}>
-          🚚 Fast Delivery
-          <p>Quick shipping across India</p>
-        </div>
-
-        <div style={trustItem}>
-          🔄 Easy Returns
-          <p>Hassle-free return policy</p>
-        </div>
-      </div>
-
+      {page === "checkout" && (
+        <Checkout cart={cart} setPage={setPage} />
+      )}
     </div>
   );
 }
 
-const container = {
-  textAlign: "center",
-  padding: "40px"
-};
+/* 💎 NAVBAR */
+function Navbar({ setPage, cart }) {
+  return (
+    <div style={nav}>
+      <h2 style={{ color: "maroon" }}>JEWEL16 💎</h2>
 
-const title = {
-  fontSize: "60px",
-  color: "maroon",
-  letterSpacing: "4px"
-};
+      <div style={{ display: "flex", gap: "10px" }}>
+        <button onClick={() => setPage("home")}>Home</button>
+        <button onClick={() => setPage("products")}>Shop</button>
+        <button onClick={() => setPage("cart")}>
+          Cart ({cart.length})
+        </button>
+      </div>
+    </div>
+  );
+}
 
-const tag = {
-  margin: "15px 0",
-  color: "#555"
-};
-
-const btn = {
-  padding: "12px 25px",
-  border: "1px solid black",
-  background: "white",
-  color: "maroon",
-  cursor: "pointer"
-};
-
-const trustBox = {
-  marginTop: "50px",
+const nav = {
   display: "flex",
-  justifyContent: "center",
-  gap: "40px",
-  flexWrap: "wrap"
-};
-
-const trustItem = {
-  border: "1px solid #eee",
-  padding: "20px",
-  width: "200px"
+  justifyContent: "space-between",
+  padding: "20px 30px",
+  borderBottom: "1px solid #eee",
 };
