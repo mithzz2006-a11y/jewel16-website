@@ -1,64 +1,80 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { auth } from "./firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 import Home from "./pages/Home";
 import Products from "./pages/Products";
-import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import MyOrders from "./pages/MyOrders";
+import Admin from "./pages/Admin";
+import Auth from "./pages/Auth";
 
 export default function App() {
   const [page, setPage] = useState("home");
   const [cart, setCart] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [user, setUser] = useState(null);
+
+  const ADMIN_EMAIL = "yourmail@gmail.com"; // 🔥 CHANGE THIS
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (u) => {
+      if (u) {
+        if (u.email === ADMIN_EMAIL) {
+          setUser({ ...u, role: "admin" });
+        } else {
+          setUser({ ...u, role: "user" });
+        }
+      } else {
+        setUser(null);
+      }
+    });
+  }, []);
+
+  if (!user) return <Auth setUser={setUser} />;
 
   return (
     <div>
-      <Navbar setPage={setPage} cart={cart} />
 
+      {/* 🔥 NAVBAR */}
+      <div style={nav}>
+        <h2 style={{ color: "maroon" }}>JEWEL16 💎</h2>
+
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button onClick={() => setPage("home")}>Home</button>
+          <button onClick={() => setPage("products")}>Products</button>
+          <button onClick={() => setPage("cart")}>
+            Cart ({cart.length})
+          </button>
+          <button onClick={() => setPage("orders")}>Orders</button>
+
+          {user.role === "admin" && (
+            <button onClick={() => setPage("admin")}>
+              Admin
+            </button>
+          )}
+
+          <button onClick={() => signOut(auth)}>Logout</button>
+        </div>
+      </div>
+
+      {/* 🔥 PAGES */}
       {page === "home" && <Home setPage={setPage} />}
-
       {page === "products" && (
-        <Products
-          setPage={setPage}
-          setSelectedProduct={setSelectedProduct}
-          cart={cart}
-          setCart={setCart}
-        />
+        <Products cart={cart} setCart={setCart} />
       )}
-
-      {page === "productDetails" && (
-        <ProductDetails
-          product={selectedProduct}
-          cart={cart}
-          setCart={setCart}
-          setPage={setPage}
-        />
-      )}
-
       {page === "cart" && (
         <Cart cart={cart} setPage={setPage} />
       )}
-
       {page === "checkout" && (
-        <Checkout cart={cart} setPage={setPage} />
+        <Checkout cart={cart} user={user} setPage={setPage} />
       )}
-    </div>
-  );
-}
-
-/* 💎 NAVBAR */
-function Navbar({ setPage, cart }) {
-  return (
-    <div style={nav}>
-      <h2 style={{ color: "maroon" }}>JEWEL16 💎</h2>
-
-      <div style={{ display: "flex", gap: "10px" }}>
-        <button onClick={() => setPage("home")}>Home</button>
-        <button onClick={() => setPage("products")}>Shop</button>
-        <button onClick={() => setPage("cart")}>
-          Cart ({cart.length})
-        </button>
-      </div>
+      {page === "orders" && (
+        <MyOrders user={user} />
+      )}
+      {page === "admin" && user.role === "admin" && (
+        <Admin />
+      )}
     </div>
   );
 }
@@ -66,6 +82,6 @@ function Navbar({ setPage, cart }) {
 const nav = {
   display: "flex",
   justifyContent: "space-between",
-  padding: "20px 30px",
+  padding: "15px 30px",
   borderBottom: "1px solid #eee",
 };
