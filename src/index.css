@@ -1,39 +1,17 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JEWEL16 💎</title>
 
-body {
-  background: #ffffff;
-  color: #111;
-}
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  </head>
 
-/* NAV BUTTONS */
-button {
-  padding: 10px 16px;
-  border: 1px solid black;
-  background: white;
-  color: maroon;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
+  <body>
+    <div id="root"></div>
 
-button:hover {
-  background: maroon;
-  color: white;
-}
-
-/* INPUTS */
-input, textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid black;
-  margin-bottom: 10px;
-}
-
-/* HEADINGS */
-h1, h2, h3 {
-  letter-spacing: 1px;
-}
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
