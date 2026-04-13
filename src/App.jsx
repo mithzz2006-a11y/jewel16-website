@@ -17,7 +17,7 @@ export default function App() {
 
   const user = auth.currentUser;
 
-  if (!user) return <Login setPage={setPage} />;
+  if (!user) return <Login />;
 
   return (
     <div>
@@ -28,7 +28,6 @@ export default function App() {
           <button onClick={() => setPage("home")}>Home</button>
           <button onClick={() => setPage("products")}>Products</button>
           <button onClick={() => setPage("cart")}>Cart</button>
-          <button onClick={() => setPage("checkout")}>Checkout</button>
           <button onClick={() => setPage("orders")}>Orders</button>
           <button onClick={() => setPage("profile")}>Profile</button>
           <button onClick={() => setPage("admin")}>Admin</button>
@@ -38,9 +37,15 @@ export default function App() {
 
       <div style={{ padding: "20px" }}>
         {page === "home" && <Home setPage={setPage} />}
-        {page === "products" && <Products cart={cart} setCart={setCart} />}
-        {page === "cart" && <Cart cart={cart} setPage={setPage} />}
-        {page === "checkout" && <Checkout cart={cart} setPage={setPage} />}
+        {page === "products" && (
+          <Products cart={cart} setCart={setCart} />
+        )}
+        {page === "cart" && (
+          <Cart cart={cart} setPage={setPage} />
+        )}
+        {page === "checkout" && (
+          <Checkout cart={cart} setPage={setPage} />
+        )}
         {page === "orders" && <MyOrders />}
         {page === "profile" && <Profile />}
         {page === "admin" && <Admin setPage={setPage} />}
@@ -52,11 +57,9 @@ export default function App() {
 const nav = {
   display: "flex",
   justifyContent: "space-between",
-  alignItems: "center",
-  padding: "18px 30px",
+  padding: "15px",
   borderBottom: "1px solid #ddd",
-  background: "white",
-  flexWrap: "wrap"
+  background: "white"
 };
 
 const navLinks = {
