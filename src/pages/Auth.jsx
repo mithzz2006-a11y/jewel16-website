@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword
 } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function Auth({ setPage }) {
   const [email, setEmail] = useState("");
@@ -11,17 +12,24 @@ export default function Auth({ setPage }) {
 
   const login = async () => {
     await signInWithEmailAndPassword(auth, email, password);
-    setPage("products");
+    setPage("home");
   };
 
   const signup = async () => {
-    await createUserWithEmailAndPassword(auth, email, password);
-    setPage("products");
+    const res = await createUserWithEmailAndPassword(auth, email, password);
+
+    // 🔐 SAVE USER ROLE
+    await setDoc(doc(db, "users", res.user.uid), {
+      email,
+      role: "user"
+    });
+
+    setPage("home");
   };
 
   return (
     <div style={{ padding: "40px", textAlign: "center" }}>
-      <h1 style={{ color: "maroon" }}>JEWEL16 💎</h1>
+      <h1>JEWEL16 💎</h1>
 
       <input placeholder="Email" onChange={(e)=>setEmail(e.target.value)} /><br/><br/>
       <input type="password" placeholder="Password" onChange={(e)=>setPassword(e.target.value)} /><br/><br/>
