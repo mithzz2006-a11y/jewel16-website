@@ -1,18 +1,25 @@
 export default function Home({ setPage }) {
   return (
     <div style={container}>
-      <h1 style={title}>JEWEL16</h1>
+      
+      {/* BRAND NAME */}
+      <h1 style={title}>JEWEL16 💎</h1>
 
+      {/* TAGLINE */}
       <p style={subtitle}>
         Crafted for Elegance. Designed for You.
       </p>
 
-      <button onClick={() => setPage("products")}>
+      {/* BUTTON */}
+      <button style={btn} onClick={() => setPage("products")}>
         Explore Collection
       </button>
+
     </div>
   );
 }
+
+/* 💎 STYLES */
 
 const container = {
   height: "90vh",
@@ -20,16 +27,30 @@ const container = {
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-  textAlign: "center"
+  textAlign: "center",
+  background: "white"
 };
 
 const title = {
-  fontSize: "50px",
+  fontSize: "56px",
   color: "maroon",
-  letterSpacing: "2px"
+  letterSpacing: "3px",
+  marginBottom: "10px",
+  fontWeight: "bold"
 };
 
 const subtitle = {
-  marginBottom: "20px",
-  color: "#555"
+  color: "#555",
+  marginBottom: "25px",
+  fontSize: "18px"
+};
+
+const btn = {
+  padding: "12px 25px",
+  border: "1px solid black",
+  background: "white",
+  color: "maroon",
+  cursor: "pointer",
+  transition: "0.3s",
+  fontWeight: "bold"
 };
