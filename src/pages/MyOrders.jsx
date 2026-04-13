@@ -11,7 +11,6 @@ export default function MyOrders() {
 
   const loadOrders = async () => {
     const user = auth.currentUser;
-
     const snap = await getDocs(collection(db, "orders"));
 
     const data = snap.docs
@@ -22,22 +21,44 @@ export default function MyOrders() {
   };
 
   return (
-    <div style={{ background: "black", color: "white", padding: "20px" }}>
+    <div style={container}>
       <h1>My Orders</h1>
 
-      {orders.map((o, i) => (
-        <div key={i} style={{ border: "1px solid white", marginBottom: "10px", padding: "10px" }}>
-          <p>Total: ₹{o.total}</p>
-          <p>Status: {o.status}</p>
+      {orders.length === 0 ? (
+        <p>No orders yet</p>
+      ) : (
+        orders.map((o, i) => (
+          <div key={i} style={orderCard}>
+            <h3>Order #{i + 1}</h3>
 
-          {o.items.map((item, j) => (
-            <div key={j}>
-              <img src={item.image} width="60" />
-              <p>{item.name}</p>
-            </div>
-          ))}
-        </div>
-      ))}
+            <p>Total: ₹{o.total}</p>
+            <p>Status: {o.status}</p>
+
+            <p style={status}>
+              {o.status === "Placed" && "🟡 Processing"}
+              {o.status === "Shipped" && "🔵 Shipped"}
+              {o.status === "Delivered" && "🟢 Delivered"}
+            </p>
+          </div>
+        ))
+      )}
     </div>
   );
 }
+
+const container = {
+  background: "black",
+  color: "white",
+  minHeight: "100vh",
+  padding: "20px"
+};
+
+const orderCard = {
+  border: "1px solid #444",
+  padding: "15px",
+  marginBottom: "10px"
+};
+
+const status = {
+  marginTop: "10px"
+};
