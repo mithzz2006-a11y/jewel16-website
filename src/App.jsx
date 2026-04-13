@@ -18,9 +18,10 @@ export default function App() {
   const ADMIN_EMAIL = "mithzz2006@gmail.com";
 
   useEffect(() => {
-    onAuthStateChanged(auth, (u) => {
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
       setUser(u);
     });
+    return () => unsubscribe();
   }, []);
 
   if (!user) return <Auth setUser={setUser} />;
@@ -39,10 +40,8 @@ export default function App() {
           </button>
           <button onClick={() => setPage("orders")}>Orders</button>
 
-          {user.email === ADMIN_EMAIL && (
-            <button onClick={() => setPage("admin")}>
-              Admin
-            </button>
+          {user?.email === ADMIN_EMAIL && (
+            <button onClick={() => setPage("admin")}>Admin</button>
           )}
 
           <button onClick={() => signOut(auth)}>Logout</button>
@@ -51,19 +50,11 @@ export default function App() {
 
       {/* PAGES */}
       {page === "home" && <Home setPage={setPage} />}
-      {page === "products" && (
-        <Products setCart={setCart} />
-      )}
-      {page === "cart" && (
-        <Cart cart={cart} setPage={setPage} />
-      )}
-      {page === "checkout" && (
-        <Checkout cart={cart} />
-      )}
+      {page === "products" && <Products setCart={setCart} cart={cart} />}
+      {page === "cart" && <Cart cart={cart} setPage={setPage} />}
+      {page === "checkout" && <Checkout cart={cart} />}
       {page === "orders" && <MyOrders />}
-      {page === "admin" && user.email === ADMIN_EMAIL && (
-        <Admin />
-      )}
+      {page === "admin" && user?.email === ADMIN_EMAIL && <Admin />}
     </div>
   );
 }
