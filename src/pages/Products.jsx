@@ -13,43 +13,19 @@ export default function Products({ cart, setCart }) {
 
   return (
     <div>
-      <h1 style={{ marginBottom: "20px" }}>Products</h1>
+      <h1>Products</h1>
 
-      <div style={grid}>
-        {products.map((item, index) => (
-          <div key={index} style={card}>
-            <img src={item.image} style={img} />
+      {products.map((item, i) => (
+        <div key={i}>
+          <img src={item.image} width="100" />
+          <p>{item.name}</p>
+          <p>₹{item.price}</p>
 
-            <h3>{item.name}</h3>
-            <p>₹{item.price}</p>
-
-            <button onClick={() => addToCart(item)}>
-              Add to Cart
-            </button>
-          </div>
-        ))}
-      </div>
+          <button onClick={() => addToCart(item)}>
+            Add to Cart
+          </button>
+        </div>
+      ))}
     </div>
   );
 }
-
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-  gap: "25px"
-};
-
-const card = {
-  padding: "20px",
-  border: "1px solid #ddd",
-  textAlign: "center",
-  background: "white",
-  transition: "0.3s"
-};
-
-const img = {
-  width: "100%",
-  height: "200px",
-  objectFit: "cover",
-  marginBottom: "10px"
-};
