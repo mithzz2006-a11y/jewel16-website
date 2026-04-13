@@ -1,48 +1,37 @@
 export default function Home({ setPage }) {
   return (
-    <div style={container}>
-      
-      {/* BRAND NAME */}
-      <h1 style={title}>JEWEL16 💎</h1>
+    <div style={hero}>
+      <h1 style={title}>JEWEL16</h1>
 
-      {/* TAGLINE */}
-      <p style={subtitle}>
-        Crafted for Elegance. Designed for You.
+      <p style={tag}>
+        Premium Jewellery Collection for Modern Elegance
       </p>
 
-      {/* BUTTON */}
       <button style={btn} onClick={() => setPage("products")}>
-        Explore Collection
+        Shop Now
       </button>
-
     </div>
   );
 }
 
-/* 💎 STYLES */
-
-const container = {
+const hero = {
   height: "90vh",
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-  textAlign: "center",
-  background: "white"
+  textAlign: "center"
 };
 
 const title = {
-  fontSize: "56px",
+  fontSize: "60px",
   color: "maroon",
-  letterSpacing: "3px",
-  marginBottom: "10px",
-  fontWeight: "bold"
+  letterSpacing: "4px"
 };
 
-const subtitle = {
-  color: "#555",
-  marginBottom: "25px",
-  fontSize: "18px"
+const tag = {
+  margin: "15px 0",
+  color: "#555"
 };
 
 const btn = {
@@ -50,7 +39,5 @@ const btn = {
   border: "1px solid black",
   background: "white",
   color: "maroon",
-  cursor: "pointer",
-  transition: "0.3s",
-  fontWeight: "bold"
+  cursor: "pointer"
 };
