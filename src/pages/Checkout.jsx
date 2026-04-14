@@ -1,24 +1,44 @@
-import { db } from "../firebase";
-import { collection, addDoc } from "firebase/firestore";
-
 export default function Checkout({ cart, user }) {
-  const placeOrder = async () => {
-    await addDoc(collection(db, "orders"), {
-      userId: user.uid,
-      items: cart,
-      total: cart.reduce((sum, i) => sum + i.price, 0),
-      status: "pending",
-      createdAt: new Date(),
-    });
-
-    alert("Order Placed ✅");
-  };
+  const total = cart.reduce((sum, i) => sum + i.price, 0);
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Checkout</h1>
+    <div style={container}>
+      
+      <h1 style={title}>Secure Checkout 🔐</h1>
+      <p style={subtitle}>
+        Complete your purchase safely and securely
+      </p>
 
-      <button onClick={placeOrder}>Place Order</button>
+      <h3>Total Amount: ₹{total}</h3>
+
+      <button style={btn}>
+        Pay Now
+      </button>
+
     </div>
   );
 }
+
+const container = {
+  padding: "20px",
+  minHeight: "100vh",
+  background: "linear-gradient(to right, #000, #400000)",
+  color: "white",
+  textAlign: "center",
+};
+
+const title = {
+  marginBottom: "10px",
+};
+
+const subtitle = {
+  marginBottom: "20px",
+  color: "#ccc",
+};
+
+const btn = {
+  padding: "12px 30px",
+  background: "white",
+  color: "black",
+  border: "none",
+};
