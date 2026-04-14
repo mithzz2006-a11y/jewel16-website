@@ -1,21 +1,16 @@
 export default function Home({ setPage }) {
   return (
-    <div style={{ fontFamily: "sans-serif" }}>
+    <div>
 
-      {/* 🔥 HERO SECTION */}
       <div style={hero}>
         <h1 style={title}>JEWEL16 💎</h1>
-
-        <p style={subtitle}>
-          Where Luxury Meets Elegance
-        </p>
+        <p style={subtitle}>Where Luxury Meets Elegance</p>
 
         <button style={btn} onClick={() => setPage("products")}>
           Explore Collection
         </button>
       </div>
 
-      {/* 💎 CATEGORY SHOWCASE */}
       <div style={section}>
         <h2 style={heading}>Our Collections</h2>
 
@@ -37,94 +32,67 @@ export default function Home({ setPage }) {
         </div>
       </div>
 
-      {/* 🛡 TRUST SECTION */}
       <div style={trust}>
         <div>
           <h3>🔒 Secure Payment</h3>
-          <p>End-to-end encrypted transactions</p>
+          <p>Safe & encrypted</p>
         </div>
 
         <div>
           <h3>🚚 Fast Delivery</h3>
-          <p>Quick & reliable shipping</p>
+          <p>Quick shipping</p>
         </div>
 
         <div>
           <h3>💎 Premium Quality</h3>
-          <p>Crafted with perfection</p>
+          <p>Luxury products</p>
         </div>
-      </div>
-
-      {/* ✨ ABOUT */}
-      <div style={about}>
-        <h2>About JEWEL16</h2>
-        <p>
-          JEWEL16 is a premium jewellery brand delivering elegance,
-          quality, and trust. Designed for modern luxury lovers,
-          our collections redefine timeless beauty.
-        </p>
-      </div>
-
-      {/* 🚀 CTA */}
-      <div style={cta}>
-        <h2>Start Your Luxury Journey</h2>
-        <button style={btnDark} onClick={() => setPage("products")}>
-          Shop Now
-        </button>
       </div>
 
     </div>
   );
 }
 
-/* 🎨 STYLES */
-
 const hero = {
-  height: "90vh",
-  background: "linear-gradient(to right, #000, #400000)",
-  color: "white",
+  minHeight: "90vh",
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
   textAlign: "center",
   padding: "20px",
+  background: "linear-gradient(to right, #000, #400000)",
+  color: "white",
 };
 
 const title = {
-  fontSize: "clamp(40px, 6vw, 70px)",
+  fontSize: "clamp(30px, 6vw, 60px)",
 };
 
 const subtitle = {
   marginTop: "10px",
-  fontSize: "clamp(16px, 2vw, 22px)",
-  color: "#ddd",
 };
 
 const btn = {
-  marginTop: "25px",
-  padding: "14px 30px",
+  marginTop: "20px",
+  padding: "12px 25px",
   background: "white",
-  color: "black",
   border: "none",
-  cursor: "pointer",
-  fontWeight: "bold",
 };
 
 const section = {
-  padding: "50px 20px",
-  background: "white",
+  padding: "30px 15px",
 };
 
 const heading = {
   textAlign: "center",
-  marginBottom: "30px",
+  marginBottom: "20px",
 };
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(250px,1fr))",
-  gap: "20px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(200px,1fr))",
+  gap: "15px",
 };
 
 const card = {
@@ -133,38 +101,16 @@ const card = {
 
 const img = {
   width: "100%",
-  height: "250px",
+  height: "200px",
   objectFit: "cover",
   borderRadius: "10px",
 };
 
 const trust = {
   display: "flex",
-  justifyContent: "space-around",
-  padding: "40px",
-  background: "#f9f9f9",
   flexWrap: "wrap",
+  justifyContent: "center",
   gap: "20px",
+  padding: "20px",
   textAlign: "center",
-};
-
-const about = {
-  padding: "50px 20px",
-  textAlign: "center",
-};
-
-const cta = {
-  padding: "60px",
-  background: "#111",
-  color: "white",
-  textAlign: "center",
-};
-
-const btnDark = {
-  marginTop: "20px",
-  padding: "12px 25px",
-  background: "maroon",
-  color: "white",
-  border: "none",
-  cursor: "pointer",
 };
