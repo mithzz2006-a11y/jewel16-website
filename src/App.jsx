@@ -18,31 +18,34 @@ import Navbar from "./components/Navbar";
 export default function App() {
   const [page, setPage] = useState("home");
   const [user, setUser] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
-  /* 🔐 AUTH + ADMIN CHECK */
+  /* 🔐 LOGIN + ADMIN CHECK */
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
       if (u) {
-        setUser(u);
+        let isAdmin = false;
 
-        const ref = doc(db, "users", u.uid);
-        const snap = await getDoc(ref);
+        try {
+          const ref = doc(db, "users", u.uid);
+          const snap = await getDoc(ref);
 
-        if (snap.exists()) {
-          const data = snap.data();
-          setIsAdmin(data.role === "admin");
+          if (snap.exists() && snap.data().role === "admin") {
+            isAdmin = true;
+          }
+        } catch (err) {
+          console.log("Admin check error:", err);
         }
+
+        setUser({ ...u, isAdmin });
       } else {
         setUser(null);
-        setIsAdmin(false);
       }
     });
 
     return () => unsub();
   }, []);
 
-  /* 🔁 PAGE ROUTING */
+  /* 🔁 PAGE SWITCH */
   const renderPage = () => {
     if (!user) return <Auth setUser={setUser} />;
 
@@ -60,7 +63,9 @@ export default function App() {
       case "profile":
         return <Profile setPage={setPage} user={user} />;
       case "admin":
-        return isAdmin ? <Admin setPage={setPage} /> : <Home setPage={setPage} />;
+        return user?.isAdmin
+          ? <Admin setPage={setPage} />
+          : <Home setPage={setPage} />;
       default:
         return <Home setPage={setPage} />;
     }
@@ -71,7 +76,7 @@ export default function App() {
       {user && (
         <Navbar
           setPage={setPage}
-          isAdmin={isAdmin}
+          user={user}
         />
       )}
 
