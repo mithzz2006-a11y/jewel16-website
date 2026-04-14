@@ -1,3 +1,4 @@
+/* RESET */
 * {
   margin: 0;
   padding: 0;
@@ -10,10 +11,12 @@ body {
   overflow-x: hidden;
 }
 
+/* BUTTON */
 button {
   cursor: pointer;
 }
 
+/* INPUT */
 input, textarea {
   width: 100%;
   padding: 10px;
@@ -22,9 +25,17 @@ input, textarea {
   border-radius: 5px;
 }
 
-/* MOBILE */
+/* MOBILE FIX */
 @media (max-width: 768px) {
-  h1 { font-size: 28px !important; }
-  h2 { font-size: 22px !important; }
-  p { font-size: 14px !important; }
+  h1 {
+    font-size: 28px !important;
+  }
+
+  h2 {
+    font-size: 22px !important;
+  }
+
+  p {
+    font-size: 14px !important;
+  }
 }
