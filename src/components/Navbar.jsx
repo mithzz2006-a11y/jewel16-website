@@ -9,46 +9,45 @@ export default function Navbar({ setPage, cart, user }) {
 
   return (
     <div style={nav}>
+      {/* LOGO */}
       <h2 style={logo} onClick={() => setPage("home")}>
         JEWEL16 💎
       </h2>
 
-      {/* DESKTOP MENU */}
-      <div style={desktop}>
+      <div style={right}>
         <button onClick={() => setPage("home")}>Home</button>
         <button onClick={() => setPage("products")}>Products</button>
         <button onClick={() => setPage("cart")}>
           Cart ({cart.length})
         </button>
 
+        {/* 🔐 ADMIN */}
         {user?.email === ADMIN_EMAIL && (
-          <button onClick={() => setPage("admin")}>Admin</button>
+          <button onClick={() => setPage("admin")}>
+            Admin
+          </button>
         )}
 
-        <button onClick={() => signOut(auth)}>Logout</button>
-      </div>
+        {/* 🔥 3 DOT MENU */}
+        <div style={{ position: "relative" }}>
+          <button onClick={() => setMenu(!menu)}>⋮</button>
 
-      {/* MOBILE MENU ICON */}
-      <div style={mobileIcon} onClick={() => setMenu(!menu)}>
-        ☰
-      </div>
+          {menu && (
+            <div style={dropdown}>
+              {/* USER INFO */}
+              <p style={userInfo}><b>{user.email}</b></p>
+              <hr />
 
-      {/* MOBILE DROPDOWN */}
-      {menu && (
-        <div style={mobileMenu}>
-          <p onClick={() => setPage("home")}>Home</p>
-          <p onClick={() => setPage("products")}>Products</p>
-          <p onClick={() => setPage("cart")}>Cart</p>
-          <p onClick={() => setPage("orders")}>Orders</p>
-          <p onClick={() => setPage("profile")}>Profile</p>
+              <p onClick={() => setPage("profile")}>👤 Profile</p>
+              <p onClick={() => setPage("orders")}>📦 My Orders</p>
 
-          {user?.email === ADMIN_EMAIL && (
-            <p onClick={() => setPage("admin")}>Admin</p>
+              <hr />
+
+              <p onClick={() => signOut(auth)}>🚪 Logout</p>
+            </div>
           )}
-
-          <p onClick={() => signOut(auth)}>Logout</p>
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -58,10 +57,9 @@ export default function Navbar({ setPage, cart, user }) {
 const nav = {
   display: "flex",
   justifyContent: "space-between",
-  alignItems: "center",
-  padding: "15px",
+  padding: "15px 25px",
   borderBottom: "1px solid #ddd",
-  position: "relative",
+  background: "white",
 };
 
 const logo = {
@@ -69,23 +67,25 @@ const logo = {
   cursor: "pointer",
 };
 
-const desktop = {
-  display: window.innerWidth > 768 ? "flex" : "none",
+const right = {
+  display: "flex",
   gap: "10px",
+  alignItems: "center",
 };
 
-const mobileIcon = {
-  display: window.innerWidth <= 768 ? "block" : "none",
-  fontSize: "22px",
-  cursor: "pointer",
-};
-
-const mobileMenu = {
+const dropdown = {
   position: "absolute",
-  top: "60px",
-  right: "10px",
+  top: "40px",
+  right: "0px",
   background: "white",
   border: "1px solid #ccc",
-  padding: "15px",
+  padding: "10px",
   borderRadius: "8px",
+  width: "200px",
+  boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+};
+
+const userInfo = {
+  fontSize: "12px",
+  color: "gray",
 };
