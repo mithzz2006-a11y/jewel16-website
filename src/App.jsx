@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 import Navbar from "./components/Navbar";
 import Auth from "./pages/Auth";
@@ -19,11 +20,22 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const ADMIN_EMAIL = "mithzz2006@gmail.com";
-
   useEffect(() => {
-    onAuthStateChanged(auth, (u) => {
-      setUser(u);
+    onAuthStateChanged(auth, async (u) => {
+      if (u) {
+        const ref = doc(db, "users", u.uid);
+        const snap = await getDoc(ref);
+
+        let isAdmin = false;
+
+        if (snap.exists() && snap.data().role === "admin") {
+          isAdmin = true;
+        }
+
+        setUser({ ...u, isAdmin });
+      } else {
+        setUser(null);
+      }
     });
   }, []);
 
@@ -56,7 +68,8 @@ export default function App() {
       {page === "orders" && <MyOrders user={user} />}
       {page === "profile" && <Profile user={user} />}
 
-      {page === "admin" && user.email === ADMIN_EMAIL && <Admin />}
+      {/* 🔐 REAL ADMIN PROTECTION */}
+      {page === "admin" && user.isAdmin && <Admin />}
     </div>
   );
 }
