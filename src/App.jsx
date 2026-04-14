@@ -25,19 +25,45 @@ export default function App() {
     });
   }, []);
 
+  // 🔐 LOGIN PAGE
   if (!user) return <Auth setUser={setUser} />;
 
   return (
     <div>
-      <Navbar setPage={setPage} cart={cart} user={user} />
+      {/* NAVBAR */}
+      <Navbar
+        setPage={setPage}
+        cart={cart}
+        user={user}
+      />
 
+      {/* PAGES */}
       {page === "home" && <Home setPage={setPage} />}
-      {page === "products" && <Products setCart={setCart} />}
-      {page === "cart" && <Cart cart={cart} setPage={setPage} />}
-      {page === "checkout" && <Checkout cart={cart} />}
-      {page === "orders" && <MyOrders />}
-      {page === "profile" && <Profile user={user} />}
-      {page === "admin" && user.email === ADMIN_EMAIL && <Admin />}
+
+      {page === "products" && (
+        <Products setCart={setCart} />
+      )}
+
+      {page === "cart" && (
+        <Cart cart={cart} setPage={setPage} />
+      )}
+
+      {page === "checkout" && (
+        <Checkout cart={cart} user={user} />
+      )}
+
+      {page === "orders" && (
+        <MyOrders user={user} />
+      )}
+
+      {page === "profile" && (
+        <Profile user={user} />
+      )}
+
+      {/* 🔐 ADMIN ONLY */}
+      {page === "admin" && user.email === ADMIN_EMAIL && (
+        <Admin />
+      )}
     </div>
   );
 }
