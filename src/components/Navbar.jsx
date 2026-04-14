@@ -13,40 +13,55 @@ export default function Navbar({ setPage, cart, user }) {
         JEWEL16 💎
       </h2>
 
-      <div style={right}>
+      {/* DESKTOP MENU */}
+      <div style={desktop}>
         <button onClick={() => setPage("home")}>Home</button>
         <button onClick={() => setPage("products")}>Products</button>
         <button onClick={() => setPage("cart")}>
           Cart ({cart.length})
         </button>
 
-        {/* 🔐 ADMIN ONLY */}
         {user?.email === ADMIN_EMAIL && (
-          <button onClick={() => setPage("admin")}>
-            Admin
-          </button>
+          <button onClick={() => setPage("admin")}>Admin</button>
         )}
 
-        <button onClick={() => setMenu(!menu)}>⋮</button>
-
-        {menu && (
-          <div style={dropdown}>
-            <p onClick={() => setPage("profile")}>Profile</p>
-            <p onClick={() => setPage("orders")}>My Orders</p>
-            <p onClick={() => signOut(auth)}>Logout</p>
-          </div>
-        )}
+        <button onClick={() => signOut(auth)}>Logout</button>
       </div>
+
+      {/* MOBILE MENU ICON */}
+      <div style={mobileIcon} onClick={() => setMenu(!menu)}>
+        ☰
+      </div>
+
+      {/* MOBILE DROPDOWN */}
+      {menu && (
+        <div style={mobileMenu}>
+          <p onClick={() => setPage("home")}>Home</p>
+          <p onClick={() => setPage("products")}>Products</p>
+          <p onClick={() => setPage("cart")}>Cart</p>
+          <p onClick={() => setPage("orders")}>Orders</p>
+          <p onClick={() => setPage("profile")}>Profile</p>
+
+          {user?.email === ADMIN_EMAIL && (
+            <p onClick={() => setPage("admin")}>Admin</p>
+          )}
+
+          <p onClick={() => signOut(auth)}>Logout</p>
+        </div>
+      )}
     </div>
   );
 }
 
+/* 🎨 STYLES */
+
 const nav = {
   display: "flex",
   justifyContent: "space-between",
-  padding: "15px 25px",
+  alignItems: "center",
+  padding: "15px",
   borderBottom: "1px solid #ddd",
-  background: "white",
+  position: "relative",
 };
 
 const logo = {
@@ -54,17 +69,23 @@ const logo = {
   cursor: "pointer",
 };
 
-const right = {
-  display: "flex",
+const desktop = {
+  display: window.innerWidth > 768 ? "flex" : "none",
   gap: "10px",
-  alignItems: "center",
 };
 
-const dropdown = {
+const mobileIcon = {
+  display: window.innerWidth <= 768 ? "block" : "none",
+  fontSize: "22px",
+  cursor: "pointer",
+};
+
+const mobileMenu = {
   position: "absolute",
   top: "60px",
-  right: "20px",
+  right: "10px",
   background: "white",
   border: "1px solid #ccc",
-  padding: "10px",
+  padding: "15px",
+  borderRadius: "8px",
 };
