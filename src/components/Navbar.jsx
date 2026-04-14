@@ -5,15 +5,26 @@ import { auth } from "../firebase";
 export default function Navbar({ setPage, cart, user }) {
   const [menu, setMenu] = useState(false);
 
+  const ADMIN_EMAIL = "mithzz2006@gmail.com";
+
   return (
     <div style={nav}>
-      <h2 style={{ color: "maroon" }}>JEWEL16 💎</h2>
+      <h2 style={{ color: "maroon", cursor: "pointer" }} onClick={() => setPage("home")}>
+        JEWEL16 💎
+      </h2>
 
       <div style={right}>
         <button onClick={() => setPage("products")}>Products</button>
         <button onClick={() => setPage("cart")}>
           Cart ({cart.length})
         </button>
+
+        {/* ✅ ADMIN BUTTON */}
+        {user?.email === ADMIN_EMAIL && (
+          <button onClick={() => setPage("admin")}>
+            Admin
+          </button>
+        )}
 
         <button onClick={() => setMenu(!menu)}>⋮</button>
 
