@@ -8,23 +8,27 @@ export default function Admin() {
   const [image, setImage] = useState("");
 
   const addProduct = async () => {
-    await addDoc(collection(db, "products"), {
-      name,
-      price: Number(price),
-      image,
-    });
+    try {
+      await addDoc(collection(db, "products"), {
+        name,
+        price: Number(price),
+        image,
+      });
 
-    alert("Product Added ✅");
-    setName("");
-    setPrice("");
-    setImage("");
+      alert("Product Added ✅");
+      setName("");
+      setPrice("");
+      setImage("");
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
   return (
     <div style={{ padding: "20px" }}>
       <h1>Admin Panel 🔐</h1>
 
-      <input placeholder="Product Name" value={name} onChange={(e) => setName(e.target.value)} />
+      <input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
       <br />
       <input placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
       <br />
