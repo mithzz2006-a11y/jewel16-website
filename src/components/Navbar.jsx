@@ -9,30 +9,24 @@ export default function Navbar({ setPage, cart, user }) {
 
   return (
     <div style={nav}>
-      
-      {/* 💎 LOGO = HOME */}
       <h2 style={logo} onClick={() => setPage("home")}>
         JEWEL16 💎
       </h2>
 
       <div style={right}>
-        {/* ✅ HOME BUTTON */}
         <button onClick={() => setPage("home")}>Home</button>
-
         <button onClick={() => setPage("products")}>Products</button>
-
         <button onClick={() => setPage("cart")}>
           Cart ({cart.length})
         </button>
 
-        {/* 🔐 ADMIN */}
+        {/* 🔐 ADMIN ONLY */}
         {user?.email === ADMIN_EMAIL && (
           <button onClick={() => setPage("admin")}>
             Admin
           </button>
         )}
 
-        {/* 3 DOT MENU */}
         <button onClick={() => setMenu(!menu)}>⋮</button>
 
         {menu && (
@@ -47,16 +41,12 @@ export default function Navbar({ setPage, cart, user }) {
   );
 }
 
-/* 🎨 STYLES */
-
 const nav = {
   display: "flex",
   justifyContent: "space-between",
   padding: "15px 25px",
   borderBottom: "1px solid #ddd",
   background: "white",
-  position: "sticky",
-  top: 0,
 };
 
 const logo = {
@@ -77,5 +67,4 @@ const dropdown = {
   background: "white",
   border: "1px solid #ccc",
   padding: "10px",
-  borderRadius: "5px",
 };
