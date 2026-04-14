@@ -20,22 +20,19 @@ export default function App() {
   const ADMIN_EMAIL = "mithzz2006@gmail.com";
 
   useEffect(() => {
-    onAuthStateChanged(auth, (u) => {
+    const unsub = onAuthStateChanged(auth, (u) => {
       setUser(u);
     });
+    return () => unsub();
   }, []);
 
-  // 🔐 LOGIN PAGE
+  // 🔐 LOGIN FIRST
   if (!user) return <Auth setUser={setUser} />;
 
   return (
     <div>
       {/* NAVBAR */}
-      <Navbar
-        setPage={setPage}
-        cart={cart}
-        user={user}
-      />
+      <Navbar setPage={setPage} cart={cart} user={user} />
 
       {/* PAGES */}
       {page === "home" && <Home setPage={setPage} />}
@@ -60,8 +57,8 @@ export default function App() {
         <Profile user={user} />
       )}
 
-      {/* 🔐 ADMIN ONLY */}
-      {page === "admin" && user.email === ADMIN_EMAIL && (
+      {/* 🔐 ADMIN LOCK */}
+      {page === "admin" && user?.email === ADMIN_EMAIL && (
         <Admin />
       )}
     </div>
