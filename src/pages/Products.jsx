@@ -12,7 +12,7 @@ export default function Products({ products, setCart }) {
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-  gap: "20px",
-  padding: "20px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px,1fr))",
+  gap: "15px",
+  padding: "15px",
 };
