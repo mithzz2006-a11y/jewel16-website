@@ -26,13 +26,13 @@ export default function Cart({ cart, setPage }) {
 
 const itemBox = {
   display: "flex",
+  flexWrap: "wrap",
   gap: "10px",
   marginBottom: "15px",
-  flexWrap: "wrap",
 };
 
 const img = {
-  width: "100px",
-  height: "100px",
+  width: "80px",
+  height: "80px",
   objectFit: "cover",
 };
