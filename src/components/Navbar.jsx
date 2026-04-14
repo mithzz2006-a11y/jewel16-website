@@ -1,4 +1,4 @@
-export default function Navbar({ setPage, isAdmin }) {
+export default function Navbar({ setPage, user }) {
   return (
     <div style={nav}>
 
@@ -7,16 +7,30 @@ export default function Navbar({ setPage, isAdmin }) {
       </h2>
 
       <div style={links}>
-        <button onClick={() => setPage("products")}>Products</button>
-        <button onClick={() => setPage("cart")}>Cart</button>
-        <button onClick={() => setPage("orders")}>My Orders</button>
-        <button onClick={() => setPage("profile")}>Profile</button>
 
-        {isAdmin && (
+        <button onClick={() => setPage("products")}>
+          Products
+        </button>
+
+        <button onClick={() => setPage("cart")}>
+          Cart
+        </button>
+
+        <button onClick={() => setPage("orders")}>
+          My Orders
+        </button>
+
+        <button onClick={() => setPage("profile")}>
+          Profile
+        </button>
+
+        {/* 🔐 ADMIN BUTTON */}
+        {user?.isAdmin && (
           <button onClick={() => setPage("admin")}>
             Admin
           </button>
         )}
+
       </div>
 
     </div>
@@ -26,6 +40,7 @@ export default function Navbar({ setPage, isAdmin }) {
 const nav = {
   display: "flex",
   justifyContent: "space-between",
+  alignItems: "center",
   padding: "15px",
   background: "black",
   color: "white"
