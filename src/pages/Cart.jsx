@@ -3,9 +3,7 @@ export default function Cart({ cart, setPage }) {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Your Cart 🛒</h1>
-
-      {cart.length === 0 && <p>No items in cart</p>}
+      <h2>Your Cart</h2>
 
       {cart.map((item, i) => (
         <div key={i} style={itemBox}>
@@ -17,10 +15,10 @@ export default function Cart({ cart, setPage }) {
         </div>
       ))}
 
-      <h2>Total: ₹{total}</h2>
+      <h3>Total: ₹{total}</h3>
 
-      <button style={btn} onClick={() => setPage("checkout")}>
-        Proceed to Checkout
+      <button onClick={() => setPage("checkout")}>
+        Checkout
       </button>
     </div>
   );
@@ -28,21 +26,13 @@ export default function Cart({ cart, setPage }) {
 
 const itemBox = {
   display: "flex",
-  gap: "15px",
+  gap: "10px",
   marginBottom: "15px",
-  borderBottom: "1px solid #eee",
-  paddingBottom: "10px",
+  flexWrap: "wrap",
 };
 
 const img = {
-  width: "80px",
-  height: "80px",
+  width: "100px",
+  height: "100px",
   objectFit: "cover",
-};
-
-const btn = {
-  padding: "12px 20px",
-  background: "black",
-  color: "white",
-  border: "none",
 };
