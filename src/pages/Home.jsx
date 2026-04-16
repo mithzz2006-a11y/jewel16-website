@@ -4,6 +4,8 @@ export default function Home({ setPage }) {
 
       {/* 🔥 HERO */}
       <div style={hero}>
+        <div style={overlay}></div>
+
         <h1 style={title}>JEWEL16 💎</h1>
         <p style={subtitle}>Where Luxury Meets Elegance</p>
 
@@ -56,7 +58,7 @@ export default function Home({ setPage }) {
   );
 }
 
-/* 🎨 STYLES */
+/* 🎨 ULTRA LUXURY STYLES */
 
 const hero = {
   minHeight: "90vh",
@@ -68,74 +70,106 @@ const hero = {
   padding: "20px",
   background: "linear-gradient(to right, #000, #400000)",
   color: "white",
+  position: "relative",
+  overflow: "hidden",
+};
+
+/* 🔥 DARK OVERLAY DEPTH */
+const overlay = {
+  position: "absolute",
+  width: "100%",
+  height: "100%",
+  background: "radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)",
+  top: 0,
+  left: 0,
 };
 
 const title = {
-  fontSize: "clamp(32px, 6vw, 60px)",
-  letterSpacing: "2px",
+  fontSize: "clamp(32px, 6vw, 65px)",
+  letterSpacing: "3px",
+  fontWeight: "700",
+  textShadow: "0 0 20px rgba(255,255,255,0.2)",
+  zIndex: 1,
 };
 
 const subtitle = {
-  marginTop: "10px",
+  marginTop: "12px",
   fontSize: "clamp(14px, 3vw, 18px)",
   color: "#ddd",
+  letterSpacing: "1px",
+  zIndex: 1,
 };
 
 const btn = {
-  marginTop: "25px",
-  padding: "14px 28px",
+  marginTop: "30px",
+  padding: "14px 30px",
   background: "white",
   border: "none",
   cursor: "pointer",
   borderRadius: "6px",
   fontWeight: "600",
+  letterSpacing: "1px",
+  boxShadow: "0 5px 20px rgba(255,255,255,0.2)",
   transition: "0.3s",
+  zIndex: 1,
 };
 
+/* 💎 SECTION */
 const section = {
-  padding: "40px 15px",
+  padding: "50px 20px",
   background: "#fff",
 };
 
 const heading = {
   textAlign: "center",
-  marginBottom: "25px",
-  fontSize: "clamp(22px, 4vw, 30px)",
+  marginBottom: "30px",
+  fontSize: "clamp(24px, 4vw, 34px)",
+  letterSpacing: "1px",
 };
 
+/* 🔥 GRID */
 const grid = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit, minmax(200px,1fr))",
-  gap: "20px",
+  gap: "25px",
 };
 
+/* 💎 CARD */
 const card = {
   textAlign: "center",
-  transition: "0.3s",
+  transition: "0.4s",
+  borderRadius: "12px",
+  overflow: "hidden",
+  boxShadow: "0 5px 20px rgba(0,0,0,0.08)",
 };
 
+/* ✨ IMAGE */
 const img = {
   width: "100%",
   height: "200px",
   objectFit: "cover",
-  borderRadius: "12px",
+  transition: "0.4s",
 };
 
+/* 🔥 TEXT */
 const cardText = {
-  marginTop: "10px",
+  marginTop: "12px",
   fontWeight: "600",
+  letterSpacing: "1px",
 };
 
+/* 🛡 TRUST */
 const trust = {
   display: "flex",
   flexWrap: "wrap",
   justifyContent: "center",
-  gap: "25px",
-  padding: "30px 15px",
+  gap: "30px",
+  padding: "40px 20px",
   textAlign: "center",
-  background: "#f9f9f9",
+  background: "linear-gradient(to right, #f9f9f9, #ffffff)",
 };
 
 const trustItem = {
   maxWidth: "220px",
+  padding: "10px",
 };
