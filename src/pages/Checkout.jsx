@@ -1,10 +1,51 @@
 import { useState } from "react";
+import { db } from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 export default function Checkout({ cart, user }) {
   const [instruction, setInstruction] = useState("");
   const [deliveryType, setDeliveryType] = useState("standard");
+  const [loading, setLoading] = useState(false);
 
-  const total = cart.reduce((sum, i) => sum + i.price, 0);
+  const total = cart.reduce(
+    (sum, i) => sum + i.price * (i.qty || 1),
+    0
+  );
+
+  const placeOrder = async () => {
+    if (!user) {
+      alert("Please login first");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await addDoc(collection(db, "orders"), {
+        userId: user.uid,
+        email: user.email,
+
+        items: cart,
+        total,
+
+        deliveryType,
+        instruction,
+
+        status: "placed",
+        createdAt: new Date().toISOString(),
+      });
+
+      alert("Order placed successfully 🎉");
+
+      window.location.reload(); // simple reset
+
+    } catch (err) {
+      console.log(err);
+      alert("Order failed ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div style={container}>
@@ -12,7 +53,7 @@ export default function Checkout({ cart, user }) {
       <h1 style={title}>Secure Checkout 🔐</h1>
       <p style={subtitle}>Premium & safe purchase</p>
 
-      {/* 📦 DELIVERY OPTIONS */}
+      {/* 📦 DELIVERY */}
       <div style={box}>
         <h3>Select Delivery</h3>
 
@@ -35,26 +76,39 @@ export default function Checkout({ cart, user }) {
         </label>
       </div>
 
-      {/* 📝 INSTRUCTIONS */}
+      {/* 📝 INSTRUCTION */}
       <div style={box}>
         <h3>Delivery Instructions</h3>
 
         <textarea
-          placeholder="e.g. Leave at door / Call before delivery"
+          placeholder="Leave at door / Call before delivery"
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}
           style={textarea}
         />
       </div>
 
-      {/* 💰 TOTAL */}
-      <div style={totalBox}>
+      {/* 🛍 ORDER SUMMARY */}
+      <div style={box}>
+        <h3>Order Summary</h3>
+
+        {cart.map((item, i) => (
+          <div key={i} style={summaryItem}>
+            <p>{item.name}</p>
+            <p>
+              ₹{item.price} × {item.qty || 1}
+            </p>
+          </div>
+        ))}
+
+        <hr />
+
         <h2>Total: ₹{total}</h2>
       </div>
 
-      {/* 🔥 PAY BUTTON */}
-      <button style={btn}>
-        Pay Now
+      {/* 🔥 PLACE ORDER */}
+      <button style={btn} onClick={placeOrder} disabled={loading}>
+        {loading ? "Placing Order..." : "Place Order"}
       </button>
 
     </div>
@@ -99,9 +153,9 @@ const textarea = {
   marginTop: "10px",
 };
 
-const totalBox = {
-  textAlign: "center",
-  marginTop: "20px",
+const summaryItem = {
+  display: "flex",
+  justifyContent: "space-between",
 };
 
 const btn = {
@@ -111,4 +165,5 @@ const btn = {
   background: "white",
   color: "black",
   border: "none",
+  cursor: "pointer",
 };
