@@ -15,7 +15,8 @@ export default function Admin({ setPage }) {
   const [form, setForm] = useState({
     name: "",
     price: "",
-    image: ""
+    image: "",
+    stock: "" // ✅ NEW
   });
 
   /* 🔥 REAL-TIME PRODUCTS */
@@ -33,7 +34,7 @@ export default function Admin({ setPage }) {
 
   /* ➕ ADD PRODUCT */
   const addProduct = async () => {
-    if (!form.name || !form.price) {
+    if (!form.name || !form.price || !form.stock) {
       alert("Fill all fields");
       return;
     }
@@ -42,10 +43,11 @@ export default function Admin({ setPage }) {
       name: form.name,
       price: Number(form.price),
       image: form.image || "",
+      stock: Number(form.stock), // ✅ ADD STOCK
       createdAt: new Date()
     });
 
-    setForm({ name: "", price: "", image: "" });
+    setForm({ name: "", price: "", image: "", stock: "" });
     alert("Product added");
   };
 
@@ -53,12 +55,14 @@ export default function Admin({ setPage }) {
   const editProduct = async (product) => {
     const newName = prompt("Enter new name", product.name);
     const newPrice = prompt("Enter new price", product.price);
+    const newStock = prompt("Enter stock", product.stock);
 
-    if (!newName || !newPrice) return;
+    if (!newName || !newPrice || !newStock) return;
 
     await updateDoc(doc(db, "products", product.id), {
       name: newName,
-      price: Number(newPrice)
+      price: Number(newPrice),
+      stock: Number(newStock) // ✅ UPDATE STOCK
     });
 
     alert("Product updated");
@@ -105,6 +109,15 @@ export default function Admin({ setPage }) {
         />
 
         <input
+          placeholder="Stock"
+          value={form.stock}
+          onChange={(e) =>
+            setForm({ ...form, stock: e.target.value })
+          }
+          style={input}
+        />
+
+        <input
           placeholder="Image URL"
           value={form.image}
           onChange={(e) =>
@@ -132,6 +145,18 @@ export default function Admin({ setPage }) {
             <h3>{product.name}</h3>
             <p>₹{product.price}</p>
 
+            {/* 🔥 SHOW STOCK */}
+            <p style={{ fontSize: "12px", color: "gray" }}>
+              Stock: {product.stock ?? 0}
+            </p>
+
+            {/* 🔴 OUT OF STOCK */}
+            {product.stock === 0 && (
+              <p style={{ color: "red", fontWeight: "bold" }}>
+                Out of Stock
+              </p>
+            )}
+
             <div style={{ display: "flex", gap: "10px" }}>
               <button
                 onClick={() => editProduct(product)}
@@ -155,7 +180,7 @@ export default function Admin({ setPage }) {
   );
 }
 
-/* 🎨 STYLES */
+/* 🎨 STYLES (UNCHANGED) */
 
 const container = {
   padding: "20px",
