@@ -12,7 +12,8 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
     const unsub = onSnapshot(collection(db, "products"), (snap) => {
       const data = snap.docs.map(doc => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
+        stock: doc.data().stock ?? 0 // ✅ ENSURE STOCK EXISTS
       }));
       setProducts(data);
     });
@@ -66,6 +67,7 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
               }}
               style={cardWrap}
             >
+              {/* 🔥 PASS STOCK TO CARD */}
               <ProductCard product={p} setCart={setCart} />
             </div>
           ))
@@ -75,89 +77,3 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
     </div>
   );
 }
-
-/* 🎨 ULTRA LUXURY STYLES */
-
-const hero = {
-  minHeight: "70vh",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-  textAlign: "center",
-  padding: "20px",
-  background: "linear-gradient(to right, #000, #400000)",
-  color: "white",
-  position: "relative",
-  overflow: "hidden",
-};
-
-const overlay = {
-  position: "absolute",
-  width: "100%",
-  height: "100%",
-  background: "radial-gradient(circle, rgba(255,255,255,0.05), transparent)",
-};
-
-const title = {
-  fontSize: "clamp(30px, 6vw, 55px)",
-  letterSpacing: "2px",
-  fontWeight: "700",
-  textShadow: "0 0 15px rgba(255,255,255,0.2)",
-  zIndex: 1,
-};
-
-const subtitle = {
-  marginTop: "10px",
-  color: "#ddd",
-  fontSize: "clamp(14px, 3vw, 18px)",
-  maxWidth: "500px",
-  zIndex: 1,
-};
-
-const btn = {
-  marginTop: "25px",
-  padding: "12px 22px",
-  background: "white",
-  border: "none",
-  cursor: "pointer",
-  borderRadius: "6px",
-  fontWeight: "600",
-  boxShadow: "0 5px 15px rgba(255,255,255,0.2)",
-  zIndex: 1,
-};
-
-const brand = {
-  textAlign: "center",
-  padding: "50px 20px",
-  background: "#fff",
-};
-
-const brandTitle = {
-  fontSize: "clamp(22px, 4vw, 32px)",
-  letterSpacing: "1px",
-};
-
-const brandText = {
-  maxWidth: "600px",
-  margin: "15px auto",
-  fontSize: "14px",
-  color: "#555",
-  lineHeight: "1.6",
-};
-
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-  gap: "20px",
-  padding: "20px",
-};
-
-/* 🔥 PREMIUM CARD EFFECT */
-const cardWrap = {
-  cursor: "pointer",
-  transition: "all 0.3s ease",
-  borderRadius: "12px",
-  overflow: "hidden",
-  boxShadow: "0 5px 20px rgba(0,0,0,0.08)",
-};
