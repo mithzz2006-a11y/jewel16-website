@@ -1,41 +1,41 @@
-/* RESET */
+/* 🔥 RESET */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
 }
 
+/* 🔥 BODY */
 body {
-  font-family: sans-serif;
-  background: white;
-  overflow-x: hidden;
+  background: #fff;
+  color: #111;
 }
 
-/* BUTTON */
+/* 🔥 BUTTON */
 button {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
   cursor: pointer;
+  font-weight: 500;
 }
 
-/* INPUT */
+/* 🔥 INPUT */
 input, textarea {
   width: 100%;
   padding: 10px;
-  margin-bottom: 10px;
+  border-radius: 6px;
   border: 1px solid #ccc;
-  border-radius: 5px;
 }
 
-/* MOBILE FIX */
-@media (max-width: 768px) {
-  h1 {
-    font-size: 28px !important;
-  }
+/* 🔥 MOBILE OPTIMIZATION */
+@media (max-width: 600px) {
+  h1 { font-size: 22px; }
+  h2 { font-size: 18px; }
+  h3 { font-size: 16px; }
 
-  h2 {
-    font-size: 22px !important;
-  }
-
-  p {
-    font-size: 14px !important;
+  button {
+    width: 100%;
   }
 }
