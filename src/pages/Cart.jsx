@@ -16,14 +16,15 @@ export default function Cart({ cart, setPage }) {
       {/* 🛍 CART ITEMS */}
       <div style={container}>
         {cart.length === 0 ? (
-          <p>Your cart is empty</p>
+          <p style={{ textAlign: "center" }}>Your cart is empty</p>
         ) : (
           cart.map((item, i) => (
             <div key={i} style={itemBox}>
               <img src={item.image} style={img} />
-              <div>
-                <h3>{item.name}</h3>
-                <p>₹{item.price}</p>
+
+              <div style={itemText}>
+                <h3 style={name}>{item.name}</h3>
+                <p style={price}>₹{item.price}</p>
               </div>
             </div>
           ))
@@ -41,17 +42,17 @@ export default function Cart({ cart, setPage }) {
 
       {/* 🛡 TRUST SECTION */}
       <div style={trust}>
-        <div>
+        <div style={trustItem}>
           <h3>🔒 Secure Payments</h3>
           <p>100% encrypted transactions</p>
         </div>
 
-        <div>
+        <div style={trustItem}>
           <h3>🚚 Fast Delivery</h3>
           <p>Quick & reliable shipping</p>
         </div>
 
-        <div>
+        <div style={trustItem}>
           <h3>💎 Premium Quality</h3>
           <p>Crafted with perfection</p>
         </div>
@@ -61,7 +62,7 @@ export default function Cart({ cart, setPage }) {
   );
 }
 
-/* 🎨 STYLES */
+/* 🎨 STYLES (RESPONSIVE SAFE) */
 
 const hero = {
   minHeight: "50vh",
@@ -76,22 +77,23 @@ const hero = {
 };
 
 const title = {
-  fontSize: "clamp(30px, 5vw, 50px)",
+  fontSize: "clamp(28px, 6vw, 50px)",
 };
 
 const subtitle = {
   marginTop: "10px",
   color: "#ddd",
+  fontSize: "clamp(14px, 3vw, 18px)",
 };
 
 const container = {
-  padding: "20px",
+  padding: "15px",
   background: "#fff",
 };
 
 const itemBox = {
   display: "flex",
-  gap: "15px",
+  gap: "12px",
   marginBottom: "15px",
   alignItems: "center",
   flexWrap: "wrap",
@@ -100,10 +102,25 @@ const itemBox = {
 };
 
 const img = {
-  width: "90px",
-  height: "90px",
+  width: "80px",
+  height: "80px",
   objectFit: "cover",
   borderRadius: "8px",
+  flexShrink: 0,
+};
+
+const itemText = {
+  flex: 1,
+  minWidth: "120px",
+};
+
+const name = {
+  fontSize: "clamp(14px, 3vw, 18px)",
+};
+
+const price = {
+  color: "gray",
+  fontSize: "14px",
 };
 
 const totalBox = {
@@ -113,19 +130,25 @@ const totalBox = {
 
 const btn = {
   marginTop: "15px",
-  padding: "12px 25px",
+  padding: "12px 20px",
   background: "maroon",
   color: "white",
   border: "none",
   cursor: "pointer",
+  borderRadius: "6px",
+  fontSize: "14px",
 };
 
 const trust = {
   display: "flex",
   justifyContent: "center",
-  gap: "30px",
+  gap: "20px",
   flexWrap: "wrap",
-  padding: "30px",
+  padding: "25px 15px",
   background: "#f9f9f9",
   textAlign: "center",
+};
+
+const trustItem = {
+  maxWidth: "200px",
 };
