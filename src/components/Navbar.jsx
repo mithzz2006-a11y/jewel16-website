@@ -36,7 +36,7 @@ export default function Navbar({ setPage, cart, user }) {
         )}
 
         {/* 🔥 3 DOT MENU */}
-        <div style={{ position: "relative" }}>
+        <div style={menuWrap}>
           <button style={dots} onClick={() => setMenuOpen(!menuOpen)}>
             ⋮
           </button>
@@ -50,11 +50,17 @@ export default function Navbar({ setPage, cart, user }) {
 
               <hr />
 
-              <p style={item} onClick={() => setPage("profile")}>
+              <p style={item} onClick={() => {
+                setMenuOpen(false);
+                setPage("profile");
+              }}>
                 👤 Profile
               </p>
 
-              <p style={item} onClick={() => setPage("orders")}>
+              <p style={item} onClick={() => {
+                setMenuOpen(false);
+                setPage("orders");
+              }}>
                 📦 My Orders
               </p>
 
@@ -73,13 +79,13 @@ export default function Navbar({ setPage, cart, user }) {
   );
 }
 
-/* 🎨 STYLES */
+/* 🎨 STYLES (RESPONSIVE SAFE) */
 
 const nav = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  padding: "12px 15px",
+  padding: "10px 12px",
   borderBottom: "1px solid #eee",
   background: "white",
   position: "sticky",
@@ -96,17 +102,22 @@ const logo = {
 
 const right = {
   display: "flex",
-  gap: "10px",
+  gap: "8px",
   alignItems: "center",
   flexWrap: "wrap",
 };
 
 const btn = {
-  padding: "8px 12px",
+  padding: "6px 10px",
+  fontSize: "14px",
   border: "none",
   background: "white",
   cursor: "pointer",
-  fontWeight: "500",
+  borderRadius: "6px",
+};
+
+const menuWrap = {
+  position: "relative",
 };
 
 const dots = {
@@ -129,7 +140,7 @@ const dropdown = {
 };
 
 const item = {
-  padding: "8px",
+  padding: "10px",
   cursor: "pointer",
 };
 
