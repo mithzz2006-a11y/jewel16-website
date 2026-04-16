@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 /* COMPONENTS */
 import Navbar from "./components/Navbar";
@@ -23,32 +23,36 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  /* 🔐 AUTH + ADMIN */
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
-      try {
-        if (u) {
+      if (u) {
+        try {
+          console.log("REAL UID:", u.uid); // 🔥 DEBUG (remove later)
+
           const ref = doc(db, "users", u.uid);
           const snap = await getDoc(ref);
 
           let isAdmin = false;
 
           if (snap.exists()) {
-            const data = snap.data();
-
-            if (data?.role?.toLowerCase() === "admin") {
+            if (snap.data().role === "admin") {
               isAdmin = true;
             }
-
-            console.log("ADMIN CHECK:", data);
+          } else {
+            // 🔥 AUTO CREATE USER DOC (VERY IMPORTANT)
+            await setDoc(ref, {
+              email: u.email,
+              role: "user"
+            });
           }
 
-          setUser({ ...u, isAdmin: Boolean(isAdmin) });
-        } else {
-          setUser(null);
+          setUser({ ...u, isAdmin });
+        } catch (err) {
+          console.log("Auth error:", err);
+          setUser({ ...u, isAdmin: false });
         }
-      } catch (err) {
-        console.log("Auth error:", err);
+      } else {
+        setUser(null);
       }
     });
 
