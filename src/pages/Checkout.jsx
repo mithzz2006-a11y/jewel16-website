@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { db } from "../firebase";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  doc,
+  getDoc,
+  updateDoc
+} from "firebase/firestore";
 
 export default function Checkout({ cart, user }) {
   const [instruction, setInstruction] = useState("");
@@ -21,6 +27,28 @@ export default function Checkout({ cart, user }) {
     try {
       setLoading(true);
 
+      /* 🔥 STOCK CHECK FIRST (IMPORTANT) */
+      for (let item of cart) {
+        const ref = doc(db, "products", item.id);
+        const snap = await getDoc(ref);
+
+        if (!snap.exists()) {
+          alert(`${item.name} not available`);
+          setLoading(false);
+          return;
+        }
+
+        const stock = snap.data().stock || 0;
+        const qty = item.qty || 1;
+
+        if (stock < qty) {
+          alert(`${item.name} is out of stock ❌`);
+          setLoading(false);
+          return;
+        }
+      }
+
+      /* ✅ SAVE ORDER */
       await addDoc(collection(db, "orders"), {
         userId: user.uid,
         email: user.email,
@@ -35,9 +63,22 @@ export default function Checkout({ cart, user }) {
         createdAt: new Date().toISOString(),
       });
 
+      /* 🔥 REDUCE STOCK */
+      for (let item of cart) {
+        const ref = doc(db, "products", item.id);
+        const snap = await getDoc(ref);
+
+        const currentStock = snap.data().stock || 0;
+        const qty = item.qty || 1;
+
+        await updateDoc(ref, {
+          stock: currentStock - qty
+        });
+      }
+
       alert("Order placed successfully 🎉");
 
-      window.location.reload(); // simple reset
+      window.location.reload();
 
     } catch (err) {
       console.log(err);
@@ -115,7 +156,7 @@ export default function Checkout({ cart, user }) {
   );
 }
 
-/* 🎨 STYLES */
+/* 🎨 SAME STYLES */
 
 const container = {
   padding: "20px",
