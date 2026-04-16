@@ -1,5 +1,37 @@
+import { useState } from "react";
+
 export default function Cart({ cart, setPage }) {
-  const total = cart.reduce((sum, i) => sum + i.price, 0);
+  const [cartItems, setCartItems] = useState(
+    cart.map((item) => ({ ...item, qty: 1 }))
+  );
+
+  /* ➕ INCREASE */
+  const increase = (index) => {
+    const updated = [...cartItems];
+    updated[index].qty += 1;
+    setCartItems(updated);
+  };
+
+  /* ➖ DECREASE */
+  const decrease = (index) => {
+    const updated = [...cartItems];
+    if (updated[index].qty > 1) {
+      updated[index].qty -= 1;
+      setCartItems(updated);
+    }
+  };
+
+  /* ❌ REMOVE */
+  const removeItem = (index) => {
+    const updated = cartItems.filter((_, i) => i !== index);
+    setCartItems(updated);
+  };
+
+  /* 💰 TOTAL */
+  const total = cartItems.reduce(
+    (sum, i) => sum + i.price * i.qty,
+    0
+  );
 
   return (
     <div>
@@ -7,37 +39,66 @@ export default function Cart({ cart, setPage }) {
       {/* 🔥 HERO */}
       <div style={hero}>
         <h1 style={title}>Your Cart 🛒</h1>
-        <p style={subtitle}>Review your luxury items</p>
+        <p style={subtitle}>
+          Review your selected luxury items before checkout
+        </p>
       </div>
 
       {/* 🛍 ITEMS */}
       <div style={container}>
-        {cart.length === 0 ? (
+        {cartItems.length === 0 ? (
           <p style={{ textAlign: "center" }}>Your cart is empty</p>
         ) : (
-          cart.map((item, i) => (
+          cartItems.map((item, i) => (
             <div key={i} style={itemBox}>
               <img src={item.image} style={img} />
 
               <div style={itemText}>
-                <h3>{item.name}</h3>
+                <h3 style={name}>{item.name}</h3>
                 <p style={price}>₹{item.price}</p>
+
+                {/* 🔥 QUANTITY */}
+                <div style={qtyBox}>
+                  <button onClick={() => decrease(i)} style={qtyBtn}>-</button>
+                  <span style={qty}>{item.qty}</span>
+                  <button onClick={() => increase(i)} style={qtyBtn}>+</button>
+                </div>
+
+                {/* ❌ REMOVE */}
+                <p style={remove} onClick={() => removeItem(i)}>
+                  Remove
+                </p>
               </div>
             </div>
           ))
         )}
+
+        {/* 💰 TOTAL */}
+        <div style={totalBox}>
+          <h2>Total: ₹{total}</h2>
+
+          <button style={btn} onClick={() => setPage("checkout")}>
+            Proceed to Secure Checkout
+          </button>
+        </div>
       </div>
 
-      {/* 🔥 STICKY CHECKOUT (AMAZON STYLE) */}
-      <div style={stickyBar}>
-        <div>
-          <p style={{ margin: 0 }}>Total</p>
-          <h3 style={{ margin: 0 }}>₹{total}</h3>
+      {/* 🛡 TRUST */}
+      <div style={trust}>
+        <div style={trustItem}>
+          <h3>🔒 Secure Payments</h3>
+          <p>100% encrypted transactions</p>
         </div>
 
-        <button style={checkoutBtn} onClick={() => setPage("checkout")}>
-          Checkout
-        </button>
+        <div style={trustItem}>
+          <h3>🚚 Fast Delivery</h3>
+          <p>Quick & reliable shipping</p>
+        </div>
+
+        <div style={trustItem}>
+          <h3>💎 Premium Quality</h3>
+          <p>Crafted with perfection</p>
+        </div>
       </div>
 
     </div>
@@ -47,7 +108,7 @@ export default function Cart({ cart, setPage }) {
 /* 🎨 STYLES */
 
 const hero = {
-  minHeight: "40vh",
+  minHeight: "50vh",
   background: "linear-gradient(to right, #000, #400000)",
   color: "white",
   display: "flex",
@@ -59,17 +120,17 @@ const hero = {
 };
 
 const title = {
-  fontSize: "clamp(28px, 6vw, 45px)",
+  fontSize: "clamp(28px, 6vw, 50px)",
 };
 
 const subtitle = {
+  marginTop: "10px",
   color: "#ddd",
 };
 
 const container = {
   padding: "15px",
   background: "#fff",
-  paddingBottom: "100px", // 🔥 space for sticky bar
 };
 
 const itemBox = {
@@ -77,6 +138,7 @@ const itemBox = {
   gap: "12px",
   marginBottom: "15px",
   alignItems: "center",
+  flexWrap: "wrap",
   borderBottom: "1px solid #eee",
   paddingBottom: "10px",
 };
@@ -92,29 +154,65 @@ const itemText = {
   flex: 1,
 };
 
+const name = {
+  fontSize: "16px",
+};
+
 const price = {
   color: "gray",
 };
 
-/* 🔥 STICKY BAR */
-const stickyBar = {
-  position: "fixed",
-  bottom: 0,
-  left: 0,
-  width: "100%",
-  background: "white",
-  borderTop: "1px solid #ddd",
+/* 🔥 QTY */
+const qtyBox = {
   display: "flex",
-  justifyContent: "space-between",
   alignItems: "center",
-  padding: "10px 15px",
-  zIndex: 1000,
+  gap: "10px",
+  marginTop: "10px",
 };
 
-const checkoutBtn = {
+const qtyBtn = {
+  padding: "5px 10px",
+  border: "1px solid #ccc",
+  background: "white",
+  cursor: "pointer",
+};
+
+const qty = {
+  fontWeight: "bold",
+};
+
+/* ❌ REMOVE */
+const remove = {
+  marginTop: "8px",
+  color: "red",
+  cursor: "pointer",
+  fontSize: "13px",
+};
+
+const totalBox = {
+  marginTop: "20px",
+  textAlign: "center",
+};
+
+const btn = {
+  marginTop: "15px",
   padding: "12px 20px",
   background: "maroon",
   color: "white",
   border: "none",
-  borderRadius: "6px",
+  cursor: "pointer",
+};
+
+const trust = {
+  display: "flex",
+  justifyContent: "center",
+  gap: "20px",
+  flexWrap: "wrap",
+  padding: "25px 15px",
+  background: "#f9f9f9",
+  textAlign: "center",
+};
+
+const trustItem = {
+  maxWidth: "200px",
 };
