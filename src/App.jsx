@@ -33,11 +33,17 @@ export default function App() {
 
           let isAdmin = false;
 
-          if (snap.exists() && snap.data().role === "admin") {
-            isAdmin = true;
+          if (snap.exists()) {
+            const data = snap.data();
+
+            if (data?.role?.toLowerCase() === "admin") {
+              isAdmin = true;
+            }
+
+            console.log("ADMIN CHECK:", data);
           }
 
-          setUser({ ...u, isAdmin });
+          setUser({ ...u, isAdmin: Boolean(isAdmin) });
         } else {
           setUser(null);
         }
