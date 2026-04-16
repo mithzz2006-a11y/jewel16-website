@@ -12,7 +12,12 @@ export default function Products({ products, setCart, setPage, setSelectedProduc
           Discover handcrafted luxury designed for timeless elegance
         </p>
 
-        <button style={btn} onClick={() => window.scrollTo({ top: 500, behavior: "smooth" })}>
+        <button
+          style={btn}
+          onClick={() =>
+            window.scrollTo({ top: window.innerHeight, behavior: "smooth" })
+          }
+        >
           View Products
         </button>
       </div>
@@ -20,7 +25,7 @@ export default function Products({ products, setCart, setPage, setSelectedProduc
       {/* 💎 BRAND TEXT */}
       <div style={brand}>
         <h2>Luxury You Can Trust</h2>
-        <p>
+        <p style={brandText}>
           At JEWEL16, every piece is crafted with precision, passion, and perfection.
           Experience jewellery that defines class and confidence.
         </p>
@@ -35,7 +40,7 @@ export default function Products({ products, setCart, setPage, setSelectedProduc
               setSelectedProduct(p);
               setPage("detail");
             }}
-            style={{ cursor: "pointer" }}
+            style={cardWrap}
           >
             <ProductCard product={p} setCart={setCart} />
           </div>
@@ -46,7 +51,7 @@ export default function Products({ products, setCart, setPage, setSelectedProduc
   );
 }
 
-/* 🎨 STYLES */
+/* 🎨 STYLES (RESPONSIVE SAFE) */
 
 const hero = {
   minHeight: "70vh",
@@ -61,20 +66,24 @@ const hero = {
 };
 
 const title = {
-  fontSize: "clamp(30px, 5vw, 55px)",
+  fontSize: "clamp(28px, 6vw, 55px)",
 };
 
 const subtitle = {
   marginTop: "10px",
   color: "#ddd",
+  fontSize: "clamp(14px, 3vw, 18px)",
+  maxWidth: "500px",
 };
 
 const btn = {
   marginTop: "20px",
-  padding: "12px 25px",
+  padding: "12px 20px",
   background: "white",
   border: "none",
   cursor: "pointer",
+  borderRadius: "6px",
+  fontSize: "14px",
 };
 
 const brand = {
@@ -83,9 +92,21 @@ const brand = {
   background: "#fff",
 };
 
+const brandText = {
+  maxWidth: "600px",
+  margin: "10px auto",
+  fontSize: "14px",
+  color: "#555",
+};
+
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(180px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
   gap: "15px",
-  padding: "20px",
+  padding: "15px",
+};
+
+const cardWrap = {
+  cursor: "pointer",
+  transition: "transform 0.2s",
 };
