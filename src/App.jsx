@@ -27,8 +27,6 @@ export default function App() {
     const unsub = onAuthStateChanged(auth, async (u) => {
       if (u) {
         try {
-          console.log("REAL UID:", u.uid); // 🔥 DEBUG (remove later)
-
           const ref = doc(db, "users", u.uid);
           const snap = await getDoc(ref);
 
@@ -39,7 +37,7 @@ export default function App() {
               isAdmin = true;
             }
           } else {
-            // 🔥 AUTO CREATE USER DOC (VERY IMPORTANT)
+            // 🔥 AUTO CREATE USER DOC
             await setDoc(ref, {
               email: u.email,
               role: "user"
@@ -65,51 +63,70 @@ export default function App() {
   }
 
   return (
-    <div>
+    <div style={appContainer}>
 
       {/* 🔥 NAVBAR */}
       <Navbar setPage={setPage} cart={cart} user={user} />
 
-      {/* 🔥 ROUTING */}
-      {page === "home" && <Home setPage={setPage} />}
+      {/* 🔥 PAGE WRAPPER (RESPONSIVE FIX) */}
+      <div style={pageWrapper}>
 
-      {page === "products" && (
-        <Products
-          setPage={setPage}
-          setCart={setCart}
-          setSelectedProduct={setSelectedProduct}
-        />
-      )}
+        {page === "home" && <Home setPage={setPage} />}
 
-      {page === "detail" && (
-        <ProductDetail
-          product={selectedProduct}
-          setCart={setCart}
-          setPage={setPage}
-        />
-      )}
+        {page === "products" && (
+          <Products
+            setPage={setPage}
+            setCart={setCart}
+            setSelectedProduct={setSelectedProduct}
+          />
+        )}
 
-      {page === "cart" && (
-        <Cart cart={cart} setPage={setPage} />
-      )}
+        {page === "detail" && (
+          <ProductDetail
+            product={selectedProduct}
+            setCart={setCart}
+            setPage={setPage}
+          />
+        )}
 
-      {page === "checkout" && (
-        <Checkout cart={cart} user={user} />
-      )}
+        {page === "cart" && (
+          <Cart cart={cart} setPage={setPage} />
+        )}
 
-      {page === "orders" && (
-        <MyOrders user={user} />
-      )}
+        {page === "checkout" && (
+          <Checkout cart={cart} user={user} />
+        )}
 
-      {page === "profile" && (
-        <Profile user={user} />
-      )}
+        {page === "orders" && (
+          <MyOrders user={user} />
+        )}
 
-      {/* 🔐 ADMIN */}
-      {page === "admin" && user?.isAdmin && (
-        <Admin setPage={setPage} />
-      )}
+        {page === "profile" && (
+          <Profile user={user} />
+        )}
+
+        {/* 🔐 ADMIN */}
+        {page === "admin" && user?.isAdmin && (
+          <Admin setPage={setPage} />
+        )}
+
+      </div>
 
     </div>
   );
 }
+
+/* 💎 RESPONSIVE SAFE STYLES */
+
+const appContainer = {
+  minHeight: "100vh",
+  display: "flex",
+  flexDirection: "column"
+};
+
+const pageWrapper = {
+  width: "100%",
+  maxWidth: "1200px",
+  margin: "0 auto",
+  padding: "10px"
+};
