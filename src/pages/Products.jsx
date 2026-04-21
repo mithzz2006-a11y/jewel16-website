@@ -7,7 +7,7 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
 
   const [products, setProducts] = useState([]);
 
-  /* 🔥 FIRESTORE CONNECT (SAFE) */
+  /* 🔥 FIRESTORE CONNECT */
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "products"), (snap) => {
       try {
@@ -24,9 +24,8 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
         });
 
         setProducts(data);
-
       } catch (err) {
-        console.log("🔥 PRODUCT ERROR:", err);
+        console.log("PRODUCT ERROR:", err);
       }
     });
 
@@ -61,6 +60,7 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
         <h2 style={brandTitle}>Luxury You Can Trust</h2>
         <p style={brandText}>
           At JEWEL16, every piece is crafted with precision, passion, and perfection.
+          Experience jewellery that defines class and confidence.
         </p>
       </div>
 
@@ -91,4 +91,76 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
   );
 }
 
-/* KEEP YOUR STYLES SAME */
+/* 🎨 FULL STYLES (THIS WAS MISSING BEFORE → CAUSED CRASH) */
+
+const hero = {
+  minHeight: "70vh",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  textAlign: "center",
+  padding: "20px",
+  background: "linear-gradient(to right, #000, #400000)",
+  color: "white",
+  position: "relative",
+};
+
+const overlay = {
+  position: "absolute",
+  width: "100%",
+  height: "100%",
+  background: "radial-gradient(circle, rgba(255,255,255,0.05), transparent)",
+};
+
+const title = {
+  fontSize: "clamp(30px, 6vw, 55px)",
+  letterSpacing: "2px",
+  zIndex: 1,
+};
+
+const subtitle = {
+  marginTop: "10px",
+  color: "#ddd",
+  fontSize: "clamp(14px, 3vw, 18px)",
+  zIndex: 1,
+};
+
+const btn = {
+  marginTop: "20px",
+  padding: "12px 22px",
+  background: "white",
+  border: "none",
+  cursor: "pointer",
+  borderRadius: "6px",
+  zIndex: 1,
+};
+
+const brand = {
+  textAlign: "center",
+  padding: "50px 20px",
+  background: "#fff",
+};
+
+const brandTitle = {
+  fontSize: "clamp(22px, 4vw, 32px)",
+};
+
+const brandText = {
+  maxWidth: "600px",
+  margin: "10px auto",
+  fontSize: "14px",
+  color: "#555",
+  lineHeight: "1.6",
+};
+
+const grid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  gap: "20px",
+  padding: "20px",
+};
+
+const cardWrap = {
+  cursor: "pointer",
+};
