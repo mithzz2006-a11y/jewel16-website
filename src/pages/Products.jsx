@@ -10,14 +10,19 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
   /* 🔥 FIRESTORE CONNECT */
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "products"), (snap) => {
-      const data = snap.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        stock: doc.data()?.stock ?? 0,
-        price: doc.data()?.price ?? 0,
-        image: doc.data()?.image || ""
-      }));
-      setProducts(data);
+      try {
+        const data = snap.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          stock: doc.data()?.stock ?? 0,
+          price: doc.data()?.price ?? 0,
+          image: doc.data()?.image || ""
+        }));
+
+        setProducts(data);
+      } catch (err) {
+        console.log("Product fetch error:", err);
+      }
     });
 
     return () => unsub();
@@ -61,18 +66,22 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
           <p style={{ textAlign: "center" }}>No products available</p>
         ) : (
           products.map((p) => {
-            if (!p || !p.id) return null; // ✅ FIX
+            if (!p || !p.id) return null;
 
             return (
               <div
                 key={p.id}
                 style={cardWrap}
                 onClick={() => {
-                  setSelectedProduct(p);
-                  setPage("detail");
+                  try {
+                    setSelectedProduct(p);
+                    setPage("detail");
+                  } catch (err) {
+                    console.log("Navigation error:", err);
+                  }
                 }}
               >
-                {/* 🔥 IMPORTANT FIX */}
+                {/* 🔥 PREVENT CLICK CRASH */}
                 <div onClick={(e) => e.stopPropagation()}>
                   <ProductCard
                     product={p}
