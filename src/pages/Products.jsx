@@ -7,21 +7,26 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
 
   const [products, setProducts] = useState([]);
 
-  /* 🔥 FIRESTORE CONNECT */
+  /* 🔥 FIRESTORE CONNECT (SAFE) */
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "products"), (snap) => {
       try {
-        const data = snap.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-          stock: doc.data()?.stock ?? 0,
-          price: doc.data()?.price ?? 0,
-          image: doc.data()?.image || ""
-        }));
+        const data = snap.docs.map((doc) => {
+          const d = doc.data() || {};
+
+          return {
+            id: doc.id,
+            name: d.name || "No Name",
+            price: Number(d.price) || 0,
+            image: d.image || "",
+            stock: Number(d.stock) || 0
+          };
+        });
 
         setProducts(data);
+
       } catch (err) {
-        console.log("Product fetch error:", err);
+        console.log("🔥 PRODUCT ERROR:", err);
       }
     });
 
@@ -56,7 +61,6 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
         <h2 style={brandTitle}>Luxury You Can Trust</h2>
         <p style={brandText}>
           At JEWEL16, every piece is crafted with precision, passion, and perfection.
-          Experience jewellery that defines class and confidence.
         </p>
       </div>
 
@@ -65,35 +69,26 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
         {products.length === 0 ? (
           <p style={{ textAlign: "center" }}>No products available</p>
         ) : (
-          products.map((p) => {
-            if (!p || !p.id) return null;
-
-            return (
-              <div
-                key={p.id}
-                style={cardWrap}
-                onClick={() => {
-                  try {
-                    setSelectedProduct(p);
-                    setPage("detail");
-                  } catch (err) {
-                    console.log("Navigation error:", err);
-                  }
-                }}
-              >
-                {/* 🔥 PREVENT CLICK CRASH */}
-                <div onClick={(e) => e.stopPropagation()}>
-                  <ProductCard
-                    product={p}
-                    setCart={setCart}
-                  />
-                </div>
+          products.map((p) => (
+            <div
+              key={p.id}
+              style={cardWrap}
+              onClick={() => {
+                setSelectedProduct(p);
+                setPage("detail");
+              }}
+            >
+              {/* 🔥 FIX CLICK CRASH */}
+              <div onClick={(e) => e.stopPropagation()}>
+                <ProductCard product={p} setCart={setCart} />
               </div>
-            );
-          })
+            </div>
+          ))
         )}
       </div>
 
     </div>
   );
 }
+
+/* KEEP YOUR STYLES SAME */
