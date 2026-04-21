@@ -13,9 +13,9 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
       const data = snap.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-        stock: doc.data().stock ?? 0,
-        price: doc.data().price ?? 0,
-        image: doc.data().image || ""
+        stock: doc.data()?.stock ?? 0,
+        price: doc.data()?.price ?? 0,
+        image: doc.data()?.image || ""
       }));
       setProducts(data);
     });
@@ -61,7 +61,7 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
           <p style={{ textAlign: "center" }}>No products available</p>
         ) : (
           products.map((p) => {
-            if (!p) return null; // ✅ safety
+            if (!p || !p.id) return null; // ✅ FIX
 
             return (
               <div
@@ -72,10 +72,13 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
                   setPage("detail");
                 }}
               >
-                <ProductCard
-                  product={p}
-                  setCart={setCart}
-                />
+                {/* 🔥 IMPORTANT FIX */}
+                <div onClick={(e) => e.stopPropagation()}>
+                  <ProductCard
+                    product={p}
+                    setCart={setCart}
+                  />
+                </div>
               </div>
             );
           })
