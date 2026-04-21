@@ -1,9 +1,8 @@
 export default function ProductCard({ product, setCart }) {
 
   const addToCart = (e) => {
-    e.stopPropagation(); // ✅ FIX WHITE SCREEN (VERY IMPORTANT)
+    e.stopPropagation(); // 🔥 FIX WHITE SCREEN
 
-    // 🔴 STOCK CHECK
     if ((product.stock ?? 0) <= 0) {
       alert("Out of stock ❌");
       return;
@@ -12,7 +11,6 @@ export default function ProductCard({ product, setCart }) {
     setCart((prev) => {
       const existing = prev.find((i) => i.id === product.id);
 
-      // 🔥 IF ALREADY IN CART → INCREASE QTY
       if (existing) {
         if (existing.qty >= product.stock) {
           alert("Stock limit reached ⚠️");
@@ -26,7 +24,6 @@ export default function ProductCard({ product, setCart }) {
         );
       }
 
-      // 🆕 NEW PRODUCT
       return [...prev, { ...product, qty: 1 }];
     });
   };
@@ -34,7 +31,7 @@ export default function ProductCard({ product, setCart }) {
   return (
     <div style={card}>
       <img
-        src={product.image || "https://via.placeholder.com/200"} // ✅ FIX CRASH
+        src={product.image || "https://via.placeholder.com/200"}
         style={img}
       />
 
@@ -44,12 +41,10 @@ export default function ProductCard({ product, setCart }) {
         ₹{product.price || 0}
       </p>
 
-      {/* 🔥 STOCK INFO */}
       <p style={{ fontSize: "12px", color: "gray" }}>
         Stock: {product.stock ?? 0}
       </p>
 
-      {/* 🔴 OUT OF STOCK */}
       {(product.stock ?? 0) === 0 && (
         <p style={{ color: "red", fontWeight: "bold" }}>
           Out of Stock
@@ -71,7 +66,7 @@ export default function ProductCard({ product, setCart }) {
   );
 }
 
-/* 🎨 SAME UI (UNCHANGED) */
+/* 🎨 SAME UI */
 
 const card = {
   border: "1px solid #eee",
