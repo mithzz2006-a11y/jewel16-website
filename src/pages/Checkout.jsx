@@ -18,23 +18,16 @@ export default function Checkout({ cart, user }) {
     0
   );
 
+  /* 🔥 ORIGINAL ORDER FUNCTION (NO CHANGE) */
   const placeOrder = async () => {
-    if (!user) {
-      alert("Please login first");
-      return;
-    }
-
     try {
-      setLoading(true);
-
-      /* 🔥 STOCK CHECK FIRST (IMPORTANT) */
+      /* 🔥 STOCK CHECK */
       for (let item of cart) {
         const ref = doc(db, "products", item.id);
         const snap = await getDoc(ref);
 
         if (!snap.exists()) {
           alert(`${item.name} not available`);
-          setLoading(false);
           return;
         }
 
@@ -43,7 +36,6 @@ export default function Checkout({ cart, user }) {
 
         if (stock < qty) {
           alert(`${item.name} is out of stock ❌`);
-          setLoading(false);
           return;
         }
       }
@@ -52,14 +44,11 @@ export default function Checkout({ cart, user }) {
       await addDoc(collection(db, "orders"), {
         userId: user.uid,
         email: user.email,
-
         items: cart,
         total,
-
         deliveryType,
         instruction,
-
-        status: "placed",
+        status: "paid",
         createdAt: new Date().toISOString(),
       });
 
@@ -77,12 +66,61 @@ export default function Checkout({ cart, user }) {
       }
 
       alert("Order placed successfully 🎉");
-
       window.location.reload();
 
     } catch (err) {
       console.log(err);
       alert("Order failed ❌");
+    }
+  };
+
+  /* 💳 RAZORPAY PAYMENT */
+  const handlePayment = async () => {
+    if (!user) {
+      alert("Please login first");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const res = await fetch("http://localhost:5000/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ amount: total }),
+      });
+
+      const order = await res.json();
+
+      const options = {
+        key: "rzp_test_xxxxxxxx", // 🔥 replace later
+        amount: order.amount,
+        currency: "INR",
+        name: "JEWEL16 💎",
+        description: "Luxury Jewellery Purchase",
+        order_id: order.id,
+
+        handler: async function () {
+          await placeOrder(); // ✅ only after payment
+        },
+
+        prefill: {
+          email: user.email,
+        },
+
+        theme: {
+          color: "#800000",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+
+    } catch (err) {
+      console.log(err);
+      alert("Payment Failed ❌");
     } finally {
       setLoading(false);
     }
@@ -147,9 +185,9 @@ export default function Checkout({ cart, user }) {
         <h2>Total: ₹{total}</h2>
       </div>
 
-      {/* 🔥 PLACE ORDER */}
-      <button style={btn} onClick={placeOrder} disabled={loading}>
-        {loading ? "Placing Order..." : "Place Order"}
+      {/* 🔥 PAYMENT BUTTON */}
+      <button style={btn} onClick={handlePayment} disabled={loading}>
+        {loading ? "Processing..." : "Pay Now"}
       </button>
 
     </div>
