@@ -13,16 +13,14 @@ export default function Checkout({ cart, user }) {
   const [deliveryType, setDeliveryType] = useState("standard");
   const [loading, setLoading] = useState(false);
 
-  /* 🔥 NEW */
   const [address, setAddress] = useState("");
   const [pincode, setPincode] = useState("");
 
-  const total = cart.reduce(
-    (sum, i) => sum + i.price * (i.qty || 1),
+  const total = (cart || []).reduce(
+    (sum, i) => sum + (i.price || 0) * (i.qty || 1),
     0
   );
 
-  /* 🔥 ORDER FUNCTION */
   const placeOrder = async () => {
     try {
       for (let item of cart) {
@@ -34,7 +32,7 @@ export default function Checkout({ cart, user }) {
           return;
         }
 
-        const stock = snap.data().stock || 0;
+        const stock = snap.data()?.stock || 0;
         const qty = item.qty || 1;
 
         if (stock < qty) {
@@ -44,16 +42,14 @@ export default function Checkout({ cart, user }) {
       }
 
       await addDoc(collection(db, "orders"), {
-        userId: user.uid,
-        email: user.email,
+        userId: user?.uid,
+        email: user?.email,
         items: cart,
         total,
         deliveryType,
         instruction,
-
-        address,   // ✅ NEW
-        pincode,   // ✅ NEW
-
+        address,
+        pincode,
         status: "paid",
         createdAt: new Date().toISOString(),
       });
@@ -62,7 +58,7 @@ export default function Checkout({ cart, user }) {
         const ref = doc(db, "products", item.id);
         const snap = await getDoc(ref);
 
-        const currentStock = snap.data().stock || 0;
+        const currentStock = snap.data()?.stock || 0;
         const qty = item.qty || 1;
 
         await updateDoc(ref, {
@@ -79,16 +75,20 @@ export default function Checkout({ cart, user }) {
     }
   };
 
-  /* 💳 PAYMENT */
   const handlePayment = async () => {
     if (!user) {
       alert("Please login first");
       return;
     }
 
-    /* 🔥 VALIDATION */
     if (!address || !pincode) {
-      alert("Please enter address and pincode");
+      alert("Enter address & pincode");
+      return;
+    }
+
+    /* 🔥 SAFE CHECK */
+    if (!window.Razorpay) {
+      alert("Payment system not loaded ❌");
       return;
     }
 
@@ -105,15 +105,20 @@ export default function Checkout({ cart, user }) {
 
       const order = await res.json();
 
-      const options = {
-        key: "rzp_test_ShEhYtn8TQkIwc",
+      if (!order?.id) {
+        alert("Payment init failed ❌");
+        return;
+      }
+
+      const rzp = new window.Razorpay({
+        key: "rzp_test_ShDgfm1sNzCDfQ",
         amount: order.amount,
         currency: "INR",
         name: "JEWEL16 💎",
-        description: "Luxury Jewellery Purchase",
+        description: "Purchase",
         order_id: order.id,
 
-        handler: async function () {
+        handler: async () => {
           await placeOrder();
         },
 
@@ -124,9 +129,8 @@ export default function Checkout({ cart, user }) {
         theme: {
           color: "#800000",
         },
-      };
+      });
 
-      const rzp = new window.Razorpay(options);
       rzp.open();
 
     } catch (err) {
@@ -143,77 +147,61 @@ export default function Checkout({ cart, user }) {
       <h1 style={title}>Secure Checkout 🔐</h1>
       <p style={subtitle}>Premium & safe purchase</p>
 
-      {/* 📍 ADDRESS */}
+      {/* ADDRESS */}
       <div style={box}>
         <h3>Delivery Address</h3>
 
         <textarea
-          placeholder="Enter full delivery address"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           style={textarea}
         />
 
         <input
-          type="number"
-          placeholder="Pincode"
           value={pincode}
           onChange={(e) => setPincode(e.target.value)}
           style={input}
+          placeholder="Pincode"
         />
       </div>
 
-      {/* 📦 DELIVERY */}
+      {/* DELIVERY */}
       <div style={box}>
         <h3>Select Delivery</h3>
 
-        <label style={option}>
+        <label>
           <input
             type="radio"
             checked={deliveryType === "standard"}
             onChange={() => setDeliveryType("standard")}
           />
-          Standard Delivery (Free)
+          Standard
         </label>
 
-        <label style={option}>
+        <label>
           <input
             type="radio"
             checked={deliveryType === "express"}
             onChange={() => setDeliveryType("express")}
           />
-          Express Delivery (₹99)
+          Express
         </label>
       </div>
 
-      {/* 📝 INSTRUCTION */}
-      <div style={box}>
-        <h3>Delivery Instructions</h3>
-
-        <textarea
-          placeholder="Leave at door / Call before delivery"
-          value={instruction}
-          onChange={(e) => setInstruction(e.target.value)}
-          style={textarea}
-        />
-      </div>
-
-      {/* 🛍 ORDER SUMMARY */}
+      {/* SUMMARY */}
       <div style={box}>
         <h3>Order Summary</h3>
 
-        {cart.map((item, i) => (
+        {(cart || []).map((item, i) => (
           <div key={i} style={summaryItem}>
             <p>{item.name}</p>
             <p>₹{item.price} × {item.qty || 1}</p>
           </div>
         ))}
 
-        <hr />
         <h2>Total: ₹{total}</h2>
       </div>
 
-      {/* 🔥 BUTTON */}
       <button style={btn} onClick={handlePayment} disabled={loading}>
         {loading ? "Processing..." : "Pay Now"}
       </button>
@@ -222,11 +210,9 @@ export default function Checkout({ cart, user }) {
   );
 }
 
-/* 🎨 EXTRA STYLE */
+/* styles */
 const input = {
   width: "100%",
   padding: "10px",
-  marginTop: "10px",
-  border: "1px solid #ccc",
-  borderRadius: "6px",
+  marginTop: "10px"
 };
