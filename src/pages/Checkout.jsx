@@ -9,7 +9,6 @@ import {
 } from "firebase/firestore";
 
 export default function Checkout({ cart, user }) {
-
   const [instruction, setInstruction] = useState("");
   const [deliveryType, setDeliveryType] = useState("standard");
   const [loading, setLoading] = useState(false);
@@ -26,8 +25,6 @@ export default function Checkout({ cart, user }) {
   /* 🔥 ORDER FUNCTION */
   const placeOrder = async () => {
     try {
-
-      /* STOCK CHECK */
       for (let item of cart) {
         const ref = doc(db, "products", item.id);
         const snap = await getDoc(ref);
@@ -46,7 +43,6 @@ export default function Checkout({ cart, user }) {
         }
       }
 
-      /* SAVE ORDER */
       await addDoc(collection(db, "orders"), {
         userId: user.uid,
         email: user.email,
@@ -55,15 +51,13 @@ export default function Checkout({ cart, user }) {
         deliveryType,
         instruction,
 
-        /* 🔥 NEW DATA */
-        address,
-        pincode,
+        address,   // ✅ NEW
+        pincode,   // ✅ NEW
 
         status: "paid",
         createdAt: new Date().toISOString(),
       });
 
-      /* REDUCE STOCK */
       for (let item of cart) {
         const ref = doc(db, "products", item.id);
         const snap = await getDoc(ref);
@@ -87,7 +81,6 @@ export default function Checkout({ cart, user }) {
 
   /* 💳 PAYMENT */
   const handlePayment = async () => {
-
     if (!user) {
       alert("Please login first");
       return;
@@ -95,7 +88,7 @@ export default function Checkout({ cart, user }) {
 
     /* 🔥 VALIDATION */
     if (!address || !pincode) {
-      alert("Please enter delivery address & pincode");
+      alert("Please enter address and pincode");
       return;
     }
 
@@ -113,4 +106,127 @@ export default function Checkout({ cart, user }) {
       const order = await res.json();
 
       const options = {
-        key
+        key: "rzp_test_ShDgfm1sNzCDfQ",
+        amount: order.amount,
+        currency: "INR",
+        name: "JEWEL16 💎",
+        description: "Luxury Jewellery Purchase",
+        order_id: order.id,
+
+        handler: async function () {
+          await placeOrder();
+        },
+
+        prefill: {
+          email: user.email,
+        },
+
+        theme: {
+          color: "#800000",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+
+    } catch (err) {
+      console.log(err);
+      alert("Payment Failed ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div style={container}>
+
+      <h1 style={title}>Secure Checkout 🔐</h1>
+      <p style={subtitle}>Premium & safe purchase</p>
+
+      {/* 📍 ADDRESS */}
+      <div style={box}>
+        <h3>Delivery Address</h3>
+
+        <textarea
+          placeholder="Enter full delivery address"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          style={textarea}
+        />
+
+        <input
+          type="number"
+          placeholder="Pincode"
+          value={pincode}
+          onChange={(e) => setPincode(e.target.value)}
+          style={input}
+        />
+      </div>
+
+      {/* 📦 DELIVERY */}
+      <div style={box}>
+        <h3>Select Delivery</h3>
+
+        <label style={option}>
+          <input
+            type="radio"
+            checked={deliveryType === "standard"}
+            onChange={() => setDeliveryType("standard")}
+          />
+          Standard Delivery (Free)
+        </label>
+
+        <label style={option}>
+          <input
+            type="radio"
+            checked={deliveryType === "express"}
+            onChange={() => setDeliveryType("express")}
+          />
+          Express Delivery (₹99)
+        </label>
+      </div>
+
+      {/* 📝 INSTRUCTION */}
+      <div style={box}>
+        <h3>Delivery Instructions</h3>
+
+        <textarea
+          placeholder="Leave at door / Call before delivery"
+          value={instruction}
+          onChange={(e) => setInstruction(e.target.value)}
+          style={textarea}
+        />
+      </div>
+
+      {/* 🛍 ORDER SUMMARY */}
+      <div style={box}>
+        <h3>Order Summary</h3>
+
+        {cart.map((item, i) => (
+          <div key={i} style={summaryItem}>
+            <p>{item.name}</p>
+            <p>₹{item.price} × {item.qty || 1}</p>
+          </div>
+        ))}
+
+        <hr />
+        <h2>Total: ₹{total}</h2>
+      </div>
+
+      {/* 🔥 BUTTON */}
+      <button style={btn} onClick={handlePayment} disabled={loading}>
+        {loading ? "Processing..." : "Pay Now"}
+      </button>
+
+    </div>
+  );
+}
+
+/* 🎨 EXTRA STYLE */
+const input = {
+  width: "100%",
+  padding: "10px",
+  marginTop: "10px",
+  border: "1px solid #ccc",
+  borderRadius: "6px",
+};
