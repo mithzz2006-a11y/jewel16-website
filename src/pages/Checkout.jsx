@@ -95,7 +95,7 @@ export default function Checkout({ cart, user }) {
       const order = await res.json();
 
       const options = {
-        key: "rzp_test_xxxxxxxx", // 🔥 replace later
+        key: "rzp_test_ShDgfm1sNzCDfQ", // 🔥 replace later
         amount: order.amount,
         currency: "INR",
         name: "JEWEL16 💎",
