@@ -16,6 +16,7 @@ export default function Navbar({ setPage, cart, user }) {
       {/* RIGHT SIDE */}
       <div style={right}>
 
+        {/* 🔥 MAIN BUTTONS (AUTO WRAP) */}
         <button style={btn} onClick={() => setPage("home")}>
           Home
         </button>
@@ -28,14 +29,14 @@ export default function Navbar({ setPage, cart, user }) {
           Cart ({cart?.length || 0})
         </button>
 
-        {/* 🔐 ADMIN ONLY */}
+        {/* 🔐 ADMIN */}
         {user?.isAdmin && (
           <button style={btn} onClick={() => setPage("admin")}>
             Admin
           </button>
         )}
 
-        {/* 🔥 3 DOT MENU */}
+        {/* 🔥 MENU */}
         <div style={menuWrap}>
           <button style={dots} onClick={() => setMenuOpen(!menuOpen)}>
             ⋮
@@ -44,9 +45,7 @@ export default function Navbar({ setPage, cart, user }) {
           {menuOpen && (
             <div style={dropdown}>
               
-              <p style={userInfo}>
-                {user?.email}
-              </p>
+              <p style={userInfo}>{user?.email}</p>
 
               <hr />
 
@@ -79,7 +78,7 @@ export default function Navbar({ setPage, cart, user }) {
   );
 }
 
-/* 🎨 STYLES (RESPONSIVE SAFE) */
+/* 🎨 RESPONSIVE PREMIUM STYLES */
 
 const nav = {
   display: "flex",
@@ -97,21 +96,21 @@ const nav = {
 const logo = {
   color: "maroon",
   cursor: "pointer",
-  fontSize: "20px",
+  fontSize: "clamp(18px, 4vw, 22px)", // 🔥 responsive
 };
 
 const right = {
   display: "flex",
-  gap: "8px",
+  gap: "6px",
   alignItems: "center",
-  flexWrap: "wrap",
+  flexWrap: "wrap", // 🔥 auto wrap on mobile
 };
 
 const btn = {
-  padding: "6px 10px",
-  fontSize: "14px",
+  padding: "8px 10px",
+  fontSize: "clamp(12px, 3vw, 14px)",
   border: "none",
-  background: "white",
+  background: "#f9f9f9", // 🔥 slight background for visibility
   cursor: "pointer",
   borderRadius: "6px",
 };
@@ -122,30 +121,34 @@ const menuWrap = {
 
 const dots = {
   fontSize: "18px",
-  background: "white",
+  background: "#f9f9f9",
   border: "none",
   cursor: "pointer",
+  padding: "6px 10px",
+  borderRadius: "6px",
 };
 
 const dropdown = {
   position: "absolute",
-  top: "35px",
+  top: "40px",
   right: "0",
   background: "white",
   border: "1px solid #ddd",
-  borderRadius: "8px",
-  width: "200px",
+  borderRadius: "10px",
+  width: "clamp(160px, 60vw, 220px)", // 🔥 mobile friendly
   padding: "10px",
-  boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+  boxShadow: "0 8px 20px rgba(0,0,0,0.1)",
 };
 
 const item = {
   padding: "10px",
   cursor: "pointer",
+  borderRadius: "6px",
 };
 
 const userInfo = {
   fontSize: "12px",
   color: "gray",
   marginBottom: "5px",
+  wordBreak: "break-all", // 🔥 prevent overflow
 };
