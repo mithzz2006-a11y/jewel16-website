@@ -5,14 +5,12 @@ export default function Cart({ cart, setPage }) {
     cart.map((item) => ({ ...item, qty: 1 }))
   );
 
-  /* ➕ INCREASE */
   const increase = (index) => {
     const updated = [...cartItems];
     updated[index].qty += 1;
     setCartItems(updated);
   };
 
-  /* ➖ DECREASE */
   const decrease = (index) => {
     const updated = [...cartItems];
     if (updated[index].qty > 1) {
@@ -21,13 +19,11 @@ export default function Cart({ cart, setPage }) {
     }
   };
 
-  /* ❌ REMOVE */
   const removeItem = (index) => {
     const updated = cartItems.filter((_, i) => i !== index);
     setCartItems(updated);
   };
 
-  /* 💰 TOTAL */
   const total = cartItems.reduce(
     (sum, i) => sum + i.price * i.qty,
     0
@@ -57,14 +53,13 @@ export default function Cart({ cart, setPage }) {
                 <h3 style={name}>{item.name}</h3>
                 <p style={price}>₹{item.price}</p>
 
-                {/* 🔥 QUANTITY */}
+                {/* 🔥 QTY */}
                 <div style={qtyBox}>
                   <button onClick={() => decrease(i)} style={qtyBtn}>-</button>
                   <span style={qty}>{item.qty}</span>
                   <button onClick={() => increase(i)} style={qtyBtn}>+</button>
                 </div>
 
-                {/* ❌ REMOVE */}
                 <p style={remove} onClick={() => removeItem(i)}>
                   Remove
                 </p>
@@ -105,10 +100,10 @@ export default function Cart({ cart, setPage }) {
   );
 }
 
-/* 🎨 STYLES */
+/* 🎨 RESPONSIVE STYLES */
 
 const hero = {
-  minHeight: "50vh",
+  minHeight: "clamp(28vh, 35vh, 40vh)", // 🔥 mobile fix
   background: "linear-gradient(to right, #000, #400000)",
   color: "white",
   display: "flex",
@@ -120,46 +115,51 @@ const hero = {
 };
 
 const title = {
-  fontSize: "clamp(28px, 6vw, 50px)",
+  fontSize: "clamp(22px, 5vw, 40px)",
 };
 
 const subtitle = {
-  marginTop: "10px",
+  marginTop: "8px",
+  fontSize: "clamp(12px, 3vw, 15px)",
   color: "#ddd",
+  padding: "0 10px",
 };
 
 const container = {
-  padding: "15px",
+  padding: "clamp(10px, 3vw, 20px)",
   background: "#fff",
 };
 
+/* 🔥 ITEM FIX */
 const itemBox = {
   display: "flex",
-  gap: "12px",
+  gap: "10px",
   marginBottom: "15px",
   alignItems: "center",
-  flexWrap: "wrap",
   borderBottom: "1px solid #eee",
   paddingBottom: "10px",
 };
 
 const img = {
-  width: "80px",
-  height: "80px",
+  width: "clamp(70px, 20vw, 90px)", // 🔥 responsive
+  height: "clamp(70px, 20vw, 90px)",
   objectFit: "cover",
   borderRadius: "8px",
+  flexShrink: 0,
 };
 
 const itemText = {
   flex: 1,
+  minWidth: "120px",
 };
 
 const name = {
-  fontSize: "16px",
+  fontSize: "clamp(14px, 3vw, 18px)",
 };
 
 const price = {
   color: "gray",
+  fontSize: "14px",
 };
 
 /* 🔥 QTY */
@@ -171,17 +171,18 @@ const qtyBox = {
 };
 
 const qtyBtn = {
-  padding: "5px 10px",
+  padding: "6px 12px", // 🔥 touch friendly
   border: "1px solid #ccc",
   background: "white",
   cursor: "pointer",
+  borderRadius: "6px",
 };
 
 const qty = {
   fontWeight: "bold",
+  fontSize: "14px",
 };
 
-/* ❌ REMOVE */
 const remove = {
   marginTop: "8px",
   color: "red",
@@ -189,6 +190,7 @@ const remove = {
   fontSize: "13px",
 };
 
+/* 🔥 TOTAL */
 const totalBox = {
   marginTop: "20px",
   textAlign: "center",
@@ -196,13 +198,16 @@ const totalBox = {
 
 const btn = {
   marginTop: "15px",
-  padding: "12px 20px",
+  padding: "14px 20px", // 🔥 better tap
   background: "maroon",
   color: "white",
   border: "none",
   cursor: "pointer",
+  borderRadius: "6px",
+  width: "100%", // 🔥 mobile full width
 };
 
+/* 🛡 TRUST */
 const trust = {
   display: "flex",
   justifyContent: "center",
@@ -214,5 +219,5 @@ const trust = {
 };
 
 const trustItem = {
-  maxWidth: "200px",
+  maxWidth: "180px",
 };
