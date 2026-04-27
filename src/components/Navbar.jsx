@@ -7,36 +7,14 @@ export default function Navbar({ setPage, cart, user }) {
 
   return (
     <div style={nav}>
-      
-      {/* LOGO */}
-      <h2 style={logo} onClick={() => setPage("home")}>
-        JEWEL16 💎
-      </h2>
 
-      {/* RIGHT SIDE */}
-      <div style={right}>
+      {/* 🔥 TOP ROW */}
+      <div style={topRow}>
+        <h2 style={logo} onClick={() => setPage("home")}>
+          JEWEL16 💎
+        </h2>
 
-        {/* 🔥 MAIN BUTTONS (AUTO WRAP) */}
-        <button style={btn} onClick={() => setPage("home")}>
-          Home
-        </button>
-
-        <button style={btn} onClick={() => setPage("products")}>
-          Products
-        </button>
-
-        <button style={btn} onClick={() => setPage("cart")}>
-          Cart ({cart?.length || 0})
-        </button>
-
-        {/* 🔐 ADMIN */}
-        {user?.isAdmin && (
-          <button style={btn} onClick={() => setPage("admin")}>
-            Admin
-          </button>
-        )}
-
-        {/* 🔥 MENU */}
+        {/* 🔥 DOT MENU */}
         <div style={menuWrap}>
           <button style={dots} onClick={() => setMenuOpen(!menuOpen)}>
             ⋮
@@ -44,7 +22,7 @@ export default function Navbar({ setPage, cart, user }) {
 
           {menuOpen && (
             <div style={dropdown}>
-              
+
               <p style={userInfo}>{user?.email}</p>
 
               <hr />
@@ -72,62 +50,93 @@ export default function Navbar({ setPage, cart, user }) {
             </div>
           )}
         </div>
-
       </div>
+
+      {/* 🔥 BOTTOM ROW (MAIN NAV) */}
+      <div style={bottomRow}>
+        <button style={btn} onClick={() => setPage("home")}>
+          Home
+        </button>
+
+        <button style={btn} onClick={() => setPage("products")}>
+          Products
+        </button>
+
+        <button style={btn} onClick={() => setPage("cart")}>
+          Cart ({cart?.length || 0})
+        </button>
+
+        {user?.isAdmin && (
+          <button style={btn} onClick={() => setPage("admin")}>
+            Admin
+          </button>
+        )}
+      </div>
+
     </div>
   );
 }
 
-/* 🎨 RESPONSIVE PREMIUM STYLES */
+/* 🎨 PREMIUM RESPONSIVE STYLES */
 
 const nav = {
   display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
+  flexDirection: "column",
   padding: "10px 12px",
   borderBottom: "1px solid #eee",
   background: "white",
   position: "sticky",
   top: 0,
   zIndex: 1000,
-  flexWrap: "wrap",
 };
 
+/* 🔥 TOP ROW */
+const topRow = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
+
+/* 🔥 BOTTOM ROW */
+const bottomRow = {
+  display: "flex",
+  justifyContent: "space-around",
+  marginTop: "8px",
+};
+
+/* LOGO */
 const logo = {
   color: "maroon",
   cursor: "pointer",
-  fontSize: "clamp(18px, 4vw, 22px)", // 🔥 responsive
+  fontSize: "18px",
+  fontWeight: "bold",
 };
 
-const right = {
-  display: "flex",
-  gap: "6px",
-  alignItems: "center",
-  flexWrap: "wrap", // 🔥 auto wrap on mobile
-};
-
+/* BUTTON */
 const btn = {
   padding: "8px 10px",
-  fontSize: "clamp(12px, 3vw, 14px)",
+  fontSize: "13px",
   border: "none",
-  background: "#f9f9f9", // 🔥 slight background for visibility
+  background: "transparent",
   cursor: "pointer",
-  borderRadius: "6px",
+  color: "#333",
 };
 
+/* MENU */
 const menuWrap = {
   position: "relative",
 };
 
 const dots = {
   fontSize: "18px",
-  background: "#f9f9f9",
+  background: "#f5f5f5",
   border: "none",
   cursor: "pointer",
   padding: "6px 10px",
   borderRadius: "6px",
 };
 
+/* DROPDOWN */
 const dropdown = {
   position: "absolute",
   top: "40px",
@@ -135,7 +144,7 @@ const dropdown = {
   background: "white",
   border: "1px solid #ddd",
   borderRadius: "10px",
-  width: "clamp(160px, 60vw, 220px)", // 🔥 mobile friendly
+  width: "180px",
   padding: "10px",
   boxShadow: "0 8px 20px rgba(0,0,0,0.1)",
 };
@@ -150,5 +159,5 @@ const userInfo = {
   fontSize: "12px",
   color: "gray",
   marginBottom: "5px",
-  wordBreak: "break-all", // 🔥 prevent overflow
+  wordBreak: "break-all",
 };
