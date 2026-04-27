@@ -2,7 +2,7 @@ export default function Home({ setPage }) {
   return (
     <div>
 
-      {/* 🔥 HERO (REDUCED SIZE) */}
+      {/* 🔥 HERO */}
       <div style={hero}>
         <div style={overlay}></div>
 
@@ -58,11 +58,11 @@ export default function Home({ setPage }) {
   );
 }
 
-/* 🎨 UPDATED STYLES */
+/* 🎨 RESPONSIVE STYLES */
 
-/* 🔥 HERO (REDUCED HEIGHT) */
+/* 🔥 HERO */
 const hero = {
-  minHeight: "35vh", // 🔥 FIXED (was 90vh)
+  minHeight: "clamp(28vh, 35vh, 40vh)", // 🔥 responsive height
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
@@ -75,7 +75,6 @@ const hero = {
   overflow: "hidden",
 };
 
-/* 🔥 OVERLAY */
 const overlay = {
   position: "absolute",
   width: "100%",
@@ -85,81 +84,74 @@ const overlay = {
   left: 0,
 };
 
-/* 🔥 SMALLER TITLE */
 const title = {
-  fontSize: "clamp(24px, 5vw, 40px)",
-  letterSpacing: "2px",
+  fontSize: "clamp(22px, 5vw, 40px)", // 🔥 mobile fix
+  letterSpacing: "1.5px",
   fontWeight: "700",
-  textShadow: "0 0 12px rgba(255,255,255,0.2)",
+  textShadow: "0 0 10px rgba(255,255,255,0.2)",
   zIndex: 1,
 };
 
-/* 🔥 SMALLER SUBTITLE */
 const subtitle = {
   marginTop: "8px",
-  fontSize: "clamp(12px, 3vw, 16px)",
+  fontSize: "clamp(12px, 3vw, 15px)",
   color: "#ddd",
-  letterSpacing: "0.5px",
+  padding: "0 10px",
   zIndex: 1,
 };
 
-/* 🔥 BUTTON */
 const btn = {
   marginTop: "15px",
-  padding: "10px 20px",
+  padding: "12px 18px", // 🔥 touch friendly
   background: "white",
   border: "none",
   cursor: "pointer",
   borderRadius: "6px",
   fontWeight: "500",
-  fontSize: "13px",
+  fontSize: "14px",
   boxShadow: "0 4px 12px rgba(255,255,255,0.15)",
-  transition: "0.3s",
   zIndex: 1,
 };
 
 /* 💎 SECTION */
 const section = {
-  padding: "50px 20px",
+  padding: "clamp(30px, 5vw, 50px) 15px",
   background: "#fff",
 };
 
 const heading = {
   textAlign: "center",
-  marginBottom: "30px",
-  fontSize: "clamp(24px, 4vw, 34px)",
-  letterSpacing: "1px",
+  marginBottom: "20px",
+  fontSize: "clamp(20px, 4vw, 30px)",
 };
 
-/* 🔥 GRID */
+/* 🔥 GRID FIX */
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(200px,1fr))",
-  gap: "25px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(140px,1fr))", // 🔥 FIXED
+  gap: "clamp(12px, 3vw, 20px)",
 };
 
 /* 💎 CARD */
 const card = {
   textAlign: "center",
-  transition: "0.4s",
   borderRadius: "12px",
   overflow: "hidden",
-  boxShadow: "0 5px 20px rgba(0,0,0,0.08)",
+  boxShadow: "0 4px 15px rgba(0,0,0,0.06)",
 };
 
-/* ✨ IMAGE */
+/* ✨ IMAGE FIX */
 const img = {
   width: "100%",
-  height: "200px",
+  height: "clamp(140px, 25vw, 200px)", // 🔥 responsive image
   objectFit: "cover",
-  transition: "0.4s",
 };
 
 /* 🔥 TEXT */
 const cardText = {
-  marginTop: "12px",
+  marginTop: "10px",
   fontWeight: "600",
-  letterSpacing: "1px",
+  fontSize: "clamp(13px, 3vw, 16px)",
 };
 
 /* 🛡 TRUST */
@@ -167,13 +159,12 @@ const trust = {
   display: "flex",
   flexWrap: "wrap",
   justifyContent: "center",
-  gap: "30px",
-  padding: "40px 20px",
+  gap: "20px", // 🔥 fixed
+  padding: "25px 15px",
   textAlign: "center",
   background: "linear-gradient(to right, #f9f9f9, #ffffff)",
 };
 
 const trustItem = {
-  maxWidth: "220px",
-  padding: "10px",
+  maxWidth: "200px",
 };
