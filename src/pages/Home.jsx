@@ -2,7 +2,7 @@ export default function Home({ setPage }) {
   return (
     <div>
 
-      {/* 🔥 HERO */}
+      {/* 🔥 HERO (REDUCED SIZE) */}
       <div style={hero}>
         <div style={overlay}></div>
 
@@ -58,10 +58,11 @@ export default function Home({ setPage }) {
   );
 }
 
-/* 🎨 ULTRA LUXURY STYLES */
+/* 🎨 UPDATED STYLES */
 
+/* 🔥 HERO (REDUCED HEIGHT) */
 const hero = {
-  minHeight: "90vh",
+  minHeight: "35vh", // 🔥 FIXED (was 90vh)
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
@@ -74,7 +75,7 @@ const hero = {
   overflow: "hidden",
 };
 
-/* 🔥 DARK OVERLAY DEPTH */
+/* 🔥 OVERLAY */
 const overlay = {
   position: "absolute",
   width: "100%",
@@ -84,32 +85,35 @@ const overlay = {
   left: 0,
 };
 
+/* 🔥 SMALLER TITLE */
 const title = {
-  fontSize: "clamp(32px, 6vw, 65px)",
-  letterSpacing: "3px",
+  fontSize: "clamp(24px, 5vw, 40px)",
+  letterSpacing: "2px",
   fontWeight: "700",
-  textShadow: "0 0 20px rgba(255,255,255,0.2)",
+  textShadow: "0 0 12px rgba(255,255,255,0.2)",
   zIndex: 1,
 };
 
+/* 🔥 SMALLER SUBTITLE */
 const subtitle = {
-  marginTop: "12px",
-  fontSize: "clamp(14px, 3vw, 18px)",
+  marginTop: "8px",
+  fontSize: "clamp(12px, 3vw, 16px)",
   color: "#ddd",
-  letterSpacing: "1px",
+  letterSpacing: "0.5px",
   zIndex: 1,
 };
 
+/* 🔥 BUTTON */
 const btn = {
-  marginTop: "30px",
-  padding: "14px 30px",
+  marginTop: "15px",
+  padding: "10px 20px",
   background: "white",
   border: "none",
   cursor: "pointer",
   borderRadius: "6px",
-  fontWeight: "600",
-  letterSpacing: "1px",
-  boxShadow: "0 5px 20px rgba(255,255,255,0.2)",
+  fontWeight: "500",
+  fontSize: "13px",
+  boxShadow: "0 4px 12px rgba(255,255,255,0.15)",
   transition: "0.3s",
   zIndex: 1,
 };
