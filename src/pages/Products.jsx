@@ -35,7 +35,7 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
   return (
     <div>
 
-      {/* 🔥 HERO */}
+      {/* 🔥 HERO (REDUCED) */}
       <div style={hero}>
         <div style={overlay}></div>
 
@@ -78,7 +78,6 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
                 setPage("detail");
               }}
             >
-              {/* 🔥 FIX CLICK CRASH */}
               <div onClick={(e) => e.stopPropagation()}>
                 <ProductCard product={p} setCart={setCart} />
               </div>
@@ -91,10 +90,11 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
   );
 }
 
-/* 🎨 FULL STYLES (THIS WAS MISSING BEFORE → CAUSED CRASH) */
+/* 🎨 STYLES */
 
+/* 🔥 HERO REDUCED */
 const hero = {
-  minHeight: "70vh",
+  minHeight: "35vh", // ✅ reduced from 70vh
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
@@ -114,25 +114,26 @@ const overlay = {
 };
 
 const title = {
-  fontSize: "clamp(30px, 6vw, 55px)",
+  fontSize: "clamp(26px, 5vw, 45px)", // slightly reduced
   letterSpacing: "2px",
   zIndex: 1,
 };
 
 const subtitle = {
-  marginTop: "10px",
+  marginTop: "8px",
   color: "#ddd",
-  fontSize: "clamp(14px, 3vw, 18px)",
+  fontSize: "clamp(13px, 3vw, 16px)",
   zIndex: 1,
 };
 
 const btn = {
-  marginTop: "20px",
-  padding: "12px 22px",
+  marginTop: "15px",
+  padding: "10px 20px",
   background: "white",
   border: "none",
   cursor: "pointer",
   borderRadius: "6px",
+  fontSize: "13px",
   zIndex: 1,
 };
 
