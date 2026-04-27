@@ -5,6 +5,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 
 /* COMPONENTS */
 import Navbar from "./components/Navbar";
+import BottomNav from "./components/BottomNav"; // ✅ NEW
 
 /* PAGES */
 import Auth from "./pages/Auth";
@@ -37,7 +38,6 @@ export default function App() {
               isAdmin = true;
             }
           } else {
-            // 🔥 AUTO CREATE USER DOC
             await setDoc(ref, {
               email: u.email,
               role: "user"
@@ -57,7 +57,6 @@ export default function App() {
     return () => unsub();
   }, []);
 
-  /* 🔒 LOGIN SCREEN */
   if (!user) {
     return <Auth setUser={setUser} />;
   }
@@ -65,10 +64,10 @@ export default function App() {
   return (
     <div style={appContainer}>
 
-      {/* 🔥 NAVBAR */}
+      {/* 🔥 TOP NAVBAR */}
       <Navbar setPage={setPage} cart={cart} user={user} />
 
-      {/* 🔥 PAGE WRAPPER (RESPONSIVE FIX) */}
+      {/* 🔥 PAGE CONTENT */}
       <div style={pageWrapper}>
 
         {page === "home" && <Home setPage={setPage} />}
@@ -105,12 +104,14 @@ export default function App() {
           <Profile user={user} />
         )}
 
-        {/* 🔐 ADMIN */}
         {page === "admin" && user?.isAdmin && (
           <Admin setPage={setPage} />
         )}
 
       </div>
+
+      {/* 🔥 BOTTOM APP NAV (NEW) */}
+      <BottomNav setPage={setPage} cart={cart} />
 
     </div>
   );
@@ -121,12 +122,13 @@ export default function App() {
 const appContainer = {
   minHeight: "100vh",
   display: "flex",
-  flexDirection: "column"
+  flexDirection: "column",
 };
 
 const pageWrapper = {
   width: "100%",
   maxWidth: "1200px",
   margin: "0 auto",
-  padding: "10px"
+  padding: "10px",
+  paddingBottom: "80px", // ✅ VERY IMPORTANT (prevents overlap)
 };
