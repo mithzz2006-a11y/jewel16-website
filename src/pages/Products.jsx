@@ -7,7 +7,6 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
 
   const [products, setProducts] = useState([]);
 
-  /* 🔥 FIRESTORE CONNECT */
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "products"), (snap) => {
       try {
@@ -35,7 +34,7 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
   return (
     <div>
 
-      {/* 🔥 HERO (REDUCED) */}
+      {/* 🔥 HERO */}
       <div style={hero}>
         <div style={overlay}></div>
 
@@ -60,7 +59,6 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
         <h2 style={brandTitle}>Luxury You Can Trust</h2>
         <p style={brandText}>
           At JEWEL16, every piece is crafted with precision, passion, and perfection.
-          Experience jewellery that defines class and confidence.
         </p>
       </div>
 
@@ -90,11 +88,11 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
   );
 }
 
-/* 🎨 STYLES */
+/* 🎨 RESPONSIVE STYLES */
 
-/* 🔥 HERO REDUCED */
+/* 🔥 HERO FIXED FOR MOBILE */
 const hero = {
-  minHeight: "35vh", // ✅ reduced from 70vh
+  minHeight: "clamp(28vh, 35vh, 40vh)", // 🔥 smart responsive
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
@@ -114,37 +112,39 @@ const overlay = {
 };
 
 const title = {
-  fontSize: "clamp(26px, 5vw, 45px)", // slightly reduced
-  letterSpacing: "2px",
+  fontSize: "clamp(22px, 5vw, 40px)", // 🔥 smaller on mobile
+  letterSpacing: "1.5px",
   zIndex: 1,
 };
 
 const subtitle = {
   marginTop: "8px",
   color: "#ddd",
-  fontSize: "clamp(13px, 3vw, 16px)",
+  fontSize: "clamp(12px, 3vw, 15px)",
+  padding: "0 10px",
   zIndex: 1,
 };
 
 const btn = {
   marginTop: "15px",
-  padding: "10px 20px",
+  padding: "12px 18px", // 🔥 touch friendly
   background: "white",
   border: "none",
   cursor: "pointer",
   borderRadius: "6px",
-  fontSize: "13px",
+  fontSize: "14px",
   zIndex: 1,
 };
 
+/* 💎 BRAND */
 const brand = {
   textAlign: "center",
-  padding: "50px 20px",
+  padding: "clamp(30px, 5vw, 50px) 15px",
   background: "#fff",
 };
 
 const brandTitle = {
-  fontSize: "clamp(22px, 4vw, 32px)",
+  fontSize: "clamp(20px, 4vw, 30px)",
 };
 
 const brandText = {
@@ -155,11 +155,12 @@ const brandText = {
   lineHeight: "1.6",
 };
 
+/* 🔥 GRID FIX (MOST IMPORTANT) */
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-  gap: "20px",
-  padding: "20px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", // 🔥 FIXED
+  gap: "clamp(12px, 3vw, 20px)",
+  padding: "clamp(10px, 3vw, 20px)",
 };
 
 const cardWrap = {
