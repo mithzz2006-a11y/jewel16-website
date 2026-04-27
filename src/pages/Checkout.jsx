@@ -140,6 +140,63 @@ export default function Checkout({ cart, user }) {
     }
   };
 
+  /* 🎨 STYLES */
+  const container = {
+    maxWidth: "600px",
+    margin: "0 auto",
+    padding: "20px",
+    fontFamily: "Arial, sans-serif",
+  };
+
+  const title = {
+    fontSize: "28px",
+    fontWeight: "bold",
+    color: "#800000",
+  };
+
+  const subtitle = {
+    fontSize: "16px",
+    color: "#555",
+    marginBottom: "20px",
+  };
+
+  const box = {
+    border: "1px solid #ddd",
+    padding: "15px",
+    marginBottom: "20px",
+    borderRadius: "8px",
+  };
+
+  const option = {
+    display: "block",
+    marginBottom: "10px",
+  };
+
+  const textarea = {
+    width: "100%",
+    minHeight: "80px",
+    padding: "10px",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+  };
+
+  const summaryItem = {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: "10px",
+  };
+
+  const btn = {
+    backgroundColor: "#800000",
+    color: "#fff",
+    padding: "12px 20px",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontSize: "16px",
+    width: "100%",
+  };
+
   return (
     <div style={container}>
 
@@ -199,7 +256,11 @@ export default function Checkout({ cart, user }) {
       </div>
 
       {/* 🔥 PAYMENT BUTTON */}
-      <button style={btn} onClick={handlePayment} disabled={loading}>
+      <button
+        style={btn}
+        onClick={handlePayment}
+        disabled={loading || total === 0}
+      >
         {loading ? "Processing..." : "Pay Now"}
       </button>
 
