@@ -13,20 +13,18 @@ export default function Checkout({ cart, user }) {
   const [deliveryType, setDeliveryType] = useState("standard");
   const [loading, setLoading] = useState(false);
 
-  const total = (cart || []).reduce(
-    (sum, i) => sum + (i.price || 0) * (i.qty || 1),
+  /* 🔥 NEW */
+  const [address, setAddress] = useState("");
+  const [pincode, setPincode] = useState("");
+
+  const total = cart.reduce(
+    (sum, i) => sum + i.price * (i.qty || 1),
     0
   );
 
   /* 🔥 ORDER FUNCTION */
   const placeOrder = async () => {
-    if (!user) {
-      alert("Please login first");
-      return;
-    }
-
     try {
-      /* 🔥 STOCK CHECK */
       for (let item of cart) {
         const ref = doc(db, "products", item.id);
         const snap = await getDoc(ref);
@@ -36,7 +34,7 @@ export default function Checkout({ cart, user }) {
           return;
         }
 
-        const stock = snap.data()?.stock || 0;
+        const stock = snap.data().stock || 0;
         const qty = item.qty || 1;
 
         if (stock < qty) {
@@ -45,7 +43,6 @@ export default function Checkout({ cart, user }) {
         }
       }
 
-      /* ✅ SAVE ORDER */
       await addDoc(collection(db, "orders"), {
         userId: user.uid,
         email: user.email,
@@ -53,16 +50,17 @@ export default function Checkout({ cart, user }) {
         total,
         deliveryType,
         instruction,
+        address,   // ✅ NEW
+        pincode,   // ✅ NEW
         status: "paid",
         createdAt: new Date().toISOString(),
       });
 
-      /* 🔥 REDUCE STOCK */
       for (let item of cart) {
         const ref = doc(db, "products", item.id);
         const snap = await getDoc(ref);
 
-        const currentStock = snap.data()?.stock || 0;
+        const currentStock = snap.data().stock || 0;
         const qty = item.qty || 1;
 
         await updateDoc(ref, {
@@ -86,8 +84,9 @@ export default function Checkout({ cart, user }) {
       return;
     }
 
-    if (!window.Razorpay) {
-      alert("Payment system not loaded ❌");
+    /* 🔥 VALIDATION */
+    if (!address || !pincode) {
+      alert("Please enter address and pincode");
       return;
     }
 
@@ -104,20 +103,15 @@ export default function Checkout({ cart, user }) {
 
       const order = await res.json();
 
-      if (!order?.id) {
-        alert("Payment init failed ❌");
-        return;
-      }
-
-      const rzp = new window.Razorpay({
-        key: "rzp_test_xxxxxxxx", // 🔥 PUT YOUR REAL KEY
+      const options = {
+        key: "rzp_test_ShDgfm1sNzCDfQ", // replace with your real key
         amount: order.amount,
         currency: "INR",
         name: "JEWEL16 💎",
         description: "Luxury Jewellery Purchase",
         order_id: order.id,
 
-        handler: async () => {
+        handler: async function () {
           await placeOrder();
         },
 
@@ -128,8 +122,9 @@ export default function Checkout({ cart, user }) {
         theme: {
           color: "#800000",
         },
-      });
+      };
 
+      const rzp = new window.Razorpay(options);
       rzp.open();
 
     } catch (err) {
@@ -140,68 +135,31 @@ export default function Checkout({ cart, user }) {
     }
   };
 
-  /* 🎨 STYLES */
-  const container = {
-    maxWidth: "600px",
-    margin: "0 auto",
-    padding: "20px",
-    fontFamily: "Arial, sans-serif",
-  };
-
-  const title = {
-    fontSize: "28px",
-    fontWeight: "bold",
-    color: "#800000",
-  };
-
-  const subtitle = {
-    fontSize: "16px",
-    color: "#555",
-    marginBottom: "20px",
-  };
-
-  const box = {
-    border: "1px solid #ddd",
-    padding: "15px",
-    marginBottom: "20px",
-    borderRadius: "8px",
-  };
-
-  const option = {
-    display: "block",
-    marginBottom: "10px",
-  };
-
-  const textarea = {
-    width: "100%",
-    minHeight: "80px",
-    padding: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-  };
-
-  const summaryItem = {
-    display: "flex",
-    justifyContent: "space-between",
-    marginBottom: "10px",
-  };
-
-  const btn = {
-    backgroundColor: "#800000",
-    color: "#fff",
-    padding: "12px 20px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "16px",
-    width: "100%",
-  };
-
   return (
     <div style={container}>
 
       <h1 style={title}>Secure Checkout 🔐</h1>
       <p style={subtitle}>Premium & safe purchase</p>
+
+      {/* 📍 ADDRESS */}
+      <div style={box}>
+        <h3>Delivery Address</h3>
+
+        <textarea
+          placeholder="Enter full delivery address"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          style={textarea}
+        />
+
+        <input
+          type="number"
+          placeholder="Pincode"
+          value={pincode}
+          onChange={(e) => setPincode(e.target.value)}
+          style={input}
+        />
+      </div>
 
       {/* 📦 DELIVERY */}
       <div style={box}>
@@ -242,12 +200,10 @@ export default function Checkout({ cart, user }) {
       <div style={box}>
         <h3>Order Summary</h3>
 
-        {(cart || []).map((item, i) => (
+        {cart.map((item, i) => (
           <div key={i} style={summaryItem}>
             <p>{item.name}</p>
-            <p>
-              ₹{item.price} × {item.qty || 1}
-            </p>
+            <p>₹{item.price} × {item.qty || 1}</p>
           </div>
         ))}
 
@@ -255,15 +211,76 @@ export default function Checkout({ cart, user }) {
         <h2>Total: ₹{total}</h2>
       </div>
 
-      {/* 🔥 PAYMENT BUTTON */}
-      <button
-        style={btn}
-        onClick={handlePayment}
-        disabled={loading || total === 0}
-      >
+      {/* 🔥 BUTTON */}
+      <button style={btn} onClick={handlePayment} disabled={loading || total === 0}>
         {loading ? "Processing..." : "Pay Now"}
       </button>
 
     </div>
   );
 }
+
+/* 🎨 STYLES */
+const container = {
+  maxWidth: "600px",
+  margin: "0 auto",
+  padding: "20px",
+  fontFamily: "Arial, sans-serif",
+};
+
+const title = {
+  fontSize: "28px",
+  fontWeight: "bold",
+  color: "#800000",
+};
+
+const subtitle = {
+  fontSize: "16px",
+  color: "#555",
+  marginBottom: "20px",
+};
+
+const box = {
+  border: "1px solid #ddd",
+  padding: "15px",
+  marginBottom: "20px",
+  borderRadius: "8px",
+};
+
+const option = {
+  display: "block",
+  marginBottom: "10px",
+};
+
+const textarea = {
+  width: "100%",
+  minHeight: "80px",
+  padding: "10px",
+  borderRadius: "5px",
+  border: "1px solid #ccc",
+};
+
+const input = {
+  width: "100%",
+  padding: "10px",
+  marginTop: "10px",
+  border: "1px solid #ccc",
+  borderRadius: "6px",
+};
+
+const summaryItem = {
+  display: "flex",
+  justifyContent: "space-between",
+  marginBottom: "10px",
+};
+
+const btn = {
+  backgroundColor: "#800000",
+  color: "#fff",
+  padding: "12px 20px",
+  border: "none",
+  borderRadius: "5px",
+  cursor: "pointer",
+  fontSize: "16px",
+  width: "100%",
+};
