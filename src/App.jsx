@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import PageWrapper from "./components/PageWrapper";
 
 /* COMPONENTS */
 import Navbar from "./components/Navbar";
