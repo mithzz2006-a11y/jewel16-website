@@ -10,7 +10,6 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
     const unsub = onSnapshot(collection(db, "products"), (snap) => {
       const data = snap.docs.map((doc) => {
         const d = doc.data() || {};
-
         return {
           id: doc.id,
           name: d.name || "No Name",
@@ -19,7 +18,6 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
           stock: Number(d.stock) || 0,
         };
       });
-
       setProducts(data);
     });
 
@@ -80,7 +78,7 @@ const subtitle = {
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(160px,1fr))",
+  gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
   gap: "15px",
   padding: "15px",
 };
