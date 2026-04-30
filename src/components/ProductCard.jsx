@@ -1,52 +1,16 @@
-import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
-import { db, auth } from "../firebase";
-import { useState } from "react";
-
 export default function ProductCard({ product, setCart }) {
-  const [liked, setLiked] = useState(false);
-
-  const toggleWishlist = async (e) => {
-    e.stopPropagation();
-
-    const user = auth.currentUser;
-    if (!user) {
-      alert("Login required");
-      return;
-    }
-
-    const ref = doc(db, "users", user.uid);
-
-    try {
-      if (liked) {
-        await updateDoc(ref, {
-          wishlist: arrayRemove(product),
-        });
-        setLiked(false);
-      } else {
-        await updateDoc(ref, {
-          wishlist: arrayUnion(product),
-        });
-        setLiked(true);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const addToCart = (e) => {
     e.stopPropagation();
 
-    if ((product.stock ?? 0) <= 0) {
-      alert("Out of stock ❌");
-      return;
-    }
-
-    setCart((prev) => {
+    setCart((prev = []) => {
       const existing = prev.find((i) => i.id === product.id);
 
       if (existing) {
         return prev.map((i) =>
-          i.id === product.id ? { ...i, qty: (i.qty || 1) + 1 } : i
+          i.id === product.id
+            ? { ...i, qty: (i.qty || 1) + 1 }
+            : i
         );
       }
 
@@ -55,67 +19,83 @@ export default function ProductCard({ product, setCart }) {
   };
 
   return (
-    <div style={card}>
-      {/* ❤️ WISHLIST */}
-      <div style={heart} onClick={toggleWishlist}>
-        {liked ? "❤️" : "🤍"}
+    <div
+      style={card}
+      onMouseEnter={(e) =>
+        (e.currentTarget.style.transform = "translateY(-6px)")
+      }
+      onMouseLeave={(e) =>
+        (e.currentTarget.style.transform = "translateY(0)")
+      }
+    >
+      {/* IMAGE */}
+      <div style={imgWrap}>
+        <img
+          src={product?.image || "https://via.placeholder.com/300"}
+          style={img}
+        />
       </div>
 
-      <img src={product.image} alt={product.name} style={img} />
+      {/* CONTENT */}
+      <div style={content}>
+        <h3 style={name}>{product?.name}</h3>
 
-      <h3 style={name}>{product.name}</h3>
-      <p style={price}>₹{product.price}</p>
+        <p style={price}>₹{product?.price || 0}</p>
 
-      <button style={btn} onClick={addToCart}>
-        Add to Cart
-      </button>
+        <button style={btn} onClick={addToCart}>
+          Add to Cart
+        </button>
+      </div>
     </div>
   );
 }
 
-/* 🎨 STYLES */
+/* 💎 PREMIUM STYLES */
+
 const card = {
-  position: "relative",
-  border: "1px solid #ddd",
-  borderRadius: "8px",
-  padding: "10px",
   background: "#fff",
-  textAlign: "center",
-  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-  transition: "transform 0.2s ease",
+  borderRadius: "16px",
+  overflow: "hidden",
+  boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+  transition: "0.3s",
 };
 
-const heart = {
-  position: "absolute",
-  top: "10px",
-  right: "10px",
-  cursor: "pointer",
-  fontSize: "18px",
+const imgWrap = {
+  width: "100%",
+  height: "220px",
+  overflow: "hidden",
 };
 
 const img = {
   width: "100%",
-  height: "160px",
+  height: "100%",
   objectFit: "cover",
-  borderRadius: "6px",
+  transition: "0.4s",
+};
+
+const content = {
+  padding: "12px",
 };
 
 const name = {
   fontSize: "14px",
-  margin: "8px 0 4px",
+  fontWeight: "500",
 };
 
 const price = {
   color: "maroon",
   fontWeight: "bold",
-  marginBottom: "8px",
+  marginTop: "5px",
+  fontSize: "16px",
 };
 
 const btn = {
+  marginTop: "10px",
+  padding: "10px",
+  width: "100%",
   background: "maroon",
   color: "white",
   border: "none",
-  padding: "8px 12px",
-  borderRadius: "6px",
+  borderRadius: "8px",
   cursor: "pointer",
 };
