@@ -85,4 +85,9 @@ const grid = {
 
 const cardWrap = {
   cursor: "pointer",
+  border: "1px solid #ddd",
+  borderRadius: "8px",
+  padding: "10px",
+  background: "#fff",
+  transition: "transform 0.2s ease",
 };
