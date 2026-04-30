@@ -1,45 +1,86 @@
 export default function ProductDetail({ product, setCart, setPage }) {
-  if (!product) return <h2 style={{ padding: "20px" }}>Product not found</h2>;
+
+  if (!product) {
+    return (
+      <div style={{ padding: "20px" }}>
+        <p>Product not found</p>
+        <button onClick={() => setPage("products")}>
+          Go Back
+        </button>
+      </div>
+    );
+  }
+
+  const addToCart = () => {
+    if ((product.stock ?? 0) <= 0) {
+      alert("Out of stock ❌");
+      return;
+    }
+
+    setCart((prev) => {
+      const existing = prev.find((i) => i.id === product.id);
+
+      if (existing) {
+        if (existing.qty >= product.stock) {
+          alert("Stock limit reached ⚠️");
+          return prev;
+        }
+
+        return prev.map((i) =>
+          i.id === product.id
+            ? { ...i, qty: (i.qty || 1) + 1 }
+            : i
+        );
+      }
+
+      return [...prev, { ...product, qty: 1 }];
+    });
+  };
 
   return (
     <div style={container}>
-      
-      {/* IMAGE */}
-      <div style={left}>
-        <img src={product.image} style={img} />
-      </div>
 
-      {/* DETAILS */}
-      <div style={right}>
-        <h1 style={title}>{product.name}</h1>
+      {/* 🔙 BACK */}
+      <button style={back} onClick={() => setPage("products")}>
+        ← Back
+      </button>
 
-        <p style={price}>₹{product.price}</p>
+      {/* 🖼 IMAGE */}
+      <img
+        src={product.image || "https://via.placeholder.com/400"}
+        style={img}
+      />
 
-        <p style={desc}>
-          Experience premium quality jewellery crafted with precision and elegance.
-        </p>
+      {/* 📦 DETAILS */}
+      <h2 style={name}>{product.name}</h2>
 
-        <div style={btnBox}>
-          <button
-            style={cartBtn}
-            onClick={() => setCart((prev) => [...prev, product])}
-          >
-            Add to Cart
-          </button>
+      <p style={price}>₹{product.price}</p>
 
-          <button
-            style={buyBtn}
-            onClick={() => {
-              setCart((prev) => [...prev, product]);
-              setPage("checkout");
-            }}
-          >
-            Buy Now
-          </button>
-        </div>
+      <p style={stock}>
+        Stock: {product.stock ?? 0}
+      </p>
 
-        <p style={trust}>🔒 Secure Payment | 🚚 Fast Delivery</p>
-      </div>
+      {(product.stock ?? 0) === 0 && (
+        <p style={out}>Out of Stock</p>
+      )}
+
+      {/* 📝 DESCRIPTION */}
+      <p style={desc}>
+        Premium handcrafted jewellery designed for elegance,
+        durability, and timeless luxury.
+      </p>
+
+      {/* 🛒 BUTTON */}
+      <button
+        style={{
+          ...btn,
+          background: (product.stock ?? 0) === 0 ? "#aaa" : "maroon"
+        }}
+        onClick={addToCart}
+        disabled={(product.stock ?? 0) === 0}
+      >
+        Add to Cart
+      </button>
 
     </div>
   );
@@ -48,62 +89,55 @@ export default function ProductDetail({ product, setCart, setPage }) {
 /* 🎨 STYLES */
 
 const container = {
-  display: "flex",
-  flexWrap: "wrap",
-  gap: "30px",
-  padding: "30px",
-  minHeight: "100vh",
-  background: "#fff",
+  maxWidth: "500px",
+  margin: "auto",
+  padding: "20px",
+  textAlign: "center",
 };
 
-const left = {
-  flex: "1 1 300px",
+const back = {
+  marginBottom: "10px",
+  background: "none",
+  border: "none",
+  cursor: "pointer",
 };
 
 const img = {
   width: "100%",
-  borderRadius: "10px",
+  height: "250px",
+  objectFit: "cover",
+  borderRadius: "12px",
 };
 
-const right = {
-  flex: "1 1 300px",
-};
-
-const title = {
-  color: "maroon",
+const name = {
+  marginTop: "15px",
 };
 
 const price = {
-  fontSize: "24px",
-  margin: "10px 0",
+  color: "maroon",
+  fontWeight: "bold",
+  fontSize: "20px",
+};
+
+const stock = {
+  color: "gray",
+};
+
+const out = {
+  color: "red",
+  fontWeight: "bold",
 };
 
 const desc = {
+  marginTop: "10px",
   color: "#555",
 };
 
-const btnBox = {
-  display: "flex",
-  gap: "10px",
+const btn = {
   marginTop: "20px",
-  flexWrap: "wrap",
-};
-
-const cartBtn = {
-  padding: "12px 20px",
-  background: "black",
+  padding: "14px",
+  width: "100%",
   color: "white",
   border: "none",
-};
-
-const buyBtn = {
-  padding: "12px 20px",
-  background: "maroon",
-  color: "white",
-  border: "none",
-};
-
-const trust = {
-  marginTop: "20px",
-  color: "green",
+  borderRadius: "8px",
 };
