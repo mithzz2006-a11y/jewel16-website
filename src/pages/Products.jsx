@@ -4,7 +4,6 @@ import { collection, onSnapshot } from "firebase/firestore";
 import ProductCard from "../components/ProductCard";
 
 export default function Products({ setCart, setPage, setSelectedProduct }) {
-
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -17,7 +16,7 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
           name: d.name || "No Name",
           price: Number(d.price) || 0,
           image: d.image || "",
-          stock: Number(d.stock) || 0
+          stock: Number(d.stock) || 0,
         };
       });
 
@@ -29,7 +28,6 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
 
   return (
     <div>
-
       {/* 🔥 HERO SMALL */}
       <div style={hero}>
         <h1 style={title}>Our Collection 💎</h1>
@@ -57,13 +55,11 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
           ))
         )}
       </div>
-
     </div>
   );
 }
 
 /* 🎨 STYLES */
-
 const hero = {
   minHeight: "30vh",
   display: "flex",
