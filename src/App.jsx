@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { auth, db } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import PageWrapper from "./components/PageWrapper";
 
 /* COMPONENTS */
 import Navbar from "./components/Navbar";
-import BottomNav from "./components/BottomNav"; // ✅ NEW
+import BottomNav from "./components/BottomNav";
+import PageWrapper from "./components/PageWrapper";
+import Loader from "./components/Loader"; // ✅ NEW
 
 /* PAGES */
 import Auth from "./pages/Auth";
@@ -24,6 +25,8 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const [loading, setLoading] = useState(true); // ✅ NEW
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
@@ -53,11 +56,19 @@ export default function App() {
       } else {
         setUser(null);
       }
+
+      setLoading(false); // ✅ STOP LOADER
     });
 
     return () => unsub();
   }, []);
 
+  /* 🔥 LOADER SCREEN */
+  if (loading) {
+    return <Loader />;
+  }
+
+  /* 🔒 LOGIN */
   if (!user) {
     return <Auth setUser={setUser} />;
   }
@@ -71,54 +82,58 @@ export default function App() {
       {/* 🔥 PAGE CONTENT */}
       <div style={pageWrapper}>
 
-        {page === "home" && <Home setPage={setPage} />}
+        <PageWrapper> {/* ✅ NOW USED */}
 
-        {page === "products" && (
-          <Products
-            setPage={setPage}
-            setCart={setCart}
-            setSelectedProduct={setSelectedProduct}
-          />
-        )}
+          {page === "home" && <Home setPage={setPage} />}
 
-        {page === "detail" && (
-          <ProductDetail
-            product={selectedProduct}
-            setCart={setCart}
-            setPage={setPage}
-          />
-        )}
+          {page === "products" && (
+            <Products
+              setPage={setPage}
+              setCart={setCart}
+              setSelectedProduct={setSelectedProduct}
+            />
+          )}
 
-        {page === "cart" && (
-          <Cart cart={cart} setPage={setPage} />
-        )}
+          {page === "detail" && (
+            <ProductDetail
+              product={selectedProduct}
+              setCart={setCart}
+              setPage={setPage}
+            />
+          )}
 
-        {page === "checkout" && (
-          <Checkout cart={cart} user={user} />
-        )}
+          {page === "cart" && (
+            <Cart cart={cart} setPage={setPage} />
+          )}
 
-        {page === "orders" && (
-          <MyOrders user={user} />
-        )}
+          {page === "checkout" && (
+            <Checkout cart={cart} user={user} />
+          )}
 
-        {page === "profile" && (
-          <Profile user={user} />
-        )}
+          {page === "orders" && (
+            <MyOrders user={user} />
+          )}
 
-        {page === "admin" && user?.isAdmin && (
-          <Admin setPage={setPage} />
-        )}
+          {page === "profile" && (
+            <Profile user={user} />
+          )}
+
+          {page === "admin" && user?.isAdmin && (
+            <Admin setPage={setPage} />
+          )}
+
+        </PageWrapper>
 
       </div>
 
-      {/* 🔥 BOTTOM APP NAV (NEW) */}
+      {/* 🔥 BOTTOM NAV */}
       <BottomNav setPage={setPage} cart={cart} />
 
     </div>
   );
 }
 
-/* 💎 RESPONSIVE SAFE STYLES */
+/* 💎 STYLES */
 
 const appContainer = {
   minHeight: "100vh",
@@ -131,5 +146,5 @@ const pageWrapper = {
   maxWidth: "1200px",
   margin: "0 auto",
   padding: "10px",
-  paddingBottom: "80px", // ✅ VERY IMPORTANT (prevents overlap)
+  paddingBottom: "90px", // 🔥 IMPORTANT for bottom nav
 };
