@@ -7,7 +7,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import Navbar from "./components/Navbar";
 import BottomNav from "./components/BottomNav";
 import PageWrapper from "./components/PageWrapper";
-import Loader from "./components/Loader"; // ✅ NEW
+import Loader from "./components/Loader";
 
 /* PAGES */
 import Auth from "./pages/Auth";
@@ -25,8 +25,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [cart, setCart] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-
-  const [loading, setLoading] = useState(true); // ✅ NEW
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
@@ -57,13 +56,13 @@ export default function App() {
         setUser(null);
       }
 
-      setLoading(false); // ✅ STOP LOADER
+      setLoading(false);
     });
 
     return () => unsub();
   }, []);
 
-  /* 🔥 LOADER SCREEN */
+  /* 🔥 LOADER */
   if (loading) {
     return <Loader />;
   }
@@ -76,13 +75,12 @@ export default function App() {
   return (
     <div style={appContainer}>
 
-      {/* 🔥 TOP NAVBAR */}
+      {/* NAVBAR */}
       <Navbar setPage={setPage} cart={cart} user={user} />
 
-      {/* 🔥 PAGE CONTENT */}
+      {/* CONTENT */}
       <div style={pageWrapper}>
-
-        <PageWrapper> {/* ✅ NOW USED */}
+        <PageWrapper>
 
           {page === "home" && <Home setPage={setPage} />}
 
@@ -106,12 +104,18 @@ export default function App() {
             <Cart cart={cart} setPage={setPage} />
           )}
 
+          {/* 🔥 FIXED */}
           {page === "checkout" && (
-            <Checkout cart={cart} user={user} />
+            <Checkout
+              cart={cart}
+              user={user}
+              setPage={setPage} // ✅ IMPORTANT FIX
+            />
           )}
 
+          {/* 🔥 FIXED */}
           {page === "orders" && (
-            <MyOrders user={user} />
+            <MyOrders user={user} /> // now fetches correctly
           )}
 
           {page === "profile" && (
@@ -123,17 +127,16 @@ export default function App() {
           )}
 
         </PageWrapper>
-
       </div>
 
-      {/* 🔥 BOTTOM NAV */}
+      {/* BOTTOM NAV */}
       <BottomNav setPage={setPage} cart={cart} />
 
     </div>
   );
 }
 
-/* 💎 STYLES */
+/* STYLES */
 
 const appContainer = {
   minHeight: "100vh",
@@ -146,5 +149,5 @@ const pageWrapper = {
   maxWidth: "1200px",
   margin: "0 auto",
   padding: "10px",
-  paddingBottom: "90px", // 🔥 IMPORTANT for bottom nav
+  paddingBottom: "90px", // 🔥 prevent bottom nav overlap
 };
