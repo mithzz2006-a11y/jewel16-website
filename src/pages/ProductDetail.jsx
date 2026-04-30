@@ -1,14 +1,7 @@
 export default function ProductDetail({ product, setCart, setPage }) {
 
   if (!product) {
-    return (
-      <div style={{ padding: "20px" }}>
-        <p>Product not found</p>
-        <button onClick={() => setPage("products")}>
-          Go Back
-        </button>
-      </div>
-    );
+    return <div style={{ padding: 20 }}>Product not found</div>;
   }
 
   const addToCart = () => {
@@ -40,45 +33,19 @@ export default function ProductDetail({ product, setCart, setPage }) {
   return (
     <div style={container}>
 
-      {/* 🔙 BACK */}
-      <button style={back} onClick={() => setPage("products")}>
+      <button onClick={() => setPage("products")}>
         ← Back
       </button>
 
-      {/* 🖼 IMAGE */}
-      <img
-        src={product.image || "https://via.placeholder.com/400"}
-        style={img}
-      />
+      <img src={product.image} style={img} />
 
-      {/* 📦 DETAILS */}
-      <h2 style={name}>{product.name}</h2>
+      <h2>{product.name}</h2>
 
       <p style={price}>₹{product.price}</p>
 
-      <p style={stock}>
-        Stock: {product.stock ?? 0}
-      </p>
+      <p>Stock: {product.stock ?? 0}</p>
 
-      {(product.stock ?? 0) === 0 && (
-        <p style={out}>Out of Stock</p>
-      )}
-
-      {/* 📝 DESCRIPTION */}
-      <p style={desc}>
-        Premium handcrafted jewellery designed for elegance,
-        durability, and timeless luxury.
-      </p>
-
-      {/* 🛒 BUTTON */}
-      <button
-        style={{
-          ...btn,
-          background: (product.stock ?? 0) === 0 ? "#aaa" : "maroon"
-        }}
-        onClick={addToCart}
-        disabled={(product.stock ?? 0) === 0}
-      >
+      <button style={btn} onClick={addToCart}>
         Add to Cart
       </button>
 
@@ -86,58 +53,7 @@ export default function ProductDetail({ product, setCart, setPage }) {
   );
 }
 
-/* 🎨 STYLES */
-
-const container = {
-  maxWidth: "500px",
-  margin: "auto",
-  padding: "20px",
-  textAlign: "center",
-};
-
-const back = {
-  marginBottom: "10px",
-  background: "none",
-  border: "none",
-  cursor: "pointer",
-};
-
-const img = {
-  width: "100%",
-  height: "250px",
-  objectFit: "cover",
-  borderRadius: "12px",
-};
-
-const name = {
-  marginTop: "15px",
-};
-
-const price = {
-  color: "maroon",
-  fontWeight: "bold",
-  fontSize: "20px",
-};
-
-const stock = {
-  color: "gray",
-};
-
-const out = {
-  color: "red",
-  fontWeight: "bold",
-};
-
-const desc = {
-  marginTop: "10px",
-  color: "#555",
-};
-
-const btn = {
-  marginTop: "20px",
-  padding: "14px",
-  width: "100%",
-  color: "white",
-  border: "none",
-  borderRadius: "8px",
-};
+const container = { padding: 20, textAlign: "center" };
+const img = { width: "100%", height: 250, objectFit: "cover" };
+const price = { color: "maroon", fontWeight: "bold" };
+const btn = { padding: 12, marginTop: 10 };
