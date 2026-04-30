@@ -1,5 +1,4 @@
 export default function ProductDetail({ product, setCart, setPage }) {
-
   if (!product) {
     return <div style={{ padding: 20 }}>Product not found</div>;
   }
@@ -20,9 +19,7 @@ export default function ProductDetail({ product, setCart, setPage }) {
         }
 
         return prev.map((i) =>
-          i.id === product.id
-            ? { ...i, qty: (i.qty || 1) + 1 }
-            : i
+          i.id === product.id ? { ...i, qty: (i.qty || 1) + 1 } : i
         );
       }
 
@@ -32,12 +29,9 @@ export default function ProductDetail({ product, setCart, setPage }) {
 
   return (
     <div style={container}>
+      <button onClick={() => setPage("products")}>← Back</button>
 
-      <button onClick={() => setPage("products")}>
-        ← Back
-      </button>
-
-      <img src={product.image} style={img} />
+      <img src={product.image} style={img} alt={product.name} />
 
       <h2>{product.name}</h2>
 
@@ -48,11 +42,11 @@ export default function ProductDetail({ product, setCart, setPage }) {
       <button style={btn} onClick={addToCart}>
         Add to Cart
       </button>
-
     </div>
   );
 }
 
+/* 🎨 STYLES */
 const container = { padding: 20, textAlign: "center" };
 const img = { width: "100%", height: 250, objectFit: "cover" };
 const price = { color: "maroon", fontWeight: "bold" };
