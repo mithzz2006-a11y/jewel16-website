@@ -5,7 +5,6 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 export default function MyOrders({ user }) {
   const [orders, setOrders] = useState([]);
 
-  /* 🔥 FETCH USER ORDERS */
   useEffect(() => {
     if (!user) return;
 
@@ -23,7 +22,6 @@ export default function MyOrders({ user }) {
   }, [user]);
 
   const steps = ["placed", "packed", "shipped", "delivered"];
-
   const getIndex = (status) => steps.indexOf(status);
 
   return (
@@ -34,77 +32,48 @@ export default function MyOrders({ user }) {
         Track your purchased luxury items
       </p>
 
-      {orders.length === 0 ? (
-        <p>No orders yet</p>
-      ) : (
-        orders.map((o, i) => (
-          <div key={i} style={card}>
-            <p>Total: ₹{o.total}</p>
-            <p>Status: {o.status}</p>
+      {orders.map((o, i) => (
+        <div key={i} style={card}>
+          <p>Total: ₹{o.total}</p>
+          <p>Status: {o.status}</p>
 
-            {/* 🔥 TIMELINE */}
-            <div style={timeline}>
-              {steps.map((s, index) => (
-                <div
-                  key={index}
-                  style={{
-                    ...step,
-                    background:
-                      index <= getIndex(o.status)
-                        ? "maroon"
-                        : "#555"
-                  }}
-                >
-                  {s}
-                </div>
-              ))}
-            </div>
-
+          {/* 🔥 TRACKING */}
+          <div style={timeline}>
+            {steps.map((s, index) => (
+              <div
+                key={index}
+                style={{
+                  ...step,
+                  background:
+                    index <= getIndex(o.status)
+                      ? "maroon"
+                      : "#444"
+                }}
+              >
+                {s}
+              </div>
+            ))}
           </div>
-        ))
-      )}
 
+        </div>
+      ))}
     </div>
   );
 }
 
-/* 🎨 STYLES */
+/* your styles + added */
 
-const container = {
-  padding: "20px",
-  minHeight: "100vh",
-  background: "#111",
-  color: "white",
-};
-
-const title = {
-  color: "maroon",
-};
-
-const subtitle = {
-  color: "#ccc",
-  marginBottom: "20px",
-};
-
-const card = {
-  border: "1px solid maroon",
-  padding: "15px",
-  marginBottom: "15px",
-  borderRadius: "10px",
-};
-
-/* 🔥 TIMELINE */
 const timeline = {
   display: "flex",
-  gap: "8px",
+  gap: "6px",
   marginTop: "10px",
 };
 
 const step = {
   flex: 1,
-  padding: "6px",
-  fontSize: "12px",
+  padding: "5px",
+  fontSize: "11px",
   textAlign: "center",
-  borderRadius: "5px",
+  borderRadius: "4px",
   color: "white",
 };
