@@ -1,15 +1,17 @@
-import { useState } from "
+import { useState } from "react";
+
 import { auth } from "../firebase";
+
 import { signOut } from "firebase/auth";
 
 export default function Navbar({
   setPage,
-  cart,
   user,
 }) {
 
   const [menuOpen, setMenuOpen] =
-    useStat
+    useState(false);
+
   return (
     <div style={nav}>
 
@@ -42,8 +44,10 @@ export default function Navbar({
 
             <div style={dropdown}>
 
+              {/* ✨ GLOW */}
               <div style={glassGlow}></div>
 
+              {/* 👤 USER */}
               <p style={userInfo}>
                 {user?.email}
               </p>
@@ -78,6 +82,24 @@ export default function Navbar({
                 📦 My Orders
               </p>
 
+              {/* 🔐 ADMIN */}
+              {user?.isAdmin && (
+
+                <p
+                  style={item}
+                  onClick={() => {
+
+                    setMenuOpen(false);
+
+                    setPage("admin");
+
+                  }}
+                >
+                  🛠 Admin
+                </p>
+
+              )}
+
               <div style={line}></div>
 
               {/* 🚪 LOGOUT */}
@@ -110,56 +132,11 @@ export default function Navbar({
 
       </div>
 
-      {/* 🔥 NAVIGATION */}
-      <div style={bottomRow}>
-
-        <button
-          style={btn}
-          onClick={() =>
-            setPage("home")
-          }
-        >
-          Home
-        </button>
-
-        <button
-          style={btn}
-          onClick={() =>
-            setPage("products")
-          }
-        >
-          Products
-        </button>
-
-        <button
-          style={btn}
-          onClick={() =>
-            setPage("cart")
-          }
-        >
-          Cart ({cart?.length || 0})
-        </button>
-
-        {user?.isAdmin && (
-
-          <button
-            style={btn}
-            onClick={() =>
-              setPage("admin")
-            }
-          >
-            Admin
-          </button>
-
-        )}
-
-      </div>
-
     </div>
   );
 }
 
-/* 🎨 ULTRA PREMIUM GLASS UI */
+/* 🎨 PREMIUM GLASS NAVBAR */
 
 const nav = {
   position: "sticky",
@@ -168,7 +145,7 @@ const nav = {
 
   zIndex: 1000,
 
-  padding: "12px",
+  padding: "14px 16px",
 
   backdropFilter:
     "blur(18px)",
@@ -193,20 +170,6 @@ const topRow = {
   alignItems: "center",
 };
 
-/* 🔥 BOTTOM */
-const bottomRow = {
-  display: "flex",
-
-  justifyContent:
-    "space-around",
-
-  marginTop: "12px",
-
-  gap: "10px",
-
-  flexWrap: "wrap",
-};
-
 /* 💎 LOGO */
 const logo = {
   color: "white",
@@ -214,7 +177,7 @@ const logo = {
   cursor: "pointer",
 
   fontSize:
-    "clamp(20px, 4vw, 28px)",
+    "clamp(22px, 4vw, 30px)",
 
   fontWeight: "800",
 
@@ -224,43 +187,17 @@ const logo = {
     "0 0 20px rgba(128,0,0,0.5)",
 };
 
-/* 🔘 BUTTONS */
-const btn = {
-  padding: "10px 18px",
-
-  border: "none",
-
-  borderRadius: "14px",
-
-  background:
-    "rgba(255,255,255,0.06)",
-
-  color: "white",
-
-  fontWeight: "600",
-
-  cursor: "pointer",
-
-  backdropFilter:
-    "blur(12px)",
-
-  transition: "0.3s",
-
-  boxShadow:
-    "0 4px 14px rgba(0,0,0,0.15)",
-};
-
 /* 🔥 MENU */
 const menuWrap = {
   position: "relative",
 };
 
 const dots = {
-  width: "42px",
+  width: "44px",
 
-  height: "42px",
+  height: "44px",
 
-  borderRadius: "14px",
+  borderRadius: "16px",
 
   border: "none",
 
@@ -284,11 +221,11 @@ const dots = {
 const dropdown = {
   position: "absolute",
 
-  top: "52px",
+  top: "56px",
 
   right: 0,
 
-  width: "220px",
+  width: "230px",
 
   padding: "16px",
 
@@ -297,7 +234,7 @@ const dropdown = {
   overflow: "hidden",
 
   background:
-    "rgba(20,20,20,0.85)",
+    "rgba(20,20,20,0.88)",
 
   backdropFilter:
     "blur(22px)",
