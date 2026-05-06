@@ -1,4 +1,59 @@
-export default function ProductDetail({ product, setCart, setPage }) {
+import { useEffect, useState } from "react";
+import {
+  doc,
+  updateDoc,
+  arrayUnion,
+  onSnapshot,
+} from "firebase/firestore";
+
+import { db, auth } from "../firebase";
+
+import toast from "react-hot-toast";
+
+export default function ProductDetail({
+  product,
+  setCart,
+  setPage,
+}) {
+
+  const [reviews, setReviews] =
+    useState([]);
+
+  const [reviewText, setReviewText] =
+    useState("");
+
+  const [rating, setRating] =
+    useState(5);
+
+  /* 🔥 LIVE REVIEWS */
+  useEffect(() => {
+
+    if (!product?.id) return;
+
+    const ref = doc(
+      db,
+      "products",
+      product.id
+    );
+
+    const unsub = onSnapshot(
+      ref,
+      (snap) => {
+
+        if (snap.exists()) {
+
+          setReviews(
+            snap.data().reviews || []
+          );
+
+        }
+
+      }
+    );
+
+    return () => unsub();
+
+  }, [product]);
 
   if (!product) {
     return (
@@ -8,9 +63,15 @@ export default function ProductDetail({ product, setCart, setPage }) {
     );
   }
 
+  /* 🛒 CART */
   const addToCart = () => {
+
     if ((product.stock ?? 0) <= 0) {
-      alert("Out of stock ❌");
+
+      toast.error(
+        "Out of stock ❌"
+      );
+
       return;
     }
 
@@ -22,23 +83,113 @@ export default function ProductDetail({ product, setCart, setPage }) {
 
       if (existing) {
 
-        if (existing.qty >= product.stock) {
-          alert("Stock limit reached ⚠️");
+        if (
+          existing.qty >=
+          product.stock
+        ) {
+
+          toast.error(
+            "Stock limit reached ⚠️"
+          );
+
           return prev;
         }
 
         return prev.map((i) =>
           i.id === product.id
-            ? { ...i, qty: (i.qty || 1) + 1 }
+            ? {
+                ...i,
+                qty:
+                  (i.qty || 1) + 1,
+              }
             : i
         );
       }
 
-      return [...prev, { ...product, qty: 1 }];
+      return [
+        ...prev,
+        {
+          ...product,
+          qty: 1,
+        },
+      ];
     });
 
-    alert("Added to cart 💎");
+    toast.success(
+      "Added to cart 💎"
+    );
   };
+
+  /* ⭐ ADD REVIEW */
+  const submitReview = async () => {
+
+    try {
+
+      if (!reviewText) {
+        toast.error(
+          "Write review first"
+        );
+        return;
+      }
+
+      const user =
+        auth.currentUser;
+
+      if (!user) {
+        toast.error(
+          "Login required"
+        );
+        return;
+      }
+
+      const ref = doc(
+        db,
+        "products",
+        product.id
+      );
+
+      await updateDoc(ref, {
+
+        reviews: arrayUnion({
+          user: user.email,
+          rating,
+          text: reviewText,
+          createdAt:
+            new Date().toISOString(),
+        }),
+
+      });
+
+      setReviewText("");
+
+      setRating(5);
+
+      toast.success(
+        "Review added ⭐"
+      );
+
+    } catch (err) {
+
+      console.log(err);
+
+      toast.error(
+        "Review failed ❌"
+      );
+
+    }
+  };
+
+  /* ⭐ AVG */
+  const avgRating =
+    reviews.length > 0
+      ? (
+          reviews.reduce(
+            (sum, r) =>
+              sum + r.rating,
+            0
+          ) / reviews.length
+        ).toFixed(1)
+      : 0;
 
   return (
     <div style={page}>
@@ -46,16 +197,19 @@ export default function ProductDetail({ product, setCart, setPage }) {
       {/* 🔙 BACK */}
       <button
         style={backBtn}
-        onClick={() => setPage("products")}
+        onClick={() =>
+          setPage("products")
+        }
       >
         ← Back
       </button>
 
-      {/* 💎 CARD */}
+      {/* 💎 PRODUCT */}
       <div style={card}>
 
-        {/* 🖼 IMAGE */}
+        {/* IMAGE */}
         <div style={imgWrap}>
+
           <img
             src={
               product?.image ||
@@ -65,10 +219,10 @@ export default function ProductDetail({ product, setCart, setPage }) {
             style={img}
           />
 
-          {/* 🔥 STOCK BADGE */}
           <div
             style={{
               ...badge,
+
               background:
                 (product.stock ?? 0) > 0
                   ? "#0f9d58"
@@ -79,9 +233,10 @@ export default function ProductDetail({ product, setCart, setPage }) {
               ? "In Stock"
               : "Out of Stock"}
           </div>
+
         </div>
 
-        {/* 📦 CONTENT */}
+        {/* CONTENT */}
         <div style={content}>
 
           <h1 style={name}>
@@ -92,26 +247,37 @@ export default function ProductDetail({ product, setCart, setPage }) {
             ₹{product?.price || 0}
           </p>
 
+          {/* ⭐ RATING */}
+          <div style={ratingBox}>
+
+            ⭐ {avgRating}
+
+            <span style={reviewCount}>
+              ({reviews.length} reviews)
+            </span>
+
+          </div>
+
           <p style={desc}>
-            Premium handcrafted jewellery designed
-            with elegance, luxury, and timeless beauty.
-            Perfect for every occasion.
+            Premium handcrafted jewellery
+            designed with elegance,
+            luxury, and timeless beauty.
           </p>
 
-          {/* 🚚 DELIVERY */}
+          {/* INFO */}
           <div style={infoBox}>
-            🚚 Free delivery in 3-5 days
+            🚚 Free delivery
           </div>
 
           <div style={infoBox}>
-            🔒 Secure payment & premium packaging
+            🔒 Secure payment
           </div>
 
           <div style={infoBox}>
-            💎 Authentic luxury jewellery
+            💎 Luxury packaging
           </div>
 
-          {/* 🛒 BUTTONS */}
+          {/* BUTTONS */}
           <div style={btnRow}>
 
             <button
@@ -124,8 +290,11 @@ export default function ProductDetail({ product, setCart, setPage }) {
             <button
               style={buyBtn}
               onClick={() => {
+
                 addToCart();
+
                 setPage("cart");
+
               }}
             >
               Buy Now
@@ -137,124 +306,91 @@ export default function ProductDetail({ product, setCart, setPage }) {
 
       </div>
 
-    </div>
-  );
-}
+      {/* ⭐ REVIEW SECTION */}
+      <div style={reviewSection}>
 
-/* 🎨 PREMIUM STYLES */
+        <h2 style={reviewTitle}>
+          Customer Reviews ⭐
+        </h2>
 
-const page = {
-  minHeight: "100vh",
-  background: "#f5f5f5",
-  padding: "20px",
-};
+        {/* ADD REVIEW */}
+        <div style={reviewForm}>
 
-const backBtn = {
-  marginBottom: "20px",
-  border: "none",
-  background: "white",
-  padding: "10px 16px",
-  borderRadius: "10px",
-  cursor: "pointer",
-  boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-};
+          <select
+            value={rating}
+            onChange={(e) =>
+              setRating(
+                Number(
+                  e.target.value
+                )
+              )
+            }
+            style={select}
+          >
+            <option value={5}>
+              ⭐⭐⭐⭐⭐
+            </option>
 
-const card = {
-  background: "white",
-  borderRadius: "24px",
-  overflow: "hidden",
-  boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-  maxWidth: "1100px",
-  margin: "0 auto",
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(320px,1fr))",
-};
+            <option value={4}>
+              ⭐⭐⭐⭐
+            </option>
 
-const imgWrap = {
-  position: "relative",
-  background: "#fafafa",
-};
+            <option value={3}>
+              ⭐⭐⭐
+            </option>
 
-const img = {
-  width: "100%",
-  height: "100%",
-  minHeight: "420px",
-  objectFit: "cover",
-};
+            <option value={2}>
+              ⭐⭐
+            </option>
 
-const badge = {
-  position: "absolute",
-  top: "18px",
-  left: "18px",
-  color: "white",
-  padding: "8px 14px",
-  borderRadius: "30px",
-  fontSize: "13px",
-  fontWeight: "600",
-};
+            <option value={1}>
+              ⭐
+            </option>
 
-const content = {
-  padding: "30px",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-};
+          </select>
 
-const name = {
-  fontSize: "clamp(28px, 5vw, 42px)",
-  marginBottom: "10px",
-};
+          <textarea
+            placeholder="Write your review..."
+            value={reviewText}
+            onChange={(e) =>
+              setReviewText(
+                e.target.value
+              )
+            }
+            style={textarea}
+          />
 
-const price = {
-  color: "maroon",
-  fontSize: "30px",
-  fontWeight: "700",
-  marginBottom: "15px",
-};
+          <button
+            style={submitBtn}
+            onClick={submitReview}
+          >
+            Submit Review
+          </button>
 
-const desc = {
-  color: "#666",
-  lineHeight: "1.8",
-  fontSize: "15px",
-};
+        </div>
 
-const infoBox = {
-  background: "#fafafa",
-  padding: "14px",
-  borderRadius: "12px",
-  marginTop: "12px",
-  fontSize: "14px",
-  border: "1px solid #eee",
-};
+        {/* REVIEWS */}
+        {reviews.length === 0 ? (
 
-const btnRow = {
-  display: "flex",
-  gap: "12px",
-  marginTop: "25px",
-  flexWrap: "wrap",
-};
+          <p style={empty}>
+            No reviews yet
+          </p>
 
-const cartBtn = {
-  flex: 1,
-  padding: "14px",
-  borderRadius: "12px",
-  border: "none",
-  background: "black",
-  color: "white",
-  fontWeight: "600",
-  cursor: "pointer",
-  minWidth: "140px",
-};
+        ) : (
 
-const buyBtn = {
-  flex: 1,
-  padding: "14px",
-  borderRadius: "12px",
-  border: "none",
-  background:
-    "linear-gradient(to right, #4b0000, maroon)",
-  color: "white",
-  fontWeight: "600",
-  cursor: "pointer",
-  minWidth: "140px",
-};
+          reviews.map((r, i) => (
+
+            <div
+              key={i}
+              style={reviewCard}
+            >
+
+              <div style={reviewTop}>
+
+                <p style={reviewUser}>
+                  {r.user}
+                </p>
+
+                <p style={stars}>
+                  {"⭐".repeat(
+                    r
