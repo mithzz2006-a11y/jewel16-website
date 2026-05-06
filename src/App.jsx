@@ -20,46 +20,95 @@ import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import ProductDetail from "./pages/ProductDetail";
 
+/* ✅ NEW */
+import Success from "./pages/Success";
+
 export default function App() {
+
   const [page, setPage] = useState("home");
+
   const [user, setUser] = useState(null);
+
   const [cart, setCart] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
+
+  const [selectedProduct, setSelectedProduct] =
+    useState(null);
+
+  const [loading, setLoading] =
+    useState(true);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (u) => {
-      if (u) {
-        try {
-          const ref = doc(db, "users", u.uid);
-          const snap = await getDoc(ref);
 
-          let isAdmin = false;
+    const unsub =
+      onAuthStateChanged(
+        auth,
+        async (u) => {
 
-          if (snap.exists()) {
-            if (snap.data().role === "admin") {
-              isAdmin = true;
+          if (u) {
+
+            try {
+
+              const ref = doc(
+                db,
+                "users",
+                u.uid
+              );
+
+              const snap =
+                await getDoc(ref);
+
+              let isAdmin = false;
+
+              if (snap.exists()) {
+
+                if (
+                  snap.data().role ===
+                  "admin"
+                ) {
+                  isAdmin = true;
+                }
+
+              } else {
+
+                await setDoc(ref, {
+                  email: u.email,
+                  role: "user",
+                });
+
+              }
+
+              setUser({
+                ...u,
+                isAdmin,
+              });
+
+            } catch (err) {
+
+              console.log(
+                "Auth error:",
+                err
+              );
+
+              setUser({
+                ...u,
+                isAdmin: false,
+              });
+
             }
+
           } else {
-            await setDoc(ref, {
-              email: u.email,
-              role: "user"
-            });
+
+            setUser(null);
+
           }
 
-          setUser({ ...u, isAdmin });
-        } catch (err) {
-          console.log("Auth error:", err);
-          setUser({ ...u, isAdmin: false });
-        }
-      } else {
-        setUser(null);
-      }
+          setLoading(false);
 
-      setLoading(false);
-    });
+        }
+      );
 
     return () => unsub();
+
   }, []);
 
   /* 🔥 LOADER */
@@ -69,29 +118,45 @@ export default function App() {
 
   /* 🔒 LOGIN */
   if (!user) {
-    return <Auth setUser={setUser} />;
+    return (
+      <Auth setUser={setUser} />
+    );
   }
 
   return (
     <div style={appContainer}>
 
-      {/* NAVBAR */}
-      <Navbar setPage={setPage} cart={cart} user={user} />
+      {/* 🔥 NAVBAR */}
+      <Navbar
+        setPage={setPage}
+        cart={cart}
+        user={user}
+      />
 
-      {/* CONTENT */}
+      {/* 🔥 CONTENT */}
       <div style={pageWrapper}>
+
         <PageWrapper>
 
-          {page === "home" && <Home setPage={setPage} />}
+          {/* 🏠 HOME */}
+          {page === "home" && (
+            <Home
+              setPage={setPage}
+            />
+          )}
 
+          {/* 🛍 PRODUCTS */}
           {page === "products" && (
             <Products
               setPage={setPage}
               setCart={setCart}
-              setSelectedProduct={setSelectedProduct}
+              setSelectedProduct={
+                setSelectedProduct
+              }
             />
           )}
 
+          {/* 💎 DETAIL */}
           {page === "detail" && (
             <ProductDetail
               product={selectedProduct}
@@ -100,48 +165,73 @@ export default function App() {
             />
           )}
 
+          {/* 🛒 CART */}
           {page === "cart" && (
-            <Cart cart={cart} setPage={setPage} />
+            <Cart
+              cart={cart}
+              setPage={setPage}
+            />
           )}
 
-          {/* 🔥 FIXED */}
+          {/* 💳 CHECKOUT */}
           {page === "checkout" && (
             <Checkout
               cart={cart}
               user={user}
-              setPage={setPage} // ✅ IMPORTANT FIX
+              setPage={setPage}
             />
           )}
 
-          {/* 🔥 FIXED */}
+          {/* ✅ SUCCESS */}
+          {page === "success" && (
+            <Success
+              setPage={setPage}
+            />
+          )}
+
+          {/* 📦 ORDERS */}
           {page === "orders" && (
-            <MyOrders user={user} /> // now fetches correctly
+            <MyOrders user={user} />
           )}
 
+          {/* 👤 PROFILE */}
           {page === "profile" && (
-            <Profile user={user} />
+            <Profile
+              user={user}
+              setCart={setCart}
+              setPage={setPage}
+            />
           )}
 
-          {page === "admin" && user?.isAdmin && (
-            <Admin setPage={setPage} />
-          )}
+          {/* 🔐 ADMIN */}
+          {page === "admin" &&
+            user?.isAdmin && (
+              <Admin
+                setPage={setPage}
+              />
+            )}
 
         </PageWrapper>
+
       </div>
 
-      {/* BOTTOM NAV */}
-      <BottomNav setPage={setPage} cart={cart} />
+      {/* 📱 BOTTOM NAV */}
+      <BottomNav
+        setPage={setPage}
+        cart={cart}
+      />
 
     </div>
   );
 }
 
-/* STYLES */
+/* 🎨 STYLES */
 
 const appContainer = {
   minHeight: "100vh",
   display: "flex",
   flexDirection: "column",
+  background: "#f5f5f5",
 };
 
 const pageWrapper = {
@@ -149,5 +239,5 @@ const pageWrapper = {
   maxWidth: "1200px",
   margin: "0 auto",
   padding: "10px",
-  paddingBottom: "90px", // 🔥 prevent bottom nav overlap
+  paddingBottom: "90px",
 };
