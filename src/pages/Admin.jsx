@@ -1,100 +1,213 @@
 import { useEffect, useState } from "react";
+
 import { db } from "../firebase";
+
 import {
   collection,
   onSnapshot,
   addDoc,
   deleteDoc,
   updateDoc,
-  doc
+  doc,
 } from "firebase/firestore";
 
-export default function Admin({ setPage }) {
-  const [products, setProducts] = useState([]);
+export default function Admin({
+  setPage,
+}) {
 
-  const [form, setForm] = useState({
-    name: "",
-    price: "",
-    image: "",
-    stock: "" // ✅ NEW
-  });
+  const [products, setProducts] =
+    useState([]);
 
-  /* 🔥 REAL-TIME PRODUCTS */
-  useEffect(() => {
-    const unsub = onSnapshot(collection(db, "products"), (snap) => {
-      const data = snap.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setProducts(data);
+  const [form, setForm] =
+    useState({
+      name: "",
+      price: "",
+      image: "",
+      image2: "",
+      image3: "",
+      stock: "",
     });
 
+  /* 🔥 REALTIME PRODUCTS */
+  useEffect(() => {
+
+    const unsub = onSnapshot(
+      collection(db, "products"),
+      (snap) => {
+
+        const data =
+          snap.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+
+        setProducts(data);
+
+      }
+    );
+
     return () => unsub();
+
   }, []);
 
   /* ➕ ADD PRODUCT */
   const addProduct = async () => {
-    if (!form.name || !form.price || !form.stock) {
+
+    if (
+      !form.name ||
+      !form.price ||
+      !form.stock
+    ) {
+
       alert("Fill all fields");
+
       return;
+
     }
 
-    await addDoc(collection(db, "products"), {
-      name: form.name,
-      price: Number(form.price),
-      image: form.image || "",
-      stock: Number(form.stock), // ✅ ADD STOCK
-      createdAt: new Date()
+    const images = [
+      form.image,
+      form.image2,
+      form.image3,
+    ].filter(Boolean);
+
+    await addDoc(
+      collection(db, "products"),
+      {
+        name: form.name,
+
+        price: Number(
+          form.price
+        ),
+
+        image:
+          form.image || "",
+
+        /* 💎 NEW */
+        images,
+
+        stock: Number(
+          form.stock
+        ),
+
+        createdAt:
+          new Date(),
+      }
+    );
+
+    setForm({
+      name: "",
+      price: "",
+      image: "",
+      image2: "",
+      image3: "",
+      stock: "",
     });
 
-    setForm({ name: "", price: "", image: "", stock: "" });
     alert("Product added");
+
   };
 
-  /* ✏️ EDIT PRODUCT */
-  const editProduct = async (product) => {
-    const newName = prompt("Enter new name", product.name);
-    const newPrice = prompt("Enter new price", product.price);
-    const newStock = prompt("Enter stock", product.stock);
+  /* ✏️ EDIT */
+  const editProduct = async (
+    product
+  ) => {
 
-    if (!newName || !newPrice || !newStock) return;
+    const newName = prompt(
+      "Enter new name",
+      product.name
+    );
 
-    await updateDoc(doc(db, "products", product.id), {
-      name: newName,
-      price: Number(newPrice),
-      stock: Number(newStock) // ✅ UPDATE STOCK
-    });
+    const newPrice = prompt(
+      "Enter new price",
+      product.price
+    );
+
+    const newStock = prompt(
+      "Enter stock",
+      product.stock
+    );
+
+    if (
+      !newName ||
+      !newPrice ||
+      !newStock
+    )
+      return;
+
+    await updateDoc(
+      doc(
+        db,
+        "products",
+        product.id
+      ),
+      {
+        name: newName,
+
+        price:
+          Number(newPrice),
+
+        stock:
+          Number(newStock),
+      }
+    );
 
     alert("Product updated");
+
   };
 
-  /* 🗑 DELETE PRODUCT */
-  const deleteProduct = async (id) => {
-    const confirmDelete = window.confirm("Delete this product?");
+  /* 🗑 DELETE */
+  const deleteProduct = async (
+    id
+  ) => {
+
+    const confirmDelete =
+      window.confirm(
+        "Delete this product?"
+      );
+
     if (!confirmDelete) return;
 
-    await deleteDoc(doc(db, "products", id));
+    await deleteDoc(
+      doc(db, "products", id)
+    );
+
     alert("Product deleted");
+
   };
 
   return (
     <div style={container}>
 
-      <h1 style={title}>Admin Dashboard</h1>
+      <h1 style={title}>
+        Admin Dashboard 💎
+      </h1>
 
-      <button onClick={() => setPage("home")} style={backBtn}>
+      <button
+        onClick={() =>
+          setPage("home")
+        }
+        style={backBtn}
+      >
         ⬅ Back to Home
       </button>
 
       {/* ➕ ADD PRODUCT */}
       <div style={formBox}>
-        <h2>Add Product</h2>
+
+        <h2 style={formTitle}>
+          Add Product
+        </h2>
 
         <input
           placeholder="Product Name"
           value={form.name}
           onChange={(e) =>
-            setForm({ ...form, name: e.target.value })
+            setForm({
+              ...form,
+              name:
+                e.target.value,
+            })
           }
           style={input}
         />
@@ -103,7 +216,11 @@ export default function Admin({ setPage }) {
           placeholder="Price"
           value={form.price}
           onChange={(e) =>
-            setForm({ ...form, price: e.target.value })
+            setForm({
+              ...form,
+              price:
+                e.target.value,
+            })
           }
           style={input}
         />
@@ -112,150 +229,190 @@ export default function Admin({ setPage }) {
           placeholder="Stock"
           value={form.stock}
           onChange={(e) =>
-            setForm({ ...form, stock: e.target.value })
+            setForm({
+              ...form,
+              stock:
+                e.target.value,
+            })
+          }
+          style={input}
+        />
+
+        {/* 🖼 IMAGES */}
+        <input
+          placeholder="Main Image URL"
+          value={form.image}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              image:
+                e.target.value,
+            })
           }
           style={input}
         />
 
         <input
-          placeholder="Image URL"
-          value={form.image}
+          placeholder="Second Image URL"
+          value={form.image2}
           onChange={(e) =>
-            setForm({ ...form, image: e.target.value })
+            setForm({
+              ...form,
+              image2:
+                e.target.value,
+            })
           }
           style={input}
         />
 
-        <button onClick={addProduct} style={btn}>
+        <input
+          placeholder="Third Image URL"
+          value={form.image3}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              image3:
+                e.target.value,
+            })
+          }
+          style={input}
+        />
+
+        <button
+          onClick={addProduct}
+          style={btn}
+        >
           Add Product
         </button>
+
       </div>
 
-      {/* 📦 PRODUCT LIST */}
+      {/* 📦 PRODUCTS */}
       <div style={grid}>
-        {products.map((product) => (
-          <div key={product.id} style={card}>
 
-            <img
-              src={product.image}
-              alt=""
-              style={img}
-            />
+        {products.map(
+          (product) => (
 
-            <h3>{product.name}</h3>
-            <p>₹{product.price}</p>
+            <div
+              key={product.id}
+              style={card}
+            >
 
-            {/* 🔥 SHOW STOCK */}
-            <p style={{ fontSize: "12px", color: "gray" }}>
-              Stock: {product.stock ?? 0}
-            </p>
+              <img
+                src={
+                  product.image
+                }
+                alt=""
+                style={img}
+              />
 
-            {/* 🔴 OUT OF STOCK */}
-            {product.stock === 0 && (
-              <p style={{ color: "red", fontWeight: "bold" }}>
-                Out of Stock
+              <h3>
+                {product.name}
+              </h3>
+
+              <p>
+                ₹{product.price}
               </p>
-            )}
 
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button
-                onClick={() => editProduct(product)}
-                style={editBtn}
-              >
-                Edit
-              </button>
+              <p style={stock}>
+                Stock:
+                {" "}
+                {product.stock ?? 0}
+              </p>
 
-              <button
-                onClick={() => deleteProduct(product.id)}
-                style={deleteBtn}
-              >
-                Delete
-              </button>
+              {product.stock ===
+                0 && (
+                <p style={out}>
+                  Out of Stock
+                </p>
+              )}
+
+              <div style={btnRow}>
+
+                <button
+                  onClick={() =>
+                    editProduct(
+                      product
+                    )
+                  }
+                  style={editBtn}
+                >
+                  Edit
+                </button>
+
+                <button
+                  onClick={() =>
+                    deleteProduct(
+                      product.id
+                    )
+                  }
+                  style={deleteBtn}
+                >
+                  Delete
+                </button>
+
+              </div>
+
             </div>
 
-          </div>
-        ))}
+          )
+        )}
+
       </div>
+
     </div>
   );
 }
 
-/* 🎨 STYLES (UNCHANGED) */
+/* 🎨 PREMIUM STYLES */
 
 const container = {
   padding: "20px",
-  background: "white",
-  minHeight: "100vh"
+
+  minHeight: "100vh",
+
+  background:
+    "linear-gradient(to bottom, #f5f5f5, #ffffff)",
 };
 
 const title = {
-  color: "maroon"
+  color: "maroon",
+
+  fontSize:
+    "clamp(28px, 5vw, 42px)",
 };
 
 const backBtn = {
   marginBottom: "20px",
-  padding: "10px",
-  background: "black",
+
+  padding: "12px 18px",
+
+  background:
+    "linear-gradient(to right, #000, maroon)",
+
   color: "white",
+
   border: "none",
-  cursor: "pointer"
+
+  borderRadius: "12px",
+
+  cursor: "pointer",
+
+  fontWeight: "600",
 };
 
 const formBox = {
-  border: "1px solid #eee",
-  padding: "20px",
-  marginBottom: "30px",
-  borderRadius: "10px"
-};
+  background:
+    "rgba(255,255,255,0.8)",
 
-const input = {
-  display: "block",
-  width: "100%",
-  padding: "10px",
-  marginBottom: "10px",
-  border: "1px solid #ccc"
-};
+  backdropFilter:
+    "blur(12px)",
 
-const btn = {
-  padding: "10px",
-  background: "maroon",
-  color: "white",
-  border: "none",
-  cursor: "pointer"
-};
+  padding: "24px",
 
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(200px,1fr))",
-  gap: "20px"
-};
+  marginBottom: "35px",
 
-const card = {
-  border: "1px solid #eee",
-  padding: "15px",
-  borderRadius: "10px",
-  textAlign: "center"
-};
+  borderRadius: "24px",
 
-const img = {
-  width: "100%",
-  height: "150px",
-  objectFit: "cover",
-  borderRadius: "8px"
-};
-
-const editBtn = {
-  padding: "8px",
-  background: "black",
-  color: "white",
-  border: "none",
-  cursor: "pointer"
-};
-
-const deleteBtn = {
-  padding: "8px",
-  background: "maroon",
-  color: "white",
-  border: "none",
-  cursor: "pointer"
-};
+  boxShadow:
+    "0 10px 30px rgba(0,0,0
