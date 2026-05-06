@@ -3,7 +3,11 @@ import { db } from "../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import ProductCard from "../components/ProductCard";
 
-export default function Products({ setCart, setPage, setSelectedProduct }) {
+export default function Products({
+  setCart,
+  setPage,
+  setSelectedProduct,
+}) {
   const [products, setProducts] = useState([]);
 
   /* 🔥 FIRESTORE CONNECT */
@@ -12,6 +16,7 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
       try {
         const data = snap.docs.map((doc) => {
           const d = doc.data() || {};
+
           return {
             id: doc.id,
             name: d.name || "No Name",
@@ -20,6 +25,7 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
             stock: Number(d.stock) || 0,
           };
         });
+
         setProducts(data);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -30,12 +36,18 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
   }, []);
 
   return (
-    <div>
-      {/* 🔥 HERO */}
+    <div style={page}>
+
+      {/* 🔥 PREMIUM HERO */}
       <div style={hero}>
         <div style={overlay}></div>
+
         <h1 style={title}>Our Collection 💎</h1>
-        <p style={subtitle}>Explore luxury jewellery</p>
+
+        <p style={subtitle}>
+          Explore handcrafted luxury jewellery
+        </p>
+
         <button style={btn} onClick={() => setPage("cart")}>
           View Cart
         </button>
@@ -44,16 +56,18 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
       {/* 💎 BRAND */}
       <div style={brand}>
         <h2 style={brandTitle}>Luxury You Can Trust</h2>
+
         <p style={brandText}>
-          At JEWEL16, every piece is crafted with precision, passion, and
-          perfection. Experience jewellery that defines class and confidence.
+          At JEWEL16, every piece is crafted with precision,
+          passion, and perfection. Experience jewellery
+          that defines elegance and confidence.
         </p>
       </div>
 
-      {/* 🛍 GRID */}
+      {/* 🛍 PRODUCT GRID */}
       <div style={grid}>
         {products.length === 0 ? (
-          <p style={{ textAlign: "center" }}>No products available</p>
+          <p style={empty}>No products available</p>
         ) : (
           products.map((p) => (
             <div
@@ -65,39 +79,116 @@ export default function Products({ setCart, setPage, setSelectedProduct }) {
               }}
             >
               <div onClick={(e) => e.stopPropagation()}>
-                <ProductCard product={p} setCart={setCart} />
+                <ProductCard
+                  product={p}
+                  setCart={setCart}
+                />
               </div>
             </div>
           ))
         )}
       </div>
+
     </div>
   );
 }
 
-/* 🎨 RESPONSIVE STYLES */
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-  gap: "20px",
-  padding: "20px",
+/* 🎨 PREMIUM STYLES */
+
+const page = {
+  background: "#f5f5f5",
+  minHeight: "100vh",
 };
 
+/* 🔥 HERO */
+
 const hero = {
-  minHeight: "25vh",
+  minHeight: "28vh",
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
   textAlign: "center",
+  padding: "25px 15px",
   background: "linear-gradient(to right, #000, #400000)",
   color: "white",
+  position: "relative",
+  overflow: "hidden",
+  borderRadius: "0 0 25px 25px",
+};
+
+const overlay = {
+  position: "absolute",
+  width: "100%",
+  height: "100%",
+  top: 0,
+  left: 0,
+  background:
+    "radial-gradient(circle, rgba(255,255,255,0.08), transparent)",
 };
 
 const title = {
-  fontSize: "clamp(24px, 5vw, 36px)",
+  fontSize: "clamp(28px, 6vw, 48px)",
+  fontWeight: "700",
+  letterSpacing: "1px",
+  zIndex: 1,
 };
 
 const subtitle = {
+  marginTop: "10px",
   color: "#ddd",
+  fontSize: "clamp(13px, 3vw, 17px)",
+  zIndex: 1,
+};
+
+const btn = {
+  marginTop: "18px",
+  padding: "12px 24px",
+  background: "white",
+  border: "none",
+  borderRadius: "10px",
+  fontWeight: "600",
+  cursor: "pointer",
+  fontSize: "14px",
+  boxShadow: "0 8px 20px rgba(255,255,255,0.15)",
+  zIndex: 1,
+};
+
+/* 💎 BRAND */
+
+const brand = {
+  textAlign: "center",
+  padding: "40px 20px 20px",
+};
+
+const brandTitle = {
+  fontSize: "clamp(24px, 5vw, 36px)",
+  marginBottom: "10px",
+};
+
+const brandText = {
+  maxWidth: "700px",
+  margin: "0 auto",
+  color: "#666",
+  lineHeight: "1.7",
+  fontSize: "14px",
+};
+
+/* 🛍 GRID */
+
+const grid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  gap: "20px",
+  padding: "20px",
+};
+
+const cardWrap = {
+  cursor: "pointer",
+  transition: "0.3s",
+};
+
+const empty = {
+  textAlign: "center",
+  color: "#555",
 };
