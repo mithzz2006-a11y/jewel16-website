@@ -14,9 +14,10 @@ export default function Navbar({
   return (
     <div style={nav}>
 
-      {/* 🔥 TOP ROW */}
+      {/* ✨ TOP */}
       <div style={topRow}>
 
+        {/* 💎 LOGO */}
         <h2
           style={logo}
           onClick={() =>
@@ -42,11 +43,13 @@ export default function Navbar({
 
             <div style={dropdown}>
 
+              <div style={glassGlow}></div>
+
               <p style={userInfo}>
                 {user?.email}
               </p>
 
-              <hr />
+              <div style={line}></div>
 
               {/* 👤 PROFILE */}
               <p
@@ -76,11 +79,11 @@ export default function Navbar({
                 📦 My Orders
               </p>
 
-              <hr />
+              <div style={line}></div>
 
               {/* 🚪 LOGOUT */}
               <p
-                style={item}
+                style={logout}
                 onClick={async () => {
 
                   try {
@@ -108,7 +111,7 @@ export default function Navbar({
 
       </div>
 
-      {/* 🔥 BOTTOM NAV */}
+      {/* 🔥 NAVIGATION */}
       <div style={bottomRow}>
 
         <button
@@ -157,49 +160,95 @@ export default function Navbar({
   );
 }
 
-/* 🎨 PREMIUM RESPONSIVE STYLES */
+/* 🎨 ULTRA PREMIUM GLASS UI */
 
 const nav = {
-  display: "flex",
-  flexDirection: "column",
-  padding: "10px 12px",
-  borderBottom: "1px solid #eee",
-  background: "white",
   position: "sticky",
+
   top: 0,
+
   zIndex: 1000,
+
+  padding: "12px",
+
+  backdropFilter:
+    "blur(18px)",
+
+  background:
+    "rgba(10,10,10,0.72)",
+
+  borderBottom:
+    "1px solid rgba(255,255,255,0.06)",
+
+  boxShadow:
+    "0 8px 30px rgba(0,0,0,0.25)",
 };
 
-/* 🔥 TOP ROW */
+/* 🔥 TOP */
 const topRow = {
   display: "flex",
-  justifyContent: "space-between",
+
+  justifyContent:
+    "space-between",
+
   alignItems: "center",
 };
 
-/* 🔥 BOTTOM ROW */
+/* 🔥 BOTTOM */
 const bottomRow = {
   display: "flex",
-  justifyContent: "space-around",
-  marginTop: "8px",
+
+  justifyContent:
+    "space-around",
+
+  marginTop: "12px",
+
+  gap: "10px",
+
+  flexWrap: "wrap",
 };
 
 /* 💎 LOGO */
 const logo = {
-  color: "maroon",
+  color: "white",
+
   cursor: "pointer",
-  fontSize: "18px",
-  fontWeight: "bold",
+
+  fontSize:
+    "clamp(20px, 4vw, 28px)",
+
+  fontWeight: "800",
+
+  letterSpacing: "1px",
+
+  textShadow:
+    "0 0 20px rgba(128,0,0,0.5)",
 };
 
-/* 🔘 BUTTON */
+/* 🔘 BUTTONS */
 const btn = {
-  padding: "8px 10px",
-  fontSize: "13px",
+  padding: "10px 18px",
+
   border: "none",
-  background: "transparent",
+
+  borderRadius: "14px",
+
+  background:
+    "rgba(255,255,255,0.06)",
+
+  color: "white",
+
+  fontWeight: "600",
+
   cursor: "pointer",
-  color: "#333",
+
+  backdropFilter:
+    "blur(12px)",
+
+  transition: "0.3s",
+
+  boxShadow:
+    "0 4px 14px rgba(0,0,0,0.15)",
 };
 
 /* 🔥 MENU */
@@ -208,37 +257,117 @@ const menuWrap = {
 };
 
 const dots = {
-  fontSize: "18px",
-  background: "#f5f5f5",
+  width: "42px",
+
+  height: "42px",
+
+  borderRadius: "14px",
+
   border: "none",
+
+  background:
+    "rgba(255,255,255,0.08)",
+
+  color: "white",
+
+  fontSize: "20px",
+
   cursor: "pointer",
-  padding: "6px 10px",
-  borderRadius: "6px",
+
+  backdropFilter:
+    "blur(12px)",
+
+  boxShadow:
+    "0 4px 14px rgba(0,0,0,0.2)",
 };
 
-/* 📦 DROPDOWN */
+/* 💎 DROPDOWN */
 const dropdown = {
   position: "absolute",
-  top: "40px",
-  right: "0",
-  background: "white",
-  border: "1px solid #ddd",
-  borderRadius: "10px",
-  width: "180px",
-  padding: "10px",
+
+  top: "52px",
+
+  right: 0,
+
+  width: "220px",
+
+  padding: "16px",
+
+  borderRadius: "24px",
+
+  overflow: "hidden",
+
+  background:
+    "rgba(20,20,20,0.85)",
+
+  backdropFilter:
+    "blur(22px)",
+
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+
   boxShadow:
-    "0 8px 20px rgba(0,0,0,0.1)",
+    "0 10px 30px rgba(0,0,0,0.4)",
 };
 
-const item = {
-  padding: "10px",
-  cursor: "pointer",
-  borderRadius: "6px",
+const glassGlow = {
+  position: "absolute",
+
+  width: "180px",
+
+  height: "180px",
+
+  top: "-60px",
+
+  right: "-40px",
+
+  background:
+    "radial-gradient(circle, rgba(128,0,0,0.45), transparent)",
+
+  filter: "blur(40px)",
 };
 
 const userInfo = {
+  color: "#ddd",
+
   fontSize: "12px",
-  color: "gray",
-  marginBottom: "5px",
+
+  marginBottom: "12px",
+
   wordBreak: "break-all",
+
+  position: "relative",
+
+  zIndex: 2,
+};
+
+const line = {
+  height: "1px",
+
+  background:
+    "rgba(255,255,255,0.08)",
+
+  margin: "10px 0",
+};
+
+const item = {
+  padding: "12px",
+
+  color: "white",
+
+  cursor: "pointer",
+
+  borderRadius: "14px",
+
+  transition: "0.3s",
+
+  position: "relative",
+
+  zIndex: 2,
+};
+
+const logout = {
+  ...item,
+
+  color: "#ffb3b3",
 };
