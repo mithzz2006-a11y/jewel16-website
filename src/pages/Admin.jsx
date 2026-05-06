@@ -415,4 +415,131 @@ const formBox = {
   borderRadius: "24px",
 
   boxShadow:
-    "0 10px 30px rgba(0,0,0
+    "0 10px 30px rgba(0,0,0,0.08)",
+};
+
+const formTitle = {
+  marginBottom: "18px",
+};
+
+const input = {
+  display: "block",
+
+  width: "100%",
+
+  padding: "14px",
+
+  marginBottom: "12px",
+
+  border:
+    "1px solid #ddd",
+
+  borderRadius: "14px",
+
+  outline: "none",
+
+  fontSize: "14px",
+};
+
+const btn = {
+  padding: "14px 18px",
+
+  background:
+    "linear-gradient(to right, #2b0000, maroon)",
+
+  color: "white",
+
+  border: "none",
+
+  borderRadius: "14px",
+
+  cursor: "pointer",
+
+  fontWeight: "700",
+
+  width: "100%",
+};
+
+const grid = {
+  display: "grid",
+
+  gridTemplateColumns:
+    "repeat(auto-fit, minmax(220px,1fr))",
+
+  gap: "24px",
+};
+
+const card = {
+  background: "white",
+
+  padding: "16px",
+
+  borderRadius: "22px",
+
+  textAlign: "center",
+
+  boxShadow:
+    "0 10px 24px rgba(0,0,0,0.06)",
+};
+
+const img = {
+  width: "100%",
+
+  height: "180px",
+
+  objectFit: "cover",
+
+  borderRadius: "16px",
+};
+
+const stock = {
+  fontSize: "13px",
+
+  color: "gray",
+};
+
+const out = {
+  color: "red",
+
+  fontWeight: "700",
+};
+
+const btnRow = {
+  display: "flex",
+
+  gap: "10px",
+
+  marginTop: "14px",
+};
+
+const editBtn = {
+  flex: 1,
+
+  padding: "10px",
+
+  background: "black",
+
+  color: "white",
+
+  border: "none",
+
+  borderRadius: "10px",
+
+  cursor: "pointer",
+};
+
+const deleteBtn = {
+  flex: 1,
+
+  padding: "10px",
+
+  background: "maroon",
+
+  color: "white",
+
+  border: "none",
+
+  borderRadius: "10px",
+
+  cursor: "pointer",
+};
