@@ -8,32 +8,49 @@ export default function Products({
   setPage,
   setSelectedProduct,
 }) {
+
   const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState("");
 
   /* 🔥 FIRESTORE CONNECT */
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, "products"), (snap) => {
-      try {
-        const data = snap.docs.map((doc) => {
-          const d = doc.data() || {};
+    const unsub = onSnapshot(
+      collection(db, "products"),
+      (snap) => {
+        try {
 
-          return {
-            id: doc.id,
-            name: d.name || "No Name",
-            price: Number(d.price) || 0,
-            image: d.image || "",
-            stock: Number(d.stock) || 0,
-          };
-        });
+          const data = snap.docs.map((doc) => {
+            const d = doc.data() || {};
 
-        setProducts(data);
-      } catch (err) {
-        console.error("Error fetching products:", err);
+            return {
+              id: doc.id,
+              name: d.name || "No Name",
+              price: Number(d.price) || 0,
+              image: d.image || "",
+              stock: Number(d.stock) || 0,
+            };
+          });
+
+          setProducts(data);
+
+        } catch (err) {
+          console.error(
+            "Error fetching products:",
+            err
+          );
+        }
       }
-    });
+    );
 
     return () => unsub();
   }, []);
+
+  /* 🔍 SEARCH FILTER */
+  const filteredProducts = products.filter((p) =>
+    p.name
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
 
   return (
     <div style={page}>
@@ -42,34 +59,61 @@ export default function Products({
       <div style={hero}>
         <div style={overlay}></div>
 
-        <h1 style={title}>Our Collection 💎</h1>
+        <h1 style={title}>
+          Our Collection 💎
+        </h1>
 
         <p style={subtitle}>
           Explore handcrafted luxury jewellery
         </p>
 
-        <button style={btn} onClick={() => setPage("cart")}>
+        <button
+          style={btn}
+          onClick={() => setPage("cart")}
+        >
           View Cart
         </button>
       </div>
 
       {/* 💎 BRAND */}
       <div style={brand}>
-        <h2 style={brandTitle}>Luxury You Can Trust</h2>
+        <h2 style={brandTitle}>
+          Luxury You Can Trust
+        </h2>
 
         <p style={brandText}>
-          At JEWEL16, every piece is crafted with precision,
-          passion, and perfection. Experience jewellery
-          that defines elegance and confidence.
+          At JEWEL16, every piece is crafted
+          with precision, passion, and perfection.
+          Experience jewellery that defines
+          elegance and confidence.
         </p>
+      </div>
+
+      {/* 🔍 SEARCH */}
+      <div style={searchWrap}>
+        <input
+          type="text"
+          placeholder="Search jewellery..."
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
+          style={searchInput}
+        />
       </div>
 
       {/* 🛍 PRODUCT GRID */}
       <div style={grid}>
-        {products.length === 0 ? (
-          <p style={empty}>No products available</p>
+
+        {filteredProducts.length === 0 ? (
+
+          <p style={empty}>
+            No products found
+          </p>
+
         ) : (
-          products.map((p) => (
+
+          filteredProducts.map((p) => (
             <div
               key={p.id}
               style={cardWrap}
@@ -78,7 +122,11 @@ export default function Products({
                 setPage("detail");
               }}
             >
-              <div onClick={(e) => e.stopPropagation()}>
+              <div
+                onClick={(e) =>
+                  e.stopPropagation()
+                }
+              >
                 <ProductCard
                   product={p}
                   setCart={setCart}
@@ -86,7 +134,9 @@ export default function Products({
               </div>
             </div>
           ))
+
         )}
+
       </div>
 
     </div>
@@ -110,7 +160,8 @@ const hero = {
   alignItems: "center",
   textAlign: "center",
   padding: "25px 15px",
-  background: "linear-gradient(to right, #000, #400000)",
+  background:
+    "linear-gradient(to right, #000, #400000)",
   color: "white",
   position: "relative",
   overflow: "hidden",
@@ -150,7 +201,8 @@ const btn = {
   fontWeight: "600",
   cursor: "pointer",
   fontSize: "14px",
-  boxShadow: "0 8px 20px rgba(255,255,255,0.15)",
+  boxShadow:
+    "0 8px 20px rgba(255,255,255,0.15)",
   zIndex: 1,
 };
 
@@ -174,11 +226,30 @@ const brandText = {
   fontSize: "14px",
 };
 
+/* 🔍 SEARCH */
+
+const searchWrap = {
+  padding: "0 20px 10px",
+};
+
+const searchInput = {
+  width: "100%",
+  padding: "14px",
+  borderRadius: "14px",
+  border: "1px solid #ddd",
+  fontSize: "15px",
+  outline: "none",
+  background: "white",
+  boxShadow:
+    "0 4px 12px rgba(0,0,0,0.05)",
+};
+
 /* 🛍 GRID */
 
 const grid = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  gridTemplateColumns:
+    "repeat(auto-fit, minmax(180px, 1fr))",
   gap: "20px",
   padding: "20px",
 };
@@ -191,4 +262,5 @@ const cardWrap = {
 const empty = {
   textAlign: "center",
   color: "#555",
+  padding: "20px",
 };
