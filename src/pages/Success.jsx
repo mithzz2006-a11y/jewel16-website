@@ -1,7 +1,4 @@
-// ✅ Success.jsx
-
-import { jsPDF } from "jspdf";
-
+export default function Success({ setPage }) {
 export default function Success({
   setPage,
 }) {
@@ -11,163 +8,21 @@ export default function Success({
       100000 + Math.random() * 900000
     );
 
-  /* 🧾 DOWNLOAD PDF */
-  const downloadInvoice = () => {
-
-    try {
-
-      const pdf =
-        new jsPDF();
-
-      /* HEADER */
-      pdf.setFillColor(
-        0,
-        0,
-        0
-      );
-
-      pdf.rect(
-        0,
-        0,
-        210,
-        35,
-        "F"
-      );
-
-      pdf.setTextColor(
-        255,
-        255,
-        255
-      );
-
-      pdf.setFontSize(24);
-
-      pdf.text(
-        "JEWEL16",
-        20,
-        22
-      );
-
-      /* TITLE */
-      pdf.setTextColor(
-        90,
-        0,
-        0
-      );
-
-      pdf.setFontSize(20);
-
-      pdf.text(
-        "Luxury Invoice",
-        20,
-        55
-      );
-
-      /* DETAILS */
-      pdf.setTextColor(
-        40,
-        40,
-        40
-      );
-
-      pdf.setFontSize(13);
-
-      pdf.text(
-        `Order ID: #JEWEL${orderId}`,
-        20,
-        80
-      );
-
-      pdf.text(
-        "Status: Payment Successful",
-        20,
-        92
-      );
-
-      pdf.text(
-        `Date: ${new Date().toLocaleDateString()}`,
-        20,
-        104
-      );
-
-      /* LINE */
-      pdf.line(
-        20,
-        116,
-        190,
-        116
-      );
-
-      /* MESSAGE */
-      pdf.setFontSize(14);
-
-      pdf.text(
-        "Thank you for shopping with JEWEL16.",
-        20,
-        140
-      );
-
-      pdf.text(
-        "Your order has been confirmed.",
-        20,
-        152
-      );
-
-      /* FOOTER */
-      pdf.setFillColor(
-        15,
-        15,
-        15
-      );
-
-      pdf.rect(
-        0,
-        270,
-        210,
-        27,
-        "F"
-      );
-
-      pdf.setTextColor(
-        255,
-        255,
-        255
-      );
-
-      pdf.setFontSize(11);
-
-      pdf.text(
-        "JEWEL16 Luxury Jewellery",
-        20,
-        286
-      );
-
-      /* SAVE */
-      pdf.save(
-        `JEWEL16-INVOICE-${orderId}.pdf`
-      );
-
-    } catch (err) {
-
-      console.log(err);
-
-      alert(
-        "Invoice generation failed"
-      );
-
-    }
-
-  };
-
   return (
+    <div style={container}>
+      <h1>🎉 Payment Successful</h1>
+      <p>Your order has been placed successfully.</p>
     <div style={page}>
 
+      {/* 💎 SUCCESS CARD */}
       <div style={card}>
 
+        {/* ✅ ICON */}
         <div style={icon}>
           ✓
         </div>
 
+        {/* 🎉 TEXT */}
         <h1 style={title}>
           Payment Successful
         </h1>
@@ -176,6 +31,7 @@ export default function Success({
           Your luxury order has been placed successfully.
         </p>
 
+        {/* 📦 ORDER ID */}
         <div style={orderBox}>
 
           <p style={orderLabel}>
@@ -188,8 +44,12 @@ export default function Success({
 
         </div>
 
+        {/* 🔘 BUTTONS */}
         <div style={btnWrap}>
 
+      <button style={btn} onClick={() => setPage("orders")}>
+        View Orders
+      </button>
           <button
             style={primaryBtn}
             onClick={() =>
@@ -197,13 +57,6 @@ export default function Success({
             }
           >
             View Orders
-          </button>
-
-          <button
-            style={invoiceBtn}
-            onClick={downloadInvoice}
-          >
-            Download Invoice
           </button>
 
           <button
@@ -219,20 +72,46 @@ export default function Success({
 
       </div>
 
+      {/* ✨ ANIMATION */}
+      <style>
+        {`
+
+          @keyframes pop {
+
+            0% {
+              transform: scale(0.7);
+              opacity: 0;
+            }
+
+            100% {
+              transform: scale(1);
+              opacity: 1;
+            }
+
+          }
+
+        `}
+      </style>
+
+      <button style={btn2} onClick={() => setPage("home")}>
+        Continue Shopping
+      </button>
     </div>
   );
 }
 
-/* 🎨 STYLES */
+const container = {
+  minHeight: "80vh",
+/* 🎨 PREMIUM STYLES */
 
 const page = {
   minHeight: "100vh",
 
   display: "flex",
-
+  flexDirection: "column",
   justifyContent: "center",
-
   alignItems: "center",
+  textAlign: "center"
 
   background:
     "linear-gradient(to bottom right, #000, #3b0000)",
@@ -240,28 +119,32 @@ const page = {
   padding: "20px",
 };
 
+const btn = {
+  marginTop: "20px",
+  padding: "12px 20px",
+  background: "maroon",
 const card = {
   width: "100%",
+  maxWidth: "420px",
 
-  maxWidth: "430px",
+  background: "white",
 
-  background:
-    "rgba(255,255,255,0.96)",
+  borderRadius: "28px",
 
-  borderRadius: "30px",
-
-  padding: "42px 26px",
+  padding: "40px 25px",
 
   textAlign: "center",
 
+  animation:
+    "pop 0.5s ease",
+
   boxShadow:
-    "0 15px 45px rgba(0,0,0,0.35)",
+    "0 15px 45px rgba(0,0,0,0.3)",
 };
 
 const icon = {
-  width: "95px",
-
-  height: "95px",
+  width: "90px",
+  height: "90px",
 
   borderRadius: "50%",
 
@@ -269,18 +152,18 @@ const icon = {
     "linear-gradient(to right, green, #00b300)",
 
   color: "white",
+  border: "none"
 
   fontSize: "42px",
 
   display: "flex",
-
   justifyContent: "center",
-
   alignItems: "center",
 
   margin: "0 auto",
 };
 
+const btn2 = {
 const title = {
   marginTop: "25px",
 
@@ -292,6 +175,9 @@ const title = {
 
 const subtitle = {
   marginTop: "10px",
+  padding: "10px 20px",
+  background: "#eee",
+  border: "none"
 
   color: "#666",
 
@@ -305,12 +191,14 @@ const orderBox = {
 
   padding: "18px",
 
-  borderRadius: "18px",
+  borderRadius: "16px",
+
+  border:
+    "1px solid #eee",
 };
 
 const orderLabel = {
   color: "#777",
-
   fontSize: "13px",
 };
 
@@ -318,13 +206,14 @@ const orderIdText = {
   marginTop: "8px",
 
   color: "maroon",
+
+  letterSpacing: "1px",
 };
 
 const btnWrap = {
   marginTop: "30px",
 
   display: "flex",
-
   flexDirection: "column",
 
   gap: "12px",
@@ -345,23 +234,8 @@ const primaryBtn = {
   fontWeight: "700",
 
   cursor: "pointer",
-};
 
-const invoiceBtn = {
-  padding: "15px",
-
-  border: "none",
-
-  borderRadius: "14px",
-
-  background:
-    "linear-gradient(to right, #1a1a1a, #444)",
-
-  color: "white",
-
-  fontWeight: "700",
-
-  cursor: "pointer",
+  fontSize: "15px",
 };
 
 const secondaryBtn = {
@@ -377,4 +251,6 @@ const secondaryBtn = {
   fontWeight: "700",
 
   cursor: "pointer",
+
+  fontSize: "15px",
 };
