@@ -1,3 +1,5 @@
+// ✅ MyOrders.jsx
+
 import { useEffect, useState } from "react";
 
 import { db } from "../firebase";
@@ -8,8 +10,6 @@ import {
   where,
   onSnapshot,
 } from "firebase/firestore";
-
-import { jsPDF } from "jspdf";
 
 export default function MyOrders({
   user,
@@ -52,200 +52,6 @@ export default function MyOrders({
 
   }, [user]);
 
-  /* 🧾 PDF DOWNLOAD */
-  const downloadInvoice = (
-    order
-  ) => {
-
-    try {
-
-      const pdf =
-        new jsPDF();
-
-      /* 🎨 HEADER */
-      pdf.setFillColor(
-        0,
-        0,
-        0
-      );
-
-      pdf.rect(
-        0,
-        0,
-        210,
-        35,
-        "F"
-      );
-
-      pdf.setTextColor(
-        255,
-        255,
-        255
-      );
-
-      pdf.setFontSize(24);
-
-      pdf.text(
-        "JEWEL16",
-        20,
-        22
-      );
-
-      /* 💎 TITLE */
-      pdf.setTextColor(
-        90,
-        0,
-        0
-      );
-
-      pdf.setFontSize(20);
-
-      pdf.text(
-        "Luxury Invoice",
-        20,
-        55
-      );
-
-      /* 📦 DETAILS */
-      pdf.setTextColor(
-        40,
-        40,
-        40
-      );
-
-      pdf.setFontSize(13);
-
-      pdf.text(
-        `Order ID: ${order.id}`,
-        20,
-        80
-      );
-
-      pdf.text(
-        `Customer: ${
-          user?.email || ""
-        }`,
-        20,
-        92
-      );
-
-      pdf.text(
-        `Total: ₹${
-          order.total || 0
-        }`,
-        20,
-        104
-      );
-
-      pdf.text(
-        `Status: ${
-          order.status ||
-          "Placed"
-        }`,
-        20,
-        116
-      );
-
-      /* 💎 LINE */
-      pdf.line(
-        20,
-        126,
-        190,
-        126
-      );
-
-      /* 🛍 ITEMS */
-      let y = 145;
-
-      pdf.setFontSize(15);
-
-      pdf.text(
-        "Items",
-        20,
-        y
-      );
-
-      y += 15;
-
-      if (
-        order.items &&
-        order.items.length > 0
-      ) {
-
-        order.items.forEach(
-          (item, i) => {
-
-            pdf.setFontSize(12);
-
-            pdf.text(
-              `${i + 1}. ${
-                item.name || ""
-              }`,
-              20,
-              y
-            );
-
-            pdf.text(
-              `₹${
-                item.price || 0
-              }`,
-              160,
-              y
-            );
-
-            y += 12;
-
-          }
-        );
-
-      }
-
-      /* FOOTER */
-      pdf.setFillColor(
-        15,
-        15,
-        15
-      );
-
-      pdf.rect(
-        0,
-        270,
-        210,
-        27,
-        "F"
-      );
-
-      pdf.setTextColor(
-        255,
-        255,
-        255
-      );
-
-      pdf.setFontSize(11);
-
-      pdf.text(
-        "Thank you for shopping with JEWEL16",
-        20,
-        286
-      );
-
-      /* SAVE */
-      pdf.save(
-        `JEWEL16-${order.id}.pdf`
-      );
-
-    } catch (err) {
-
-      console.log(err);
-
-      alert(
-        "Invoice generation failed"
-      );
-
-    }
-
-  };
-
   return (
     <div style={page}>
 
@@ -274,7 +80,8 @@ export default function MyOrders({
             </h2>
 
             <p style={emptyText}>
-              Your orders will appear here.
+              Your purchased jewellery
+              will appear here.
             </p>
 
           </div>
@@ -366,18 +173,6 @@ export default function MyOrders({
 
                 )
               )}
-
-              {/* 🧾 BUTTON */}
-              <button
-                style={invoiceBtn}
-                onClick={() =>
-                  downloadInvoice(
-                    o
-                  )
-                }
-              >
-                Download Invoice
-              </button>
 
             </div>
 
@@ -536,27 +331,4 @@ const itemPrice = {
   color: "maroon",
 
   marginTop: "5px",
-};
-
-const invoiceBtn = {
-  marginTop: "20px",
-
-  width: "100%",
-
-  padding: "14px",
-
-  border: "none",
-
-  borderRadius: "14px",
-
-  background:
-    "linear-gradient(to right, #000, maroon)",
-
-  color: "white",
-
-  fontWeight: "700",
-
-  cursor: "pointer",
-
-  fontSize: "14px",
 };
