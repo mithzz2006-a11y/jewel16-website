@@ -1,7 +1,18 @@
 import { useState, useEffect } from "react";
+
 import { auth, db } from "./firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+
+import {
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence,
+} from "firebase/auth";
+
+import {
+  doc,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
 
 /* COMPONENTS */
 import Navbar from "./components/Navbar";
@@ -19,25 +30,34 @@ import MyOrders from "./pages/MyOrders";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import ProductDetail from "./pages/ProductDetail";
-
-/* ✅ NEW */
 import Success from "./pages/Success";
 
 export default function App() {
 
-  const [page, setPage] = useState("home");
+  const [page, setPage] =
+    useState("home");
 
-  const [user, setUser] = useState(null);
-
-  const [cart, setCart] = useState([]);
-
-  const [selectedProduct, setSelectedProduct] =
+  const [user, setUser] =
     useState(null);
+
+  const [cart, setCart] =
+    useState([]);
+
+  const [
+    selectedProduct,
+    setSelectedProduct,
+  ] = useState(null);
 
   const [loading, setLoading] =
     useState(true);
 
   useEffect(() => {
+
+    /* 🔥 FIREBASE SESSION */
+    setPersistence(
+      auth,
+      browserLocalPersistence
+    );
 
     const unsub =
       onAuthStateChanged(
@@ -57,23 +77,35 @@ export default function App() {
               const snap =
                 await getDoc(ref);
 
-              let isAdmin = false;
+              let isAdmin =
+                false;
 
-              if (snap.exists()) {
+              if (
+                snap.exists()
+              ) {
 
                 if (
-                  snap.data().role ===
+                  snap.data()
+                    .role ===
                   "admin"
                 ) {
-                  isAdmin = true;
+
+                  isAdmin =
+                    true;
+
                 }
 
               } else {
 
-                await setDoc(ref, {
-                  email: u.email,
-                  role: "user",
-                });
+                await setDoc(
+                  ref,
+                  {
+                    email:
+                      u.email,
+                    role:
+                      "user",
+                  }
+                );
 
               }
 
@@ -91,14 +123,25 @@ export default function App() {
 
               setUser({
                 ...u,
-                isAdmin: false,
+                isAdmin:
+                  false,
               });
 
             }
 
           } else {
 
+            /* 🔥 SAFE LOGOUT */
+
             setUser(null);
+
+            setCart([]);
+
+            setSelectedProduct(
+              null
+            );
+
+            setPage("home");
 
           }
 
@@ -113,14 +156,20 @@ export default function App() {
 
   /* 🔥 LOADER */
   if (loading) {
+
     return <Loader />;
+
   }
 
   /* 🔒 LOGIN */
   if (!user) {
+
     return (
-      <Auth setUser={setUser} />
+      <Auth
+        setUser={setUser}
+      />
     );
+
   }
 
   return (
@@ -139,17 +188,25 @@ export default function App() {
         <PageWrapper>
 
           {/* 🏠 HOME */}
-          {page === "home" && (
+          {page ===
+            "home" && (
             <Home
-              setPage={setPage}
+              setPage={
+                setPage
+              }
             />
           )}
 
           {/* 🛍 PRODUCTS */}
-          {page === "products" && (
+          {page ===
+            "products" && (
             <Products
-              setPage={setPage}
-              setCart={setCart}
+              setPage={
+                setPage
+              }
+              setCart={
+                setCart
+              }
               setSelectedProduct={
                 setSelectedProduct
               }
@@ -157,57 +214,84 @@ export default function App() {
           )}
 
           {/* 💎 DETAIL */}
-          {page === "detail" && (
+          {page ===
+            "detail" && (
             <ProductDetail
-              product={selectedProduct}
-              setCart={setCart}
-              setPage={setPage}
+              product={
+                selectedProduct
+              }
+              setCart={
+                setCart
+              }
+              setPage={
+                setPage
+              }
             />
           )}
 
           {/* 🛒 CART */}
-          {page === "cart" && (
+          {page ===
+            "cart" && (
             <Cart
               cart={cart}
-              setPage={setPage}
+              setPage={
+                setPage
+              }
             />
           )}
 
           {/* 💳 CHECKOUT */}
-          {page === "checkout" && (
+          {page ===
+            "checkout" && (
             <Checkout
               cart={cart}
               user={user}
-              setPage={setPage}
+              setPage={
+                setPage
+              }
             />
           )}
 
           {/* ✅ SUCCESS */}
-          {page === "success" && (
+          {page ===
+            "success" && (
             <Success
-              setPage={setPage}
+              setPage={
+                setPage
+              }
             />
           )}
 
           {/* 📦 ORDERS */}
-          {page === "orders" && (
-            <MyOrders user={user} />
+          {page ===
+            "orders" && (
+            <MyOrders
+              user={user}
+            />
           )}
 
           {/* 👤 PROFILE */}
-          {page === "profile" && (
+          {page ===
+            "profile" && (
             <Profile
               user={user}
-              setCart={setCart}
-              setPage={setPage}
+              setCart={
+                setCart
+              }
+              setPage={
+                setPage
+              }
             />
           )}
 
           {/* 🔐 ADMIN */}
-          {page === "admin" &&
+          {page ===
+            "admin" &&
             user?.isAdmin && (
               <Admin
-                setPage={setPage}
+                setPage={
+                  setPage
+                }
               />
             )}
 
