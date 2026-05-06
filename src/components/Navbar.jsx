@@ -28,105 +28,106 @@ export default function Navbar({
           JEWEL16 💎
         </h2>
 
-        {/* 🔥 MENU */}
-        <div style={menuWrap}>
+        {/* 🔥 RIGHT SIDE */}
+        <div style={rightWrap}>
 
-          <button
-            style={dots}
-            onClick={() =>
-              setMenuOpen(!menuOpen)
-            }
-          >
-            ⋮
-          </button>
+          {/* 🔐 ADMIN BUTTON */}
+          {user?.isAdmin && (
 
-          {menuOpen && (
+            <button
+              style={adminBtn}
+              onClick={() =>
+                setPage("admin")
+              }
+            >
+              Admin
+            </button>
 
-            <div style={dropdown}>
+          )}
 
-              {/* ✨ GLOW */}
-              <div style={glassGlow}></div>
+          {/* 🔥 MENU */}
+          <div style={menuWrap}>
 
-              {/* 👤 USER */}
-              <p style={userInfo}>
-                {user?.email}
-              </p>
+            <button
+              style={dots}
+              onClick={() =>
+                setMenuOpen(!menuOpen)
+              }
+            >
+              ⋮
+            </button>
 
-              <div style={line}></div>
+            {menuOpen && (
 
-              {/* 👤 PROFILE */}
-              <p
-                style={item}
-                onClick={() => {
+              <div style={dropdown}>
 
-                  setMenuOpen(false);
+                {/* ✨ GLOW */}
+                <div style={glassGlow}></div>
 
-                  setPage("profile");
+                {/* 👤 USER */}
+                <p style={userInfo}>
+                  {user?.email}
+                </p>
 
-                }}
-              >
-                👤 Profile
-              </p>
+                <div style={line}></div>
 
-              {/* 📦 ORDERS */}
-              <p
-                style={item}
-                onClick={() => {
-
-                  setMenuOpen(false);
-
-                  setPage("orders");
-
-                }}
-              >
-                📦 My Orders
-              </p>
-
-              {/* 🔐 ADMIN */}
-              {user?.isAdmin && (
-
+                {/* 👤 PROFILE */}
                 <p
                   style={item}
                   onClick={() => {
 
                     setMenuOpen(false);
 
-                    setPage("admin");
+                    setPage("profile");
 
                   }}
                 >
-                  🛠 Admin
+                  👤 Profile
                 </p>
 
-              )}
-
-              <div style={line}></div>
-
-              {/* 🚪 LOGOUT */}
-              <p
-                style={logout}
-                onClick={async () => {
-
-                  try {
+                {/* 📦 ORDERS */}
+                <p
+                  style={item}
+                  onClick={() => {
 
                     setMenuOpen(false);
 
-                    await signOut(auth);
+                    setPage("orders");
 
-                  } catch (err) {
+                  }}
+                >
+                  📦 My Orders
+                </p>
 
-                    console.log(err);
+                <div style={line}></div>
 
-                  }
+                {/* 🚪 LOGOUT */}
+                <p
+                  style={logout}
+                  onClick={async () => {
 
-                }}
-              >
-                🚪 Logout
-              </p>
+                    try {
 
-            </div>
+                      setMenuOpen(false);
 
-          )}
+                      await signOut(auth);
+
+                    } catch (err) {
+
+                      console.log(err);
+
+                    }
+
+                  }}
+                >
+                  🚪 Logout
+                </p>
+
+              </div>
+
+            )}
+
+          </div>
 
         </div>
 
@@ -170,6 +171,15 @@ const topRow = {
   alignItems: "center",
 };
 
+/* 💎 RIGHT SIDE */
+const rightWrap = {
+  display: "flex",
+
+  alignItems: "center",
+
+  gap: "10px",
+};
+
 /* 💎 LOGO */
 const logo = {
   color: "white",
@@ -185,6 +195,30 @@ const logo = {
 
   textShadow:
     "0 0 20px rgba(128,0,0,0.5)",
+};
+
+/* 🔐 ADMIN */
+const adminBtn = {
+  padding: "10px 16px",
+
+  border: "none",
+
+  borderRadius: "14px",
+
+  background:
+    "rgba(255,255,255,0.08)",
+
+  color: "white",
+
+  fontWeight: "700",
+
+  cursor: "pointer",
+
+  backdropFilter:
+    "blur(12px)",
+
+  boxShadow:
+    "0 4px 14px rgba(0,0,0,0.2)",
 };
 
 /* 🔥 MENU */
