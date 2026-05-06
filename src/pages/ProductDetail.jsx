@@ -31,6 +31,10 @@ export default function ProductDetail({
   const [relatedProducts, setRelatedProducts] =
     useState([]);
 
+  /* 💎 NEW */
+  const [selectedImage, setSelectedImage] =
+    useState("");
+
   /* 🔥 LIVE REVIEWS */
   useEffect(() => {
 
@@ -95,6 +99,30 @@ export default function ProductDetail({
     };
 
     fetchProducts();
+
+  }, [product]);
+
+  /* 🖼 PRODUCT GALLERY */
+  useEffect(() => {
+
+    if (!product) return;
+
+    if (
+      product.images &&
+      product.images.length > 0
+    ) {
+
+      setSelectedImage(
+        product.images[0]
+      );
+
+    } else {
+
+      setSelectedImage(
+        product.image
+      );
+
+    }
 
   }, [product]);
 
@@ -267,15 +295,17 @@ export default function ProductDetail({
         {/* 🖼 IMAGE */}
         <div style={imgWrap}>
 
+          {/* 💎 MAIN IMAGE */}
           <img
             src={
-              product?.image ||
+              selectedImage ||
               "https://via.placeholder.com/500"
             }
             alt={product?.name}
             style={img}
           />
 
+          {/* 🏷 STOCK */}
           <div
             style={{
               ...badge,
@@ -289,6 +319,36 @@ export default function ProductDetail({
             {(product.stock ?? 0) > 0
               ? "In Stock"
               : "Out of Stock"}
+          </div>
+
+          {/* 📸 THUMBNAILS */}
+          <div style={thumbWrap}>
+
+            {(product.images &&
+            product.images.length > 0
+              ? product.images
+              : [product.image]
+            ).map((image, i) => (
+
+              <img
+                key={i}
+                src={image}
+                alt=""
+                onClick={() =>
+                  setSelectedImage(image)
+                }
+                style={{
+                  ...thumb,
+
+                  border:
+                    selectedImage === image
+                      ? "2px solid maroon"
+                      : "2px solid transparent",
+                }}
+              />
+
+            ))}
+
           </div>
 
         </div>
@@ -597,6 +657,36 @@ const img = {
   height: "100%",
   minHeight: "420px",
   objectFit: "cover",
+};
+
+/* 📸 THUMBNAILS */
+
+const thumbWrap = {
+  display: "flex",
+
+  gap: "10px",
+
+  padding: "14px",
+
+  overflowX: "auto",
+
+  background: "white",
+};
+
+const thumb = {
+  width: "70px",
+
+  height: "70px",
+
+  objectFit: "cover",
+
+  borderRadius: "12px",
+
+  cursor: "pointer",
+
+  flexShrink: 0,
+
+  transition: "0.3s",
 };
 
 const badge = {
