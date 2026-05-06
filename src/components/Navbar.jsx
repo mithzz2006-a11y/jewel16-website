@@ -2,75 +2,155 @@ import { useState } from "react";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 
-export default function Navbar({ setPage, cart, user }) {
-  const [menuOpen, setMenuOpen] = useState(false);
+export default function Navbar({
+  setPage,
+  cart,
+  user,
+}) {
+
+  const [menuOpen, setMenuOpen] =
+    useState(false);
 
   return (
     <div style={nav}>
 
       {/* 🔥 TOP ROW */}
       <div style={topRow}>
-        <h2 style={logo} onClick={() => setPage("home")}>
+
+        <h2
+          style={logo}
+          onClick={() =>
+            setPage("home")
+          }
+        >
           JEWEL16 💎
         </h2>
 
-        {/* 🔥 DOT MENU */}
+        {/* 🔥 MENU */}
         <div style={menuWrap}>
-          <button style={dots} onClick={() => setMenuOpen(!menuOpen)}>
+
+          <button
+            style={dots}
+            onClick={() =>
+              setMenuOpen(!menuOpen)
+            }
+          >
             ⋮
           </button>
 
           {menuOpen && (
+
             <div style={dropdown}>
 
-              <p style={userInfo}>{user?.email}</p>
+              <p style={userInfo}>
+                {user?.email}
+              </p>
 
               <hr />
 
-              <p style={item} onClick={() => {
-                setMenuOpen(false);
-                setPage("profile");
-              }}>
+              {/* 👤 PROFILE */}
+              <p
+                style={item}
+                onClick={() => {
+
+                  setMenuOpen(false);
+
+                  setPage("profile");
+
+                }}
+              >
                 👤 Profile
               </p>
 
-              <p style={item} onClick={() => {
-                setMenuOpen(false);
-                setPage("orders");
-              }}>
+              {/* 📦 ORDERS */}
+              <p
+                style={item}
+                onClick={() => {
+
+                  setMenuOpen(false);
+
+                  setPage("orders");
+
+                }}
+              >
                 📦 My Orders
               </p>
 
               <hr />
 
-              <p style={item} onClick={() => signOut(auth)}>
+              {/* 🚪 LOGOUT */}
+              <p
+                style={item}
+                onClick={async () => {
+
+                  try {
+
+                    setMenuOpen(false);
+
+                    await signOut(auth);
+
+                  } catch (err) {
+
+                    console.log(err);
+
+                  }
+
+                }}
+              >
                 🚪 Logout
               </p>
 
             </div>
+
           )}
+
         </div>
+
       </div>
 
-      {/* 🔥 BOTTOM ROW (MAIN NAV) */}
+      {/* 🔥 BOTTOM NAV */}
       <div style={bottomRow}>
-        <button style={btn} onClick={() => setPage("home")}>
+
+        <button
+          style={btn}
+          onClick={() =>
+            setPage("home")
+          }
+        >
           Home
         </button>
 
-        <button style={btn} onClick={() => setPage("products")}>
+        <button
+          style={btn}
+          onClick={() =>
+            setPage("products")
+          }
+        >
           Products
         </button>
 
-        <button style={btn} onClick={() => setPage("cart")}>
+        <button
+          style={btn}
+          onClick={() =>
+            setPage("cart")
+          }
+        >
           Cart ({cart?.length || 0})
         </button>
 
         {user?.isAdmin && (
-          <button style={btn} onClick={() => setPage("admin")}>
+
+          <button
+            style={btn}
+            onClick={() =>
+              setPage("admin")
+            }
+          >
             Admin
           </button>
+
         )}
+
       </div>
 
     </div>
@@ -104,7 +184,7 @@ const bottomRow = {
   marginTop: "8px",
 };
 
-/* LOGO */
+/* 💎 LOGO */
 const logo = {
   color: "maroon",
   cursor: "pointer",
@@ -112,7 +192,7 @@ const logo = {
   fontWeight: "bold",
 };
 
-/* BUTTON */
+/* 🔘 BUTTON */
 const btn = {
   padding: "8px 10px",
   fontSize: "13px",
@@ -122,7 +202,7 @@ const btn = {
   color: "#333",
 };
 
-/* MENU */
+/* 🔥 MENU */
 const menuWrap = {
   position: "relative",
 };
@@ -136,7 +216,7 @@ const dots = {
   borderRadius: "6px",
 };
 
-/* DROPDOWN */
+/* 📦 DROPDOWN */
 const dropdown = {
   position: "absolute",
   top: "40px",
@@ -146,7 +226,8 @@ const dropdown = {
   borderRadius: "10px",
   width: "180px",
   padding: "10px",
-  boxShadow: "0 8px 20px rgba(0,0,0,0.1)",
+  boxShadow:
+    "0 8px 20px rgba(0,0,0,0.1)",
 };
 
 const item = {
