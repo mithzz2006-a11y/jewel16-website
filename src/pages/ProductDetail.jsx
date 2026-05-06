@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import {
   doc,
   updateDoc,
@@ -27,7 +28,6 @@ export default function ProductDetail({
   const [rating, setRating] =
     useState(5);
 
-  /* 💎 RELATED PRODUCTS */
   const [relatedProducts, setRelatedProducts] =
     useState([]);
 
@@ -99,11 +99,13 @@ export default function ProductDetail({
   }, [product]);
 
   if (!product) {
+
     return (
       <div style={{ padding: 20 }}>
         Product not found
       </div>
     );
+
   }
 
   /* 🛒 CART */
@@ -116,6 +118,7 @@ export default function ProductDetail({
       );
 
       return;
+
     }
 
     setCart((prev = []) => {
@@ -136,6 +139,7 @@ export default function ProductDetail({
           );
 
           return prev;
+
         }
 
         return prev.map((i) =>
@@ -147,6 +151,7 @@ export default function ProductDetail({
               }
             : i
         );
+
       }
 
       return [
@@ -156,11 +161,13 @@ export default function ProductDetail({
           qty: 1,
         },
       ];
+
     });
 
     toast.success(
       "Added to cart 💎"
     );
+
   };
 
   /* ⭐ REVIEW */
@@ -175,6 +182,7 @@ export default function ProductDetail({
         );
 
         return;
+
       }
 
       const user =
@@ -187,6 +195,7 @@ export default function ProductDetail({
         );
 
         return;
+
       }
 
       const ref = doc(
@@ -224,6 +233,7 @@ export default function ProductDetail({
       );
 
     }
+
   };
 
   /* ⭐ AVG */
@@ -254,7 +264,7 @@ export default function ProductDetail({
       {/* 💎 PRODUCT */}
       <div style={card}>
 
-        {/* IMAGE */}
+        {/* 🖼 IMAGE */}
         <div style={imgWrap}>
 
           <img
@@ -283,7 +293,7 @@ export default function ProductDetail({
 
         </div>
 
-        {/* CONTENT */}
+        {/* 💎 CONTENT */}
         <div style={content}>
 
           <h1 style={name}>
@@ -311,7 +321,7 @@ export default function ProductDetail({
             luxury, and timeless beauty.
           </p>
 
-          {/* INFO */}
+          {/* 💎 INFO */}
           <div style={infoBox}>
             🚚 Free delivery
           </div>
@@ -324,7 +334,7 @@ export default function ProductDetail({
             💎 Luxury packaging
           </div>
 
-          {/* BUTTONS */}
+          {/* 🔘 BUTTONS */}
           <div style={btnRow}>
 
             <button
@@ -360,7 +370,7 @@ export default function ProductDetail({
           Customer Reviews ⭐
         </h2>
 
-        {/* REVIEW FORM */}
+        {/* ✍ REVIEW FORM */}
         <div style={reviewForm}>
 
           <select
@@ -374,6 +384,7 @@ export default function ProductDetail({
             }
             style={select}
           >
+
             <option value={5}>
               ⭐⭐⭐⭐⭐
             </option>
@@ -416,7 +427,7 @@ export default function ProductDetail({
 
         </div>
 
-        {/* REVIEWS */}
+        {/* 💬 REVIEWS */}
         {reviews.length === 0 ? (
 
           <p style={empty}>
@@ -513,6 +524,30 @@ export default function ProductDetail({
           ))}
 
         </div>
+
+      </div>
+
+      {/* 📱 STICKY MOBILE CART */}
+      <div style={stickyBar}>
+
+        <div>
+
+          <p style={stickyPrice}>
+            ₹{product?.price || 0}
+          </p>
+
+          <p style={stickySmall}>
+            Premium Luxury Jewellery
+          </p>
+
+        </div>
+
+        <button
+          style={stickyBtn}
+          onClick={addToCart}
+        >
+          Add To Cart
+        </button>
 
       </div>
 
@@ -773,4 +808,74 @@ const relatedBtn = {
   color: "white",
   fontWeight: "600",
   cursor: "pointer",
+};
+
+/* 📱 STICKY MOBILE CART */
+
+const stickyBar = {
+  position: "fixed",
+  bottom: "75px",
+  left: "50%",
+  transform: "translateX(-50%)",
+
+  width: "calc(100% - 20px)",
+  maxWidth: "500px",
+
+  background:
+    "rgba(15,15,15,0.92)",
+
+  backdropFilter: "blur(14px)",
+
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+
+  borderRadius: "18px",
+
+  padding: "14px",
+
+  display: "flex",
+
+  justifyContent: "space-between",
+
+  alignItems: "center",
+
+  boxShadow:
+    "0 10px 30px rgba(0,0,0,0.3)",
+
+  zIndex: 999,
+};
+
+const stickyPrice = {
+  color: "white",
+
+  fontWeight: "700",
+
+  fontSize: "18px",
+};
+
+const stickySmall = {
+  color: "#bbb",
+
+  fontSize: "12px",
+
+  marginTop: "2px",
+};
+
+const stickyBtn = {
+  padding: "12px 18px",
+
+  border: "none",
+
+  borderRadius: "12px",
+
+  background:
+    "linear-gradient(to right, #2b0000, maroon)",
+
+  color: "white",
+
+  fontWeight: "700",
+
+  cursor: "pointer",
+
+  minWidth: "130px",
 };
