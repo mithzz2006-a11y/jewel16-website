@@ -9,7 +9,7 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 
 export default function MyOrders({
   user,
