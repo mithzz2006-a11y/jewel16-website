@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import {
   doc,
   updateDoc,
@@ -8,86 +9,152 @@ import {
 
 import { db, auth } from "../firebase";
 
-export default function ProductCard({ product, setCart }) {
+export default function ProductCard({
+  product,
+  setCart,
+}) {
 
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] =
+    useState(false);
 
   /* ❤️ WISHLIST */
-  const toggleWishlist = async (e) => {
+  const toggleWishlist = async (
+    e
+  ) => {
+
     e.stopPropagation();
 
     try {
-      const user = auth.currentUser;
+
+      const user =
+        auth.currentUser;
 
       if (!user) {
-        alert("Please login first");
+
+        alert(
+          "Please login first"
+        );
+
         return;
+
       }
 
-      const ref = doc(db, "users", user.uid);
+      const ref = doc(
+        db,
+        "users",
+        user.uid
+      );
 
       if (liked) {
+
         await updateDoc(ref, {
-          wishlist: arrayRemove(product),
+
+          wishlist:
+            arrayRemove(product),
+
         });
 
         setLiked(false);
 
       } else {
+
         await updateDoc(ref, {
-          wishlist: arrayUnion(product),
+
+          wishlist:
+            arrayUnion(product),
+
         });
 
         setLiked(true);
+
       }
 
     } catch (err) {
+
       console.log(err);
+
     }
+
   };
 
   /* 🛒 ADD TO CART */
   const addToCart = (e) => {
+
     e.stopPropagation();
 
     setCart((prev = []) => {
 
-      const existing = prev.find(
-        (i) => i.id === product.id
-      );
+      const existing =
+        prev.find(
+          (i) =>
+            i.id === product.id
+        );
 
       if (existing) {
+
         return prev.map((i) =>
           i.id === product.id
-            ? { ...i, qty: (i.qty || 1) + 1 }
+            ? {
+                ...i,
+                qty:
+                  (i.qty || 1) + 1,
+              }
             : i
         );
+
       }
 
-      return [...prev, { ...product, qty: 1 }];
+      return [
+        ...prev,
+        {
+          ...product,
+          qty: 1,
+        },
+      ];
+
     });
+
   };
 
   return (
     <div
       style={card}
-      onMouseEnter={(e) =>
-        (e.currentTarget.style.transform =
-          "translateY(-5px)")
-      }
-      onMouseLeave={(e) =>
-        (e.currentTarget.style.transform =
-          "translateY(0)")
-      }
+      onMouseEnter={(e) => {
+
+        e.currentTarget.style.transform =
+          "translateY(-8px) scale(1.02)";
+
+        e.currentTarget.style.boxShadow =
+          "0 18px 40px rgba(0,0,0,0.35)";
+
+      }}
+      onMouseLeave={(e) => {
+
+        e.currentTarget.style.transform =
+          "translateY(0) scale(1)";
+
+        e.currentTarget.style.boxShadow =
+          "0 8px 25px rgba(0,0,0,0.18)";
+
+      }}
     >
 
+      {/* ✨ GLOW */}
+      <div style={glow}></div>
+
       {/* ❤️ WISHLIST */}
-      <div style={heart} onClick={toggleWishlist}>
-        {liked ? "❤️" : "🤍"}
+      <div
+        style={heart}
+        onClick={toggleWishlist}
+      >
+        {liked
+          ? "❤️"
+          : "🤍"}
       </div>
 
       {/* 🖼 IMAGE */}
       <div style={imgWrap}>
+
         <img
           src={
             product?.image ||
@@ -96,92 +163,211 @@ export default function ProductCard({ product, setCart }) {
           alt={product?.name}
           style={img}
         />
+
       </div>
 
       {/* 💎 CONTENT */}
       <div style={content}>
-        <h3 style={name}>{product?.name}</h3>
+
+        <h3 style={name}>
+          {product?.name}
+        </h3>
 
         <p style={price}>
-          ₹{product?.price || 0}
+          ₹
+          {product?.price || 0}
         </p>
 
-        <button style={btn} onClick={addToCart}>
-          Add to Cart
+        {/* ✨ PREMIUM TAG */}
+        <div style={tag}>
+          Luxury Collection
+        </div>
+
+        <button
+          style={btn}
+          onClick={addToCart}
+        >
+          Add To Cart
         </button>
+
       </div>
 
     </div>
   );
 }
 
-/* 🎨 PREMIUM STYLES */
+/* 🎨 ULTRA PREMIUM GLASS STYLES */
 
 const card = {
   position: "relative",
-  background: "#fff",
-  borderRadius: "16px",
+
   overflow: "hidden",
-  boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
-  transition: "0.3s",
+
+  borderRadius: "28px",
+
+  background:
+    "rgba(20,20,20,0.82)",
+
+  backdropFilter:
+    "blur(18px)",
+
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+
+  boxShadow:
+    "0 8px 25px rgba(0,0,0,0.18)",
+
+  transition: "0.35s",
+
   cursor: "pointer",
 };
 
+const glow = {
+  position: "absolute",
+
+  width: "180px",
+
+  height: "180px",
+
+  top: "-60px",
+
+  right: "-60px",
+
+  background:
+    "radial-gradient(circle, rgba(128,0,0,0.45), transparent)",
+
+  filter: "blur(40px)",
+
+  zIndex: 0,
+};
+
+/* ❤️ HEART */
 const heart = {
   position: "absolute",
-  top: "12px",
-  right: "12px",
+
+  top: "14px",
+
+  right: "14px",
+
   zIndex: 5,
-  fontSize: "22px",
-  cursor: "pointer",
-  background: "rgba(255,255,255,0.9)",
+
+  width: "42px",
+
+  height: "42px",
+
   borderRadius: "50%",
-  width: "38px",
-  height: "38px",
+
   display: "flex",
+
   justifyContent: "center",
+
   alignItems: "center",
-  backdropFilter: "blur(10px)",
+
+  fontSize: "22px",
+
+  cursor: "pointer",
+
+  background:
+    "rgba(255,255,255,0.12)",
+
+  backdropFilter:
+    "blur(12px)",
+
+  border:
+    "1px solid rgba(255,255,255,0.08)",
 };
 
+/* 🖼 IMAGE */
 const imgWrap = {
   width: "100%",
-  height: "220px",
+
+  height: "240px",
+
   overflow: "hidden",
 };
 
 const img = {
   width: "100%",
+
   height: "100%",
+
   objectFit: "cover",
-  transition: "0.4s",
+
+  transition: "0.5s",
 };
 
+/* 💎 CONTENT */
 const content = {
-  padding: "14px",
+  position: "relative",
+
+  zIndex: 2,
+
+  padding: "18px",
 };
 
 const name = {
-  fontSize: "15px",
-  fontWeight: "600",
-  marginBottom: "6px",
+  color: "white",
+
+  fontSize: "16px",
+
+  fontWeight: "700",
+
+  marginBottom: "8px",
+
+  lineHeight: "1.4",
 };
 
 const price = {
-  color: "maroon",
-  fontWeight: "bold",
-  fontSize: "17px",
+  color: "#ffcccc",
+
+  fontWeight: "700",
+
+  fontSize: "22px",
 };
 
+const tag = {
+  display: "inline-block",
+
+  marginTop: "10px",
+
+  padding: "6px 12px",
+
+  borderRadius: "30px",
+
+  background:
+    "rgba(255,255,255,0.08)",
+
+  color: "#ddd",
+
+  fontSize: "12px",
+
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+};
+
+/* 🛒 BUTTON */
 const btn = {
-  marginTop: "12px",
+  marginTop: "18px",
+
   width: "100%",
-  padding: "11px",
+
+  padding: "13px",
+
   border: "none",
-  borderRadius: "10px",
-  background: "linear-gradient(to right, #4b0000, maroon)",
+
+  borderRadius: "16px",
+
+  background:
+    "linear-gradient(to right, #2b0000, maroon)",
+
   color: "white",
-  fontWeight: "600",
+
+  fontWeight: "700",
+
   cursor: "pointer",
+
   fontSize: "14px",
+
+  boxShadow:
+    "0 8px 20px rgba(128,0,0,0.35)",
 };
