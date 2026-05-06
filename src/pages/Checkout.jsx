@@ -5,248 +5,531 @@ import {
   addDoc,
   doc,
   getDoc,
-  updateDoc
+  updateDoc,
 } from "firebase/firestore";
 
+import toast from "react-hot-toast";
+
 export default function Checkout({ cart, user }) {
-  const [instruction, setInstruction] = useState("");
-  const [deliveryType, setDeliveryType] = useState("standard");
-  const [loading, setLoading] = useState(false);
 
-  /* 🔥 NEW */
-  const [address, setAddress] = useState("");
-  const [pincode, setPincode] = useState("");
+  const [instruction, setInstruction] =
+    useState("");
 
+  const [deliveryType, setDeliveryType] =
+    useState("standard");
+
+  const [loading, setLoading] =
+    useState(false);
+
+  /* 📍 ADDRESS */
+  const [address, setAddress] =
+    useState("");
+
+  const [pincode, setPincode] =
+    useState("");
+
+  /* 💰 TOTAL */
   const total = (cart || []).reduce(
-    (sum, i) => sum + (i.price || 0) * (i.qty || 1),
+    (sum, i) =>
+      sum +
+      (i.price || 0) * (i.qty || 1),
     0
   );
 
-  /* 🔥 ORDER FUNCTION */
+  /* 📦 PLACE ORDER */
   const placeOrder = async () => {
+
     try {
+
       for (let item of cart) {
-        const ref = doc(db, "products", item.id);
-        const snap = await getDoc(ref);
+
+        const ref = doc(
+          db,
+          "products",
+          item.id
+        );
+
+        const snap =
+          await getDoc(ref);
 
         if (!snap.exists()) {
-          alert("Product not found ❌");
+          toast.error(
+            "Product not found ❌"
+          );
           return;
         }
 
-        const stock = snap.data()?.stock || 0;
-        const qty = item.qty || 1;
+        const stock =
+          snap.data()?.stock || 0;
+
+        const qty =
+          item.qty || 1;
 
         if (stock < qty) {
-          alert(`Not enough stock for ${item.name}`);
+          toast.error(
+            `Not enough stock for ${item.name}`
+          );
           return;
         }
 
-        await addDoc(collection(db, "orders"), {
-          userId: user.uid,
-          items: cart,
-          total,
-          deliveryType,
-          instruction,
-          address,
-          pincode,
-          status: "paid",
-          createdAt: new Date().toISOString(),
-        });
+        /* 📦 SAVE ORDER */
+        await addDoc(
+          collection(db, "orders"),
+          {
+            userId: user.uid,
+            items: cart,
+            total,
+            deliveryType,
+            instruction,
+            address,
+            pincode,
+            status: "placed",
+            createdAt:
+              new Date().toISOString(),
+          }
+        );
 
-        const currentStock = snap.data()?.stock || 0;
+        /* 🔥 UPDATE STOCK */
+        const currentStock =
+          snap.data()?.stock || 0;
+
         await updateDoc(ref, {
-          stock: currentStock - qty,
+          stock:
+            currentStock - qty,
         });
       }
+
+      toast.success(
+        "Order placed successfully 🎉"
+      );
+
     } catch (err) {
-      console.error("Order error:", err);
+
+      console.error(
+        "Order error:",
+        err
+      );
+
+      toast.error(
+        "Order failed ❌"
+      );
     }
   };
 
   /* 💳 PAYMENT */
   const handlePayment = async () => {
+
     if (!user) {
-      alert("Please login first");
+      toast.error(
+        "Please login first"
+      );
       return;
     }
 
     if (!address || !pincode) {
-      alert("Enter address & pincode");
+      toast.error(
+        "Enter address & pincode"
+      );
+      return;
+    }
+
+    if (pincode.length !== 6) {
+      toast.error(
+        "Enter valid pincode"
+      );
       return;
     }
 
     if (!window.Razorpay) {
-      alert("Payment system not loaded ❌");
+      toast.error(
+        "Payment system not loaded ❌"
+      );
       return;
     }
 
     try {
-      const res = await fetch("/create-order", { method: "POST" });
-      const order = await res.json();
 
-      const rzp = new window.Razorpay({
-        key: "rzp_test_ShDgfm1sNzCDfQ", // replace with your real key
-        amount: order.amount,
-        currency: "INR",
-        name: "JEWEL16 💎",
-        description: "Luxury Jewellery",
-        order_id: order.id,
-        handler: async () => {
-          await placeOrder();
-        },
-        theme: {
-          color: "#800000",
-        },
-      });
+      setLoading(true);
+
+      toast.loading(
+        "Opening payment..."
+      );
+
+      const res = await fetch(
+        "/create-order",
+        {
+          method: "POST",
+        }
+      );
+
+      const order =
+        await res.json();
+
+      const rzp =
+        new window.Razorpay({
+          key:
+            "rzp_test_ShDgfm1sNzCDfQ",
+
+          amount: order.amount,
+
+          currency: "INR",
+
+          name: "JEWEL16 💎",
+
+          description:
+            "Luxury Jewellery",
+
+          order_id: order.id,
+
+          handler: async () => {
+
+            await placeOrder();
+
+          },
+
+          theme: {
+            color: "#800000",
+          },
+        });
 
       rzp.open();
+
     } catch (err) {
-      console.error("Payment error:", err);
+
+      console.error(
+        "Payment error:",
+        err
+      );
+
+      toast.error(
+        "Payment Failed ❌"
+      );
+
+    } finally {
+
+      setLoading(false);
+
     }
   };
 
   return (
-    <div style={container}>
-      <h1 style={title}>Secure Checkout 🔐</h1>
-      <p style={subtitle}>Premium & safe purchase</p>
+    <div style={page}>
 
-      {/* ADDRESS */}
-      <div style={box}>
-        <h3>Delivery Address</h3>
-        <input
-          style={input}
-          placeholder="Enter your address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-        />
-        <input
-          style={input}
-          placeholder="Enter pincode"
-          value={pincode}
-          onChange={(e) => setPincode(e.target.value)}
-        />
+      {/* 🔥 HERO */}
+      <div style={hero}>
+
+        <h1 style={title}>
+          Secure Checkout 🔐
+        </h1>
+
+        <p style={subtitle}>
+          Premium & safe purchase
+        </p>
+
       </div>
 
-      {/* DELIVERY */}
-      <div style={box}>
-        <h3>Select Delivery</h3>
-        <label style={option}>
+      {/* 📦 MAIN */}
+      <div style={container}>
+
+        {/* 📍 ADDRESS */}
+        <div style={box}>
+
+          <h3 style={heading}>
+            Delivery Address
+          </h3>
+
           <input
-            type="radio"
-            checked={deliveryType === "standard"}
-            onChange={() => setDeliveryType("standard")}
+            style={input}
+            placeholder="Enter your address"
+            value={address}
+            onChange={(e) =>
+              setAddress(
+                e.target.value
+              )
+            }
           />
-          Standard (Free)
-        </label>
-        <label style={option}>
+
           <input
-            type="radio"
-            checked={deliveryType === "express"}
-            onChange={() => setDeliveryType("express")}
+            style={input}
+            placeholder="Enter pincode"
+            value={pincode}
+            onChange={(e) =>
+              setPincode(
+                e.target.value
+              )
+            }
           />
-          Express (₹99)
-        </label>
-      </div>
 
-      {/* INSTRUCTION */}
-      <div style={box}>
-        <h3>Delivery Instructions</h3>
-        <textarea
-          placeholder="Leave at door / Call before delivery"
-          value={instruction}
-          onChange={(e) => setInstruction(e.target.value)}
-          style={textarea}
-        />
-      </div>
+        </div>
 
-      {/* SUMMARY */}
-      <div style={box}>
-        <h3>Order Summary</h3>
-        {(cart || []).map((item, i) => (
-          <div key={i} style={summaryItem}>
-            <p>{item.name}</p>
-            <p>₹{item.price} × {item.qty || 1}</p>
+        {/* 🚚 DELIVERY */}
+        <div style={box}>
+
+          <h3 style={heading}>
+            Delivery Type
+          </h3>
+
+          <label style={option}>
+
+            <input
+              type="radio"
+              checked={
+                deliveryType ===
+                "standard"
+              }
+              onChange={() =>
+                setDeliveryType(
+                  "standard"
+                )
+              }
+            />
+
+            Standard Delivery
+            (Free)
+
+          </label>
+
+          <label style={option}>
+
+            <input
+              type="radio"
+              checked={
+                deliveryType ===
+                "express"
+              }
+              onChange={() =>
+                setDeliveryType(
+                  "express"
+                )
+              }
+            />
+
+            Express Delivery
+            (₹99)
+
+          </label>
+
+          <p style={eta}>
+            🚚 Delivery in
+            3-5 business days
+          </p>
+
+        </div>
+
+        {/* 📝 NOTE */}
+        <div style={box}>
+
+          <h3 style={heading}>
+            Delivery Instructions
+          </h3>
+
+          <textarea
+            placeholder="Leave at door / Call before delivery"
+            value={instruction}
+            onChange={(e) =>
+              setInstruction(
+                e.target.value
+              )
+            }
+            style={textarea}
+          />
+
+        </div>
+
+        {/* 🛍 SUMMARY */}
+        <div style={box}>
+
+          <h3 style={heading}>
+            Order Summary
+          </h3>
+
+          {(cart || []).map(
+            (item, i) => (
+              <div
+                key={i}
+                style={summaryItem}
+              >
+
+                <p>
+                  {item.name}
+                </p>
+
+                <p>
+                  ₹{item.price} ×{" "}
+                  {item.qty || 1}
+                </p>
+
+              </div>
+            )
+          )}
+
+          {/* 💰 TOTAL */}
+          <div style={totalBox}>
+
+            <span>
+              Total Amount
+            </span>
+
+            <h2>
+              ₹{total}
+            </h2>
+
           </div>
-        ))}
-        <h2>Total: ₹{total}</h2>
+
+        </div>
+
+        {/* 💳 BUTTON */}
+        <button
+          style={btn}
+          onClick={
+            handlePayment
+          }
+          disabled={
+            loading ||
+            total === 0
+          }
+        >
+          {loading
+            ? "Processing..."
+            : "Pay Now"}
+        </button>
+
+        {/* 🔒 TRUST */}
+        <div style={secureBox}>
+
+          🔒 100% Secure Payments
+          <br />
+
+          💎 Premium Packaging
+          <br />
+
+          🚚 Fast Delivery
+
+        </div>
+
       </div>
 
-      {/* BUTTON */}
-      <button
-        style={btn}
-        onClick={handlePayment}
-        disabled={loading || total === 0}
-      >
-        {loading ? "Processing..." : "Pay Now"}
-      </button>
     </div>
   );
 }
 
-/* 🎨 PREMIUM RESPONSIVE STYLES */
-const container = {
-  maxWidth: "clamp(320px, 90%, 600px)",
-  margin: "auto",
-  padding: "clamp(15px, 3vw, 25px)",
-  fontFamily: "Arial, sans-serif",
+/* 🎨 PREMIUM MOBILE SAFE STYLES */
+
+const page = {
+  minHeight: "100vh",
+  background: "#f5f5f5",
+};
+
+/* 🔥 HERO */
+
+const hero = {
+  background:
+    "linear-gradient(to right, #000, #400000)",
+  color: "white",
+  textAlign: "center",
+  padding: "40px 20px",
+  borderRadius: "0 0 24px 24px",
 };
 
 const title = {
-  fontSize: "clamp(22px, 5vw, 28px)",
-  fontWeight: "bold",
-  color: "#800000",
+  fontSize:
+    "clamp(28px, 5vw, 42px)",
 };
 
 const subtitle = {
-  fontSize: "clamp(13px, 3vw, 16px)",
-  color: "#555",
-  marginBottom: "15px",
+  color: "#ddd",
+  marginTop: "10px",
+};
+
+/* 📦 MAIN */
+
+const container = {
+  maxWidth: "700px",
+  margin: "0 auto",
+  padding: "20px",
 };
 
 const box = {
-  border: "1px solid #eee",
-  padding: "15px",
+  background: "white",
+  borderRadius: "20px",
+  padding: "20px",
+  marginBottom: "20px",
+  boxShadow:
+    "0 8px 25px rgba(0,0,0,0.08)",
+};
+
+const heading = {
   marginBottom: "15px",
-  borderRadius: "10px",
-  background: "#fff",
-};
-
-const option = {
-  display: "block",
-  marginTop: "10px",
-  marginBottom: "10px",
-};
-
-const textarea = {
-  width: "100%",
-  minHeight: "80px",
-  padding: "10px",
-  border: "1px solid #ccc",
-  borderRadius: "6px",
 };
 
 const input = {
   width: "100%",
-  padding: "10px",
-  marginTop: "10px",
-  border: "1px solid #ccc",
-  borderRadius: "6px",
+  padding: "14px",
+  marginTop: "12px",
+  borderRadius: "12px",
+  border:
+    "1px solid #ddd",
+  fontSize: "14px",
+  outline: "none",
+};
+
+const option = {
+  display: "block",
+  marginTop: "12px",
+  fontSize: "14px",
+};
+
+const eta = {
+  marginTop: "15px",
+  color: "#666",
+  fontSize: "13px",
+};
+
+const textarea = {
+  width: "100%",
+  minHeight: "100px",
+  padding: "14px",
+  borderRadius: "12px",
+  border:
+    "1px solid #ddd",
+  outline: "none",
+  fontSize: "14px",
 };
 
 const summaryItem = {
   display: "flex",
-  justifyContent: "space-between",
-  marginBottom: "10px",
+  justifyContent:
+    "space-between",
+  marginBottom: "12px",
+  gap: "10px",
+};
+
+const totalBox = {
+  marginTop: "20px",
+  padding: "18px",
+  borderRadius: "14px",
+  background: "#fafafa",
+  border:
+    "1px solid #eee",
 };
 
 const btn = {
-  background: "#800000",
-  color: "white",
-  padding: "15px",
-  border: "none",
-  borderRadius: "8px",
-  cursor: "pointer",
-  fontSize: "16px",
   width: "100%",
+  padding: "16px",
+  border: "none",
+  borderRadius: "16px",
+  background:
+    "linear-gradient(to right, #000, maroon)",
+  color: "white",
+  fontSize: "16px",
+  fontWeight: "700",
+  cursor: "pointer",
+};
+
+const secureBox = {
+  marginTop: "20px",
+  textAlign: "center",
+  color: "#666",
+  fontSize: "13px",
+  lineHeight: "1.9",
 };
