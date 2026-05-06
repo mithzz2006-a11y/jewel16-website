@@ -106,8 +106,6 @@ export default function Products({
 
   const filters = [
     "All",
-    "Gold",
-    "Diamond",
     "Bracelet",
     "Ring",
   ];
