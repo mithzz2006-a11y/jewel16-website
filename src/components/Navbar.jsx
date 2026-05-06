@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 
@@ -9,8 +9,7 @@ export default function Navbar({
 }) {
 
   const [menuOpen, setMenuOpen] =
-    useState(false);
-
+    useStat
   return (
     <div style={nav}>
 
