@@ -4,6 +4,8 @@ import {
   updateDoc,
   arrayUnion,
   onSnapshot,
+  collection,
+  getDocs,
 } from "firebase/firestore";
 
 import { db, auth } from "../firebase";
@@ -24,6 +26,10 @@ export default function ProductDetail({
 
   const [rating, setRating] =
     useState(5);
+
+  /* 💎 RELATED PRODUCTS */
+  const [relatedProducts, setRelatedProducts] =
+    useState([]);
 
   /* 🔥 LIVE REVIEWS */
   useEffect(() => {
@@ -52,6 +58,43 @@ export default function ProductDetail({
     );
 
     return () => unsub();
+
+  }, [product]);
+
+  /* 💎 RELATED PRODUCTS */
+  useEffect(() => {
+
+    const fetchProducts = async () => {
+
+      try {
+
+        const snap = await getDocs(
+          collection(db, "products")
+        );
+
+        const data = snap.docs
+          .map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+
+          .filter(
+            (p) => p.id !== product?.id
+          )
+
+          .slice(0, 4);
+
+        setRelatedProducts(data);
+
+      } catch (err) {
+
+        console.log(err);
+
+      }
+
+    };
+
+    fetchProducts();
 
   }, [product]);
 
@@ -120,15 +163,17 @@ export default function ProductDetail({
     );
   };
 
-  /* ⭐ ADD REVIEW */
+  /* ⭐ REVIEW */
   const submitReview = async () => {
 
     try {
 
       if (!reviewText) {
+
         toast.error(
           "Write review first"
         );
+
         return;
       }
 
@@ -136,9 +181,11 @@ export default function ProductDetail({
         auth.currentUser;
 
       if (!user) {
+
         toast.error(
           "Login required"
         );
+
         return;
       }
 
@@ -313,7 +360,7 @@ export default function ProductDetail({
           Customer Reviews ⭐
         </h2>
 
-        {/* ADD REVIEW */}
+        {/* REVIEW FORM */}
         <div style={reviewForm}>
 
           <select
@@ -393,4 +440,337 @@ export default function ProductDetail({
 
                 <p style={stars}>
                   {"⭐".repeat(
-                    r
+                    r.rating
+                  )}
+                </p>
+
+              </div>
+
+              <p style={reviewTextStyle}>
+                {r.text}
+              </p>
+
+            </div>
+
+          ))
+
+        )}
+
+      </div>
+
+      {/* 💎 RELATED PRODUCTS */}
+      <div style={relatedSection}>
+
+        <h2 style={relatedTitle}>
+          You May Also Like 💎
+        </h2>
+
+        <div style={relatedScroll}>
+
+          {relatedProducts.map((item) => (
+
+            <div
+              key={item.id}
+              style={relatedCard}
+            >
+
+              <img
+                src={item.image}
+                alt={item.name}
+                style={relatedImg}
+              />
+
+              <div style={relatedContent}>
+
+                <p style={relatedName}>
+                  {item.name}
+                </p>
+
+                <p style={relatedPrice}>
+                  ₹{item.price}
+                </p>
+
+                <button
+                  style={relatedBtn}
+                  onClick={() => {
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth",
+                    });
+
+                    setPage("products");
+
+                  }}
+                >
+                  View Product
+                </button>
+
+              </div>
+
+            </div>
+
+          ))}
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+
+/* 🎨 STYLES */
+
+const page = {
+  minHeight: "100vh",
+  background: "#f5f5f5",
+  padding: "20px",
+};
+
+const backBtn = {
+  marginBottom: "20px",
+  border: "none",
+  background: "white",
+  padding: "10px 16px",
+  borderRadius: "10px",
+  cursor: "pointer",
+  boxShadow:
+    "0 2px 10px rgba(0,0,0,0.08)",
+};
+
+const card = {
+  background: "white",
+  borderRadius: "24px",
+  overflow: "hidden",
+  boxShadow:
+    "0 10px 30px rgba(0,0,0,0.08)",
+  maxWidth: "1100px",
+  margin: "0 auto",
+  display: "grid",
+  gridTemplateColumns:
+    "repeat(auto-fit, minmax(320px,1fr))",
+};
+
+const imgWrap = {
+  position: "relative",
+  background: "#fafafa",
+};
+
+const img = {
+  width: "100%",
+  height: "100%",
+  minHeight: "420px",
+  objectFit: "cover",
+};
+
+const badge = {
+  position: "absolute",
+  top: "18px",
+  left: "18px",
+  color: "white",
+  padding: "8px 14px",
+  borderRadius: "30px",
+  fontSize: "13px",
+  fontWeight: "600",
+};
+
+const content = {
+  padding: "30px",
+};
+
+const name = {
+  fontSize:
+    "clamp(28px, 5vw, 42px)",
+};
+
+const price = {
+  color: "maroon",
+  fontSize: "30px",
+  fontWeight: "700",
+  marginTop: "10px",
+};
+
+const ratingBox = {
+  marginTop: "12px",
+  fontWeight: "600",
+};
+
+const reviewCount = {
+  color: "#666",
+  marginLeft: "6px",
+};
+
+const desc = {
+  color: "#666",
+  lineHeight: "1.8",
+  marginTop: "18px",
+};
+
+const infoBox = {
+  background: "#fafafa",
+  padding: "14px",
+  borderRadius: "12px",
+  marginTop: "12px",
+};
+
+const btnRow = {
+  display: "flex",
+  gap: "12px",
+  marginTop: "25px",
+  flexWrap: "wrap",
+};
+
+const cartBtn = {
+  flex: 1,
+  padding: "14px",
+  borderRadius: "12px",
+  border: "none",
+  background: "black",
+  color: "white",
+  fontWeight: "600",
+  cursor: "pointer",
+};
+
+const buyBtn = {
+  flex: 1,
+  padding: "14px",
+  borderRadius: "12px",
+  border: "none",
+  background:
+    "linear-gradient(to right, #4b0000, maroon)",
+  color: "white",
+  fontWeight: "600",
+  cursor: "pointer",
+};
+
+const reviewSection = {
+  maxWidth: "1100px",
+  margin: "40px auto",
+};
+
+const reviewTitle = {
+  marginBottom: "20px",
+};
+
+const reviewForm = {
+  background: "white",
+  padding: "20px",
+  borderRadius: "18px",
+  marginBottom: "25px",
+};
+
+const select = {
+  padding: "12px",
+  borderRadius: "10px",
+  border: "1px solid #ddd",
+};
+
+const textarea = {
+  width: "100%",
+  minHeight: "120px",
+  marginTop: "15px",
+  padding: "15px",
+  borderRadius: "12px",
+  border: "1px solid #ddd",
+};
+
+const submitBtn = {
+  marginTop: "15px",
+  padding: "14px 20px",
+  border: "none",
+  borderRadius: "12px",
+  background:
+    "linear-gradient(to right, #000, maroon)",
+  color: "white",
+  fontWeight: "600",
+  cursor: "pointer",
+};
+
+const reviewCard = {
+  background: "white",
+  padding: "18px",
+  borderRadius: "18px",
+  marginBottom: "15px",
+};
+
+const reviewTop = {
+  display: "flex",
+  justifyContent: "space-between",
+};
+
+const reviewUser = {
+  fontWeight: "600",
+};
+
+const stars = {
+  color: "#ffb400",
+};
+
+const reviewTextStyle = {
+  color: "#555",
+  marginTop: "10px",
+};
+
+const empty = {
+  color: "#666",
+};
+
+const relatedSection = {
+  maxWidth: "1100px",
+  margin: "50px auto",
+};
+
+const relatedTitle = {
+  marginBottom: "20px",
+};
+
+const relatedScroll = {
+  display: "flex",
+  gap: "16px",
+  overflowX: "auto",
+  paddingBottom: "10px",
+};
+
+const relatedCard = {
+  minWidth: "220px",
+  background: "white",
+  borderRadius: "18px",
+  overflow: "hidden",
+  flexShrink: 0,
+  boxShadow:
+    "0 8px 20px rgba(0,0,0,0.08)",
+};
+
+const relatedImg = {
+  width: "100%",
+  height: "200px",
+  objectFit: "cover",
+};
+
+const relatedContent = {
+  padding: "14px",
+};
+
+const relatedName = {
+  fontWeight: "600",
+};
+
+const relatedPrice = {
+  color: "maroon",
+  fontWeight: "700",
+  marginTop: "6px",
+};
+
+const relatedBtn = {
+  marginTop: "12px",
+  width: "100%",
+  padding: "10px",
+  border: "none",
+  borderRadius: "10px",
+  background:
+    "linear-gradient(to right, #000, maroon)",
+  color: "white",
+  fontWeight: "600",
+  cursor: "pointer",
+};
